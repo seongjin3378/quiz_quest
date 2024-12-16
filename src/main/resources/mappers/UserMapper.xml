@@ -30,4 +30,9 @@
         FROM users
         WHERE user_id = #{value};
     </select>
+
+    <select id="findAllUserId" resultType="String">
+        SELECT user_id FROM users;
+    </select>
+
 </mapper>

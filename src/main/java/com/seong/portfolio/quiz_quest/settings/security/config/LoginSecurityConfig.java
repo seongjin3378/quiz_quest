@@ -86,6 +86,8 @@ public class LoginSecurityConfig {
                         .maxSessionsPreventsLogin(true)
                 );
 
+
+        /*세션 고정 보호를 해줌*/
         http
                 .sessionManagement((auth) -> auth
                         .sessionFixation().changeSessionId()

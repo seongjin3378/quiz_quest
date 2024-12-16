@@ -4,13 +4,10 @@ package com.seong.portfolio.quiz_quest.settings.bucket4j;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Refill;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
-
 import java.time.Duration;
-import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class RateLimitingConfig {

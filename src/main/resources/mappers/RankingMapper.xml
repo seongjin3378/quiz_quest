@@ -17,6 +17,7 @@
         INSERT INTO USERS(ranking_type, ranking_rank, user_id, ranking_score)
         VALUES (#{rankingType}, #{rankingRank}, #{userId}, #{rankingScore});
     </insert>
+
     <update id="updateRankingScore" parameterType="com.seong.portfolio.quiz_quest.ranking.vo.RankingVO">
         UPDATE ranking r1
             JOIN (
@@ -31,6 +32,7 @@
         WHERE r1.user_id = #{userId}
           AND r1.ranking_type = #{rankingType};
     </update>
+
     <select id="findRankingScore" parameterType="com.seong.portfolio.quiz_quest.ranking.vo.RankingVO">
         SELECT r1.ranking_score
         FROM ranking r1
@@ -75,5 +77,6 @@
             </otherwise>
         </choose>
     </insert>
+
 
 </mapper>
