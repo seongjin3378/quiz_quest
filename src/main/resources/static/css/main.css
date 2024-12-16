@@ -1,0 +1,90 @@
+body {
+    background-color: #31363F; /* 다크 모드 배경색 */
+}
+
+header {
+    background: #76ABAE;
+}
+
+.navbar {
+    background: #EEEEEE;
+}
+
+.navbar-nav .nav-link {
+    color: #243642; /* 메뉴 텍스트 색상 (흰색) */
+}
+
+.navbar-nav .nav-link:hover {
+    color: #ffdd57; /* 메뉴 호버 색상 */
+}
+
+h1 {
+    font-size: 2.5rem; /* 제목 크기 */
+    font-family: 'Arial', sans-serif; /* 제목 폰트 */
+    margin-bottom: 20px; /* 아래쪽 마진 */
+    color: #333333; /* 제목 색상 (어두운 회색) */
+}
+
+.animation {
+    display: none; /* 기본적으로 숨김 */
+    width: 100%;
+    height: auto;
+    background-color: #ffffff; /* 애니메이션 영역 배경색 (흰색) */
+    border: 1px solid #dee2e6;
+    display: flex;
+    flex-direction: column; /* 세로 방향으로 정렬 */
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.5s; /* 애니메이션 효과 */
+    margin-top: 20px; /* 위쪽 마진 추가 */
+    padding: 20px; /* 내부 여백 추가 */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.stats {
+    background-color: #ffffff; /* 카드 배경색 (흰색) */
+    border: 1px solid #dee2e6; /* 카드 테두리 */
+    border-radius: 0.5rem; /* 모서리 둥글기 */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+}
+
+.card-header {
+    background-color: #76ABAE;
+    color: #333333; /* 헤더 텍스트 색상 (어두운 회색) */
+    font-weight: bold; /* 헤더 텍스트 두껍게 */
+}
+
+.card-body {
+    padding: 20px; /* 카드 내부 여백 */
+    background: #EEEEEE;
+}
+
+.card-title {
+    font-size: 1.5rem; /* 제목 크기 */
+    margin-bottom: 15px; /* 제목 아래 여백 */
+    color: #333333; /* 카드 제목 색상 (어두운 회색) */
+}
+
+.card {
+    border: 1px solid #dee2e6; /* 카드 테두리 색상 */
+    border-radius: 0.5rem; /* 카드 모서리 둥글기 */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 카드 그림자 효과 */
+    margin-top: 20px; /* 카드 위쪽 마진 */
+}
+
+.card-text {
+    font-size: 1.2rem; /* 본문 텍스트 크기 */
+    color: #666666; /* 본문 텍스트 색상 (회색) */
+}
+
+#content {
+    display: flex; /* Flexbox 사용 */
+    flex-direction: column; /* 세로 방향 정렬 */
+    justify-content: center; /* 수직 중앙 정렬 */
+    align-items: center; /* 수평 중앙 정렬 */
+    height: 100%; /* 부모 요소에 맞춰 높이 설정 */
+}

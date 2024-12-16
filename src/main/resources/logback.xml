@@ -1,0 +1,19 @@
+<configuration>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} [%file:%line] %M - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- MyBatis 로깅 설정 -->
+    <logger name="org.mybatis" level="DEBUG" />
+    <logger name="org.mybatis.logging" level="DEBUG" />
+    <Logger name="org.mybatis" level="DEBUG" additivity="false">
+        <AppenderRef ref="Console"/>
+    </Logger>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+    </root>
+</configuration>

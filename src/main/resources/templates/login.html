@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 페이지</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/login.css}">
+</head>
+<body>
+
+<div>
+    <div class="logo">QUIZ QUEST</div> <!-- 로고 추가 -->
+    <div class="login-container">
+        <h2>로그인</h2>
+        <form th:action="@{/loginProc}" method="POST">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+        <div class="input-field">
+            <input name="userId" type="text" placeholder="ID" required>
+        </div>
+        <div class="input-field">
+            <input name="password" type="password" placeholder="PW" required>
+            <input type="checkbox"  name="remember" /> 자동 로그인
+        </div>
+        <button type="submit" class="button">로그인</button>
+        </form>
+        <button class="button">회원가입하기</button>
+        <div class="footer">
+            <a href="#">비밀번호 재설정</a>
+            <div class="social-buttons">
+                <a href="#"><img src="https://image-url.com/google-icon.png" alt="Google"></a>
+                <a href="#"><img src="https://image-url.com/github-icon.png" alt="GitHub"></a>
+                <a href="#"><img src="https://image-url.com/facebook-icon.png" alt="Facebook"></a>
+                <a href="#"><img src="https://image-url.com/naver-icon.png" alt="Naver"></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

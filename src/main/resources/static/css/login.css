@@ -1,0 +1,81 @@
+
+body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #74ebd5, #acb6e5); /* 그라데이션 배경 */
+    margin: 0;
+}
+.logo {
+    font-size: 36px; /* 로고 크기 */
+    font-weight: bold; /* 두꺼운 글씨 */
+    color: #fff; /* 초기 색상 */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* 그림자 효과 */
+    margin-bottom: 20px; /* 로그인 폼과의 간격 */
+    animation: colorChange 5s infinite; /* 색상 변화 애니메이션 */
+    text-align: center; /* 중앙 정렬 */
+}
+@keyframes colorChange {
+    0% { color: #ff5733; }
+    25% { color: #33ff57; }
+    50% { color: #3357ff; }
+    75% { color: #f1c40f; }
+    100% { color: #ff5733; }
+}
+.login-container {
+    background-color: #007BFF;
+    border-radius: 10px;
+    padding: 40px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 320px;
+    text-align: center;
+    color: white;
+}
+.login-container h2 {
+    margin-bottom: 30px;
+}
+.input-field {
+    margin: 15px 0;
+    text-align: left; /* 왼쪽 정렬 */
+}
+.input-field input {
+    width: calc(100% - 20px); /* 양쪽 여백을 고려한 너비 */
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin: 0; /* 여백 제거 */
+}
+.button {
+    background-color: #0056b3;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    margin: 10px 0;
+    transition: background-color 0.3s;
+}
+.button:hover {
+    background-color: #004494;
+}
+.footer {
+    margin-top: 20px;
+}
+.footer a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 10px;
+}
+.social-buttons {
+    margin-top: 10px;
+}
+.social-buttons img {
+    width: 30px;
+    margin: 0 5px;
+    vertical-align: middle;
+}

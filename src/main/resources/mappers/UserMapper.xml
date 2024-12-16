@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.seong.portfolio.quiz_quest.user.repo.UserRepository">
+
+    <resultMap id="userMap" type="com.seong.portfolio.quiz_quest.user.vo.UserVO">
+        <id property="userId" column="user_id" />
+        <result property="password" column="password" />
+        <result property="email" column="email" />
+        <result property="role" column="role" />
+    </resultMap>
+
+    <insert id="save" parameterType="com.seong.portfolio.quiz_quest.user.vo.UserVO">
+        INSERT INTO USERS(user_id, password, email, role) VALUES (#{userId}, #{password}, #{email}, #{role});
+    </insert>
+    <select id="existsByUserId" parameterType="com.seong.portfolio.quiz_quest.user.vo.UserVO" resultType="Integer">
+        SELECT
+            CASE
+                WHEN COUNT(user_id) > 0 THEN 1
+                ELSE 0
+            END
+        FROM
+            users
+        WHERE
+            user_id = #{userId};
+    </select>
+    <select id="findByUserId" parameterType="String" resultType="com.seong.portfolio.quiz_quest.user.vo.UserVO">
+        SELECT *
+        FROM users
+        WHERE user_id = #{value};
+    </select>
+</mapper>
