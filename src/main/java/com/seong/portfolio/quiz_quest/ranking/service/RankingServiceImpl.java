@@ -1,6 +1,7 @@
 package com.seong.portfolio.quiz_quest.ranking.service;
 
 
+import com.seong.portfolio.quiz_quest.ranking.enums.RankingType;
 import com.seong.portfolio.quiz_quest.ranking.repo.RankingRepository;
 import com.seong.portfolio.quiz_quest.ranking.vo.RankingVO;
 import com.seong.portfolio.quiz_quest.user.service.SessionService;
@@ -52,6 +53,15 @@ public class RankingServiceImpl implements RankingService {
     @Override
     public int saveOrUpdateRanking(RankingVO vo) {
         return rankingRepository.findRankingScore(vo);
+    }
+
+    @Override
+    public void initializeRankingDB(RankingVO vo) {
+        for(RankingType rankingType : RankingType.values()) {
+            RankingVO rankingVO = RankingVO.builder().userId(sessionService.getSessionId()).rankingType(String.valueOf(rankingType.label())).rankingScore(0).rankingRank(-1).build();
+            rankingRepository.save(rankingVO);
+        }
+
     }
 }
 

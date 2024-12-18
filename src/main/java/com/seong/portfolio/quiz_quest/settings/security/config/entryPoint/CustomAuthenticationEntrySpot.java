@@ -24,6 +24,7 @@ public class CustomAuthenticationEntrySpot implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
 
-        response.sendRedirect("/");
+
+        logger.info("CustomAuthenticationEntrySpot commence {}, {}", request.getRequestURI(), authException.getMessage());
     }
 }

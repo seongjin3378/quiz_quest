@@ -21,11 +21,11 @@
             </a>
             <ul class="dropdown-menu" aria-labelledby="userMenuButton">
                 <li><a class="dropdown-item" href="#">프로필</a></li>
-                <form action="/logoutProc" method="POST" style="display: none;" id="logoutForm">
-                    <input type="hidden" name="_csrf" value="${_csrf.token}"/> <!-- CSRF 토큰 추가 -->
+                <form th:action="@{/logoutProc}" method="POST" style="display: none;" id="logoutForm">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 </form>
 
-                <li><a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit();">로그아웃</a></li>
+                <li><a id="logout-btn" class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit();">로그아웃</a></li>
             </ul>
         </div>
 

@@ -4,7 +4,7 @@
 
 <mapper namespace="com.seong.portfolio.quiz_quest.ranking.repo.RankingRepository">
 
-    <resultMap id="userMap" type="com.seong.portfolio.quiz_quest.ranking.vo.RankingVO">
+    <resultMap id="rankingMap" type="com.seong.portfolio.quiz_quest.ranking.vo.RankingVO">
         <id property="pk" column="pk"/>
         <result property="rankingType" column="ranking_type"/>
         <result property="rankingRank" column="ranking_rank"/>
@@ -44,7 +44,7 @@
             ORDER BY last_access_date DESC
                 LIMIT 1
         ) r2 ON r1.last_access_date = r2.last_access_date
-        WHERE r1.ranking_type = #{rankingType};
+        WHERE r1.ranking_type = #{rankingType} and r1.user_id = #{userId};
     </select>
 
     <insert id="saveOrUpdateRanking" parameterType="com.seong.portfolio.quiz_quest.ranking.vo.RankingVO" >
@@ -78,5 +78,14 @@
         </choose>
     </insert>
 
+
+    <select id ="existsByUserId" parameterType="com.seong.portfolio.quiz_quest.ranking.vo.RankingVO" resultType="Integer">
+        SELECT
+            CASE
+                WHEN COUNT(user_id) > 0 THEN 1
+            END
+        WHERE
+            user_id = #{userId};
+   </select>
 
 </mapper>

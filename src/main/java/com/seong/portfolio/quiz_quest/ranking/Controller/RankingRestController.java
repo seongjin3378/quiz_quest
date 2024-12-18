@@ -3,6 +3,7 @@ package com.seong.portfolio.quiz_quest.ranking.Controller;
 import com.seong.portfolio.quiz_quest.ranking.service.RankingService;
 import com.seong.portfolio.quiz_quest.ranking.vo.RankingVO;
 import com.seong.portfolio.quiz_quest.ranking.vo.UserUsageTimerVO;
+import com.seong.portfolio.quiz_quest.user.service.SessionService;
 import io.github.bucket4j.Bucket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class RankingRestController {
     private final RankingService rankingService;
     private static final Logger logger = LoggerFactory.getLogger(RankingRestController.class);
-
+    private final SessionService sessionService;
     //private final ApplicationContext applicationContext;
 
     /* 각각의 버킷들이 생성 후 1분이 지나면 개별적으로 사라짐  */
@@ -31,9 +32,10 @@ public class RankingRestController {
     /* 만료되면 람다식을 통해 userId : bucket 처럼 key/value 형태로 저장 됨*/
 
 
-    public RankingRestController(RankingService rankingService/*, ApplicationContext applicationContext*/) {
+    public RankingRestController(RankingService rankingService, SessionService sessionService/*, ApplicationContext applicationContext*/) {
         this.rankingService = rankingService;
         //this.applicationContext = applicationContext;
+        this.sessionService = sessionService;
     }
 
     @PostMapping("/user-usage-time")
@@ -56,7 +58,11 @@ public class RankingRestController {
         }
 
          */
-        int result =  rankingService.updateUserUsageTime(vo.getUserUsageTimer());
+        String userId = sessionService.getSessionId();
+        int result = 0 ;
+        if(!userId.equals("anonymousUser")) {
+            result = rankingService.updateUserUsageTime(vo.getUserUsageTimer());
+        }
         logger.info("Saving timer: {}", vo.getUserUsageTimer());
 
         if(result == 1)  //랭킹 정보가 업데이트가 성공했을경우

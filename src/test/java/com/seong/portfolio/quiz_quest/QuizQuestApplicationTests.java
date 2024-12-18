@@ -1,6 +1,7 @@
 package com.seong.portfolio.quiz_quest;
 
 
+import com.seong.portfolio.quiz_quest.ranking.enums.RankingType;
 import com.seong.portfolio.quiz_quest.ranking.repo.RankingRepository;
 import com.seong.portfolio.quiz_quest.ranking.vo.RankingVO;
 import io.github.bucket4j.Bucket;
@@ -52,11 +53,21 @@ class QuizQuestApplicationTests {
 		System.out.println("Total time taken: " + (endTime - startTime) + " ms");
 	}
 
-	 */
-	@Test
+	 /*
+	//@Test
 	public void DBTest()
 	{
 	 RankingVO ranking = RankingVO.builder().userId("test0").rankingType("usage_time").build();
 	 rankingRepository.saveOrUpdateRanking(ranking);
+	}
+
+	 */
+
+	@Test
+	public void EnumTest()
+	{
+		for(RankingType rankingType : RankingType.values()) {
+			System.out.println(rankingType.label());
+		}
 	}
 }

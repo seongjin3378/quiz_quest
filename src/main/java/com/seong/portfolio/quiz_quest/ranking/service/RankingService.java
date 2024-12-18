@@ -15,4 +15,5 @@ public interface RankingService {
 
     int findRankingScore(RankingVO vo);
     int saveOrUpdateRanking(RankingVO vo);
+    void initializeRankingDB(RankingVO vo);
 }

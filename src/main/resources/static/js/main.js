@@ -16,6 +16,10 @@ window.addEventListener('beforeunload', (event) => {
     navigator.sendBeacon('/invalidateUser', data);
 });
 
+
+
+
+
 (function () {
     function increaseTimer() {
 

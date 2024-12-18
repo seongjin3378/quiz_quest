@@ -2,20 +2,28 @@ package com.seong.portfolio.quiz_quest.user.controller;
 
 
 import com.seong.portfolio.quiz_quest.user.service.SessionService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.session.SessionInformation;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -26,12 +34,31 @@ public class MainRestController {
     private final SessionService sessionService;
     private final RedisTemplate<String, Object> redisTemplate;
     Logger logger = LoggerFactory.getLogger(MainRestController.class);
+    private final SessionRegistry sessionRegistry;
 
     @GetMapping("/loggedInUserCount")
     public ResponseEntity<Integer> loggedInUserCount() {
         Set<String> keys = redisTemplate.keys("JSESSIONID:*");
+        printAllSession();
         return ResponseEntity.ok(keys.size()); // HTTP 200 OK와 함께 사용자 수 반환
     }
+
+    private void printAllSession()
+    {
+        List<Object> allPrincipals = sessionRegistry.getAllPrincipals();
+
+        for (Object principal : allPrincipals) {
+            List<SessionInformation> sessions = sessionRegistry.getAllSessions(principal, false);
+            logger.info("Principal: {}", principal);
+            for (SessionInformation session : sessions) {
+                logger.info("Session ID: {}", session.getSessionId());
+                logger.info("Last Request: {}", session.getLastRequest());
+                logger.info("Expiration Time: {}", session.getSessionId());
+            }
+        }
+    }
+
+
     @PostMapping("/userConnectTimes/{userId}")
     public void userConnectTimes(@PathVariable String userId)
     {
@@ -58,6 +85,8 @@ public class MainRestController {
         }
 
     }
+
+
 
     public static String formatDuration(Duration duration) {
         long hours = duration.toHours();

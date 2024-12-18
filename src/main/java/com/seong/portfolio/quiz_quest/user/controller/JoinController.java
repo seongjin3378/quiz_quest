@@ -1,6 +1,8 @@
 package com.seong.portfolio.quiz_quest.user.controller;
 
 
+import com.seong.portfolio.quiz_quest.ranking.vo.RankingVO;
+import com.seong.portfolio.quiz_quest.user.service.SessionService;
 import com.seong.portfolio.quiz_quest.user.service.UserService;
 import com.seong.portfolio.quiz_quest.user.vo.UserVO;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class JoinController {
     private final UserService userService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final SessionService sessionService;
     @GetMapping("/join")
     public String join() {
         return "join";
@@ -23,7 +26,6 @@ public class JoinController {
         vo.setPassword(bCryptPasswordEncoder.encode(vo.getPassword()));
         vo.setRole("ROLE_USER");
         userService.joinProcess(vo);
-
         return "/login";
     }
 

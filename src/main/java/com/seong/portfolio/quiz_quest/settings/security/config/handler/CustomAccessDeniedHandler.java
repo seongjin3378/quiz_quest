@@ -19,7 +19,6 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         if(request.getRequestURI().equals("/login"))
         {
            logger.info("Access Denied");
-            response.sendRedirect("/");
         }
     }
 }

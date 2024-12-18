@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.session.SessionRegistry;
 
 import org.springframework.security.web.SecurityFilterChain;
@@ -25,7 +26,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.IF_
 
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity()
 @RequiredArgsConstructor
 public class LoginSecurityConfig {
 
@@ -38,22 +39,28 @@ public class LoginSecurityConfig {
 
     @Bean
     public SecurityFilterChain loginFilterChain(HttpSecurity http, SqlSessionFactory sqlSessionFactory, SessionRegistry sessionRegistry) throws Exception {
+
+
         http
-                .addFilterBefore(customAutoLoginFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(customAutoLoginFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/css/**", "/js/**", "/"))
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/css/**", "/js/**", "/", "/login", "/favicon.ico"))
+                .logout((auth) -> auth
+                        .logoutUrl("/logoutProc")
+                        .logoutSuccessHandler(new CustomLogOutSuccessHandler(sessionRegistry))
+                        .permitAll()
+                )
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/loginProc", "/join", "/joinProc", "/loggedInUserCount", "/invalidateUser", "/user-usage-time", "/", "/saveUsageTimer").permitAll()
+                        .requestMatchers("/loginProc", "/join", "/joinProc", "/loggedInUserCount", "/invalidateUser", "/user-usage-time", "/saveUsageTimer", "/logoutProc", "/favicon.ico").permitAll()
                         .requestMatchers("/").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/login").anonymous()
                         .requestMatchers("/admin").hasRole("ADMIN")
-                        .requestMatchers("/css/**", "/js/**").authenticated()
+                        .requestMatchers("/css/**", "/js/**").permitAll()
 
                         .anyRequest().denyAll()
                 )                .exceptionHandling((exceptions) -> exceptions
                         .authenticationEntryPoint(new CustomAuthenticationEntrySpot())
                 );
-
 
         http
 
@@ -65,6 +72,7 @@ public class LoginSecurityConfig {
                         .failureUrl("/login?error=true")
                         .defaultSuccessUrl("/", true)
                 )
+
                 .exceptionHandling((exceptions) -> exceptions
                         .accessDeniedHandler(new CustomAccessDeniedHandler())
                 );
@@ -72,11 +80,12 @@ public class LoginSecurityConfig {
 
         http
                 .rememberMe((auth) -> auth
-                        .key("key")
+                        .key("remember-me")
                         .rememberMeParameter("remember")
                         .tokenValiditySeconds(3600 * 24 * 365)
-                        .alwaysRemember(true)
+                        .alwaysRemember(false) //로그인할때마다 자동로그인 할것인지 유무
                         .userDetailsService(customUserDetailsService));
+
 
 
 
@@ -87,7 +96,7 @@ public class LoginSecurityConfig {
                 );
 
 
-        /*세션 고정 보호를 해줌*/
+      /*세션 고정 보호를 해줌*/
         http
                 .sessionManagement((auth) -> auth
                         .sessionFixation().changeSessionId()
@@ -95,12 +104,10 @@ public class LoginSecurityConfig {
                 );
 
 
-        http
-                .logout((auth) -> auth
-                        .logoutUrl("/logoutProc")
-                        .logoutSuccessHandler(new CustomLogOutSuccessHandler(sessionRegistry, sessionService))
-                        .permitAll()
-                );
+
+
+
+
 
 
         return http.build();

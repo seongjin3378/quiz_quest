@@ -31,12 +31,23 @@ public class CustomAutoLoginFilter extends OncePerRequestFilter {
     private static final Logger logger = LoggerFactory.getLogger(CustomAutoLoginFilter.class);
     private final SessionService sessionService;
     private final RedisTemplate<String, Object> redisTemplate;
+
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         String userId = sessionService.getSessionId();
         logger.info("userId: {}", userId);
         String key = "JSESSIONID:" + userId;
+
+        /*
+        if(userId.equals("Anonymous"))
+        {
+            response.sendRedirect("/login");
+        }
+
+         */
+
         if(!userId.equals("Anonymous") && redisTemplate.opsForValue().get(key) == null ) {
 
             redisTemplate.opsForValue().set(key, userId);

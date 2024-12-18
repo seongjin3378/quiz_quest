@@ -41,8 +41,12 @@ public class RateLimitingFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         logger.info("requestURI {}", request.getRequestURI());
+
         if ("/saveUsageTimer".equals(request.getRequestURI())) {
+
             if ("POST".equalsIgnoreCase(request.getMethod())) {
+
+                logger.info("내부 동작 실행");
                 String userId = sessionService.getSessionId();
                 /*userId 대한 버킷 검색 만약 key 값이 없으면 Scope Bucket 빈 생성해서 맵에 넣음*/
                 Bucket bucket = buckets.computeIfAbsent(userId, k -> applicationContext.getBean("saveUsageTimerBucket", Bucket.class));
@@ -51,8 +55,11 @@ public class RateLimitingFilter extends OncePerRequestFilter {
                     response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
                     return;
                 }
+
             }
+
         }
+
         filterChain.doFilter(request, response);
     }
 }

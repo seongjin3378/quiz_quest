@@ -23,4 +23,5 @@ public interface RankingRepository {
     int findRankingScore(RankingVO vo);
     int saveOrUpdateRanking(RankingVO vo);
     List<RankingVO> findTopNByOrderByRankingScoreDesc(int n);
+    int existsByUserId(RankingVO vo);
 }
