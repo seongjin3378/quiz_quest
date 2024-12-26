@@ -44,7 +44,7 @@ public class LoginSecurityConfig {
         http
                 .addFilterAfter(customAutoLoginFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/css/**", "/js/**", "/", "/login", "/favicon.ico"))
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/css/**", "/js/**", "/", "/login", "/favicon.ico", "/p/{number}"))
                 .logout((auth) -> auth
                         .logoutUrl("/logoutProc")
                         .logoutSuccessHandler(new CustomLogOutSuccessHandler(sessionRegistry))
@@ -52,7 +52,7 @@ public class LoginSecurityConfig {
                 )
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/loginProc", "/join", "/joinProc", "/loggedInUserCount", "/invalidateUser", "/user-usage-time", "/saveUsageTimer", "/logoutProc", "/favicon.ico").permitAll()
-                        .requestMatchers("/").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers("/", "/p/{number}").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/login").anonymous()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .requestMatchers("/css/**", "/js/**").permitAll()

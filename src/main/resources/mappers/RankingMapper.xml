@@ -14,7 +14,7 @@
     </resultMap>
 
     <insert id="save" parameterType="com.seong.portfolio.quiz_quest.ranking.vo.RankingVO">
-        INSERT INTO USERS(ranking_type, ranking_rank, user_id, ranking_score)
+        INSERT INTO ranking(ranking_type, ranking_rank, user_id, ranking_score)
         VALUES (#{rankingType}, #{rankingRank}, #{userId}, #{rankingScore});
     </insert>
 

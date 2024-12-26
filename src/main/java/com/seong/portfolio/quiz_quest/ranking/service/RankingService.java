@@ -1,6 +1,7 @@
 package com.seong.portfolio.quiz_quest.ranking.service;
 
 import com.seong.portfolio.quiz_quest.ranking.vo.RankingVO;
+import com.seong.portfolio.quiz_quest.user.vo.UserVO;
 
 
 /* updateUserUsageTime
@@ -15,5 +16,5 @@ public interface RankingService {
 
     int findRankingScore(RankingVO vo);
     int saveOrUpdateRanking(RankingVO vo);
-    void initializeRankingDB(RankingVO vo);
+    void initializeRankingDB(UserVO vo);
 }

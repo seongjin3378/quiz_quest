@@ -37,6 +37,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-quartz'
 	implementation 'com.bucket4j:bucket4j-core:8.3.0'
 	implementation 'net.jodah:expiringmap:0.5.0'
+	implementation group: 'com.github.docker-java', name: 'docker-java', version: '3.4.1'
+	implementation 'com.github.docker-java:docker-java-transport-httpclient5:3.4.0'
 }
 
 

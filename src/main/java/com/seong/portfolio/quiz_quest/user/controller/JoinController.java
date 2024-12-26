@@ -1,6 +1,7 @@
 package com.seong.portfolio.quiz_quest.user.controller;
 
 
+import com.seong.portfolio.quiz_quest.ranking.service.RankingService;
 import com.seong.portfolio.quiz_quest.ranking.vo.RankingVO;
 import com.seong.portfolio.quiz_quest.user.service.SessionService;
 import com.seong.portfolio.quiz_quest.user.service.UserService;
@@ -17,6 +18,7 @@ public class JoinController {
     private final UserService userService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final SessionService sessionService;
+    private final RankingService rankingService;
     @GetMapping("/join")
     public String join() {
         return "join";
@@ -26,6 +28,7 @@ public class JoinController {
         vo.setPassword(bCryptPasswordEncoder.encode(vo.getPassword()));
         vo.setRole("ROLE_USER");
         userService.joinProcess(vo);
+        rankingService.initializeRankingDB(vo);
         return "/login";
     }
 

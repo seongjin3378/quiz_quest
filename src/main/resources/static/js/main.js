@@ -19,7 +19,6 @@ window.addEventListener('beforeunload', (event) => {
 
 
 
-
 (function () {
     function increaseTimer() {
 

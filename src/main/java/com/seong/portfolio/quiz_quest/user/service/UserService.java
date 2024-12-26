@@ -5,5 +5,5 @@ import com.seong.portfolio.quiz_quest.user.vo.UserVO;
 
 public interface UserService {
     void joinProcess(UserVO vo);
-
+    int getAllActiveUsers();
 }

@@ -6,8 +6,11 @@ import com.seong.portfolio.quiz_quest.user.repo.UserRepository;
 import com.seong.portfolio.quiz_quest.user.vo.UserVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
 
 
 @Service
@@ -15,7 +18,7 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final RankingRepository rankingRepository;
+    private final RedisTemplate<String, Object> redisTemplate;
     @Override
     public void joinProcess(UserVO vo) {
         int isUser = userRepository.existsByUserId(vo);
@@ -23,6 +26,12 @@ public class UserServiceImpl implements UserService {
             return;
         }
         userRepository.save(vo);
+    }
+
+    @Override
+    public int getAllActiveUsers() {
+        Set<String> keys = redisTemplate.keys("JSESSIONID:*");
+        return keys.size();
     }
 
 

@@ -14,7 +14,7 @@
   <div class="logo">QUIZ QUEST</div>
   <div class="login-container">
     <h2>회원가입</h2>
-    <form action="/joinProc" method="POST">
+    <form th:action="@{/joinProc}" method="POST">
       <div class="input-field">
         <input name="userId" type="text" placeholder="아이디" required>
       </div>

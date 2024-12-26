@@ -33,6 +33,7 @@ public class CustomLogOutSuccessHandler implements LogoutSuccessHandler {
         response.sendRedirect("/login"); // 로그인 페이지로 이동
     }
 
+    /*
     private void expireCookie(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         HttpSession session = request.getSession(false);
@@ -47,6 +48,8 @@ public class CustomLogOutSuccessHandler implements LogoutSuccessHandler {
         response.sendRedirect("/login");
         logger.info("로그아웃 성공");
     }
+
+     */
 
 
 
