@@ -1,20 +1,7 @@
 const axios = window.axios;
-let problemsSolved = 0; // 문제 맞춘 횟수
-let usageTime = 0; // 사용 시간 (초 단위)
-
 const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
 const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
-window.addEventListener('beforeunload', (event) => {
 
-
-    // 세션 무효화 요청
-    const data = new URLSearchParams();
-    data.append('key', 'value'); // 필요한 데이터 추가
-    data.append(csrfHeader, csrfToken);
-
-    // sendBeacon을 사용하여 세션 무효화 요청
-    navigator.sendBeacon('/invalidateUser', data);
-});
 
 
 
@@ -29,14 +16,14 @@ window.addEventListener('beforeunload', (event) => {
             timer.textContent = increasedTimer.toString();
             if (increasedTimer % 60 === 0) {
                 console.log("인크리즈 타이머 실행 : ");
-                const url = "saveUsageTimer";
+                const url = "api/v1/rankings/usage-timers";
                 const UserUsageTimerVO = {
                     userUsageTimer: increasedTimer,
                 };
 
 
                 //for (let i = 0; i < 2; i++) { //TooManyRequest 테스트를 위해 작성
-                    axios.post(url, UserUsageTimerVO, {
+                    axios.put(url, UserUsageTimerVO, {
                         headers: {
                             [csrfHeader]: csrfToken // CSRF 토큰을 헤더에 추가
                         }

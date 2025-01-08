@@ -26,5 +26,6 @@ public class CustomAuthenticationEntrySpot implements AuthenticationEntryPoint {
 
 
         logger.info("CustomAuthenticationEntrySpot commence {}, {}", request.getRequestURI(), authException.getMessage());
+        response.sendRedirect("/login");
     }
 }

@@ -1,0 +1,57 @@
+body {
+    background-color: #1e1e2f; /* 다크 모드 배경색 */
+    color: #ffffff; /* 기본 텍스트 색상 */
+}
+
+.card {
+    background-color: #2c2c3e; /* 카드 배경색 (조화로운 다크 색상) */
+    border: 1px solid #444; /* 카드 테두리 색상 */
+    border-radius: 0.5rem; /* 카드 모서리 둥글기 */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* 카드 그림자 효과 */
+    margin-top: 20px; /* 카드 위쪽 마진 */
+}
+
+.card-header {
+    background-color: #76ABAE; /* 카드 헤더 배경색 */
+    color: #ffffff; /* 헤더 텍스트 색상 */
+    font-weight: bold; /* 헤더 텍스트 두껍게 */
+    font-size: 1.5rem; /* 헤더 텍스트 크기 */
+}
+
+.card-body {
+    padding: 20px; /* 카드 내부 여백 */
+    background-color: #2c2c3e; /* 카드 본문 배경색 (조화로운 다크 색상) */
+}
+
+.post {
+    background-color: #3a3a4e; /* 게시글 배경색 (조화로운 다크 색상) */
+    border: 1px solid #444; /* 게시글 테두리 색상 */
+    border-radius: 0.5rem; /* 게시글 모서리 둥글기 */
+    padding: 15px; /* 게시글 내부 여백 */
+    transition: box-shadow 0.3s; /* 호버 시 그림자 효과를 부드럽게 변경 */
+}
+
+.post:hover {
+    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2); /* 호버 시 그림자 효과 */
+}
+
+.post-title {
+    font-size: 1.25rem; /* 게시글 제목 크기 */
+    color: #ffffff; /* 게시글 제목 색상 */
+}
+
+.post-category, .post-number {
+    font-size: 0.9rem; /* 카테고리 및 문제 번호 크기 */
+    color: #cccccc; /* 카테고리 및 문제 번호 색상 */
+}
+
+hr {
+    border: 1px solid #444; /* 구분선 색상 */
+    margin: 15px 0; /* 구분선 여백 */
+}
+
+.no-posts {
+    text-align: center; /* 중앙 정렬 */
+    color: #999999; /* 텍스트 색상 */
+    font-size: 1rem; /* 텍스트 크기 */
+}

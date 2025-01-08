@@ -1,8 +1,7 @@
 package com.seong.portfolio.quiz_quest.user.controller;
 
 
-import com.seong.portfolio.quiz_quest.ranking.service.RankingService;
-import com.seong.portfolio.quiz_quest.ranking.vo.RankingVO;
+import com.seong.portfolio.quiz_quest.rankings.service.RankingService;
 import com.seong.portfolio.quiz_quest.user.service.SessionService;
 import com.seong.portfolio.quiz_quest.user.service.UserService;
 import com.seong.portfolio.quiz_quest.user.vo.UserVO;

@@ -2,9 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.seong.portfolio.quiz_quest.ranking.repo.RankingRepository">
+<mapper namespace="com.seong.portfolio.quiz_quest.rankings.repo.RankingRepository">
 
-    <resultMap id="rankingMap" type="com.seong.portfolio.quiz_quest.ranking.vo.RankingVO">
+    <resultMap id="rankingMap" type="com.seong.portfolio.quiz_quest.rankings.vo.RankingVO">
         <id property="pk" column="pk"/>
         <result property="rankingType" column="ranking_type"/>
         <result property="rankingRank" column="ranking_rank"/>
@@ -13,12 +13,12 @@
         <result property="lastAccessDate" column="last_access_date"/>
     </resultMap>
 
-    <insert id="save" parameterType="com.seong.portfolio.quiz_quest.ranking.vo.RankingVO">
+    <insert id="save" parameterType="com.seong.portfolio.quiz_quest.rankings.vo.RankingVO">
         INSERT INTO ranking(ranking_type, ranking_rank, user_id, ranking_score)
         VALUES (#{rankingType}, #{rankingRank}, #{userId}, #{rankingScore});
     </insert>
 
-    <update id="updateRankingScore" parameterType="com.seong.portfolio.quiz_quest.ranking.vo.RankingVO">
+    <update id="updateRankingScore" parameterType="com.seong.portfolio.quiz_quest.rankings.vo.RankingVO">
         UPDATE ranking r1
             JOIN (
             SELECT last_access_date
@@ -33,7 +33,7 @@
           AND r1.ranking_type = #{rankingType};
     </update>
 
-    <select id="findRankingScore" parameterType="com.seong.portfolio.quiz_quest.ranking.vo.RankingVO">
+    <select id="findRankingScore" parameterType="com.seong.portfolio.quiz_quest.rankings.vo.RankingVO">
         SELECT r1.ranking_score
         FROM ranking r1
                  JOIN (
@@ -47,7 +47,7 @@
         WHERE r1.ranking_type = #{rankingType} and r1.user_id = #{userId};
     </select>
 
-    <insert id="saveOrUpdateRanking" parameterType="com.seong.portfolio.quiz_quest.ranking.vo.RankingVO" >
+    <insert id="saveOrUpdateRanking" parameterType="com.seong.portfolio.quiz_quest.rankings.vo.RankingVO" >
         <selectKey resultType="int" keyProperty="pk" order="BEFORE"> <!--order: 메인 쿼리보다 먼저 실행되도록 지정-->
 
             SELECT COALESCE((
@@ -79,7 +79,7 @@
     </insert>
 
 
-    <select id ="existsByUserId" parameterType="com.seong.portfolio.quiz_quest.ranking.vo.RankingVO" resultType="Integer">
+    <select id ="existsByUserId" parameterType="com.seong.portfolio.quiz_quest.rankings.vo.RankingVO" resultType="Integer">
         SELECT
             CASE
                 WHEN COUNT(user_id) > 0 THEN 1

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.seong.portfolio.quiz_quest.problems.repo.ProblemRepository">
+
+    <select id="findAll" resultMap="problemMap">
+        SELECT problem_id, problem_title, problem_type
+        FROM problems;
+    </select>
+
+    <select id="findByProblemId" parameterType="com.seong.portfolio.quiz_quest.problems.vo.ProblemVO" resultMap="problemMap">
+        SELECT
+            p.problem_id,
+            p.problem_title,
+            p.problem_type,
+            p.problem_content,
+            p.memory_limit,
+            tc.test_case_id,
+            tc.input_value,
+            tc.output_value
+        FROM problems p
+                 LEFT JOIN test_cases tc ON p.problem_id = tc.problem_id
+        WHERE p.problem_id = #{problemId}
+        <if test="isVisible != -1">
+            AND is_visible = #{isVisible}
+        </if>
+        <!-- isVisible = 사용자에게 보여줄 테스트 케이스 값을 표현 -->
+    </select>
+
+
+
+    <resultMap id="testCasesResultMap" type="com.seong.portfolio.quiz_quest.problems.testCases.vo.TestCasesVO">
+        <id property="testCaseId" column="test_case_id"/>
+        <result property="inputValue" column="input_value"/>
+        <result property="outputValue" column="output_value"/>
+    </resultMap>
+
+    <resultMap id="problemMap" type="com.seong.portfolio.quiz_quest.problems.vo.ProblemVO">
+        <id property="problemId" column="problem_id"/>
+        <result property="problemTitle" column="problem_title"/>
+        <result property="problemType" column="problem_type"/>
+        <result property="problemContent" column="problem_content"/>
+        <result property="memoryLimit" column="memory_limit"/>
+        <collection property="testCases" resultMap="testCasesResultMap"/> <!--1:n을 위해 Collection을 이용 -->
+    </resultMap>
+
+
+</mapper>

@@ -1,0 +1,69 @@
+<nav id="nav" class="navbar navbar-expand-lg navbar-light bg-light">
+  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav me-auto">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarProblem" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          문제 풀기
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="navbarProblem">
+          <li><a class="dropdown-item" href="#" onclick="showContent('problem')">문제 목록</a></li>
+          <li><a class="dropdown-item" href="#" onclick="showContent('myProblem')">내 문제</a></li>
+          <li><a class="dropdown-item" href="#" onclick="showContent('submit')">풀이 제출</a></li>
+        </ul>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarRanking" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          랭킹
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="navbarRanking">
+          <li><a class="dropdown-item" href="#" onclick="showContent('ranking')">전체 랭킹</a></li>
+          <li><a class="dropdown-item" href="#" onclick="showContent('weeklyRanking')">주간 랭킹</a></li>
+          <li><a class="dropdown-item" href="#" onclick="showContent('myRanking')">내 랭킹</a></li>
+        </ul>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarBoard" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          게시판
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="navbarBoard">
+          <li><a class="dropdown-item" href="#" onclick="showContent('board')">전체 게시글</a></li>
+          <li><a class="dropdown-item" href="#" onclick="showContent('myBoard')">내 게시글</a></li>
+          <li><a class="dropdown-item" href="#" onclick="showContent('writeBoard')">게시글 작성</a></li>
+        </ul>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarLecture" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          강의
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="navbarLecture">
+          <li><a class="dropdown-item" href="#" onclick="showContent('lecture')">전체 강의</a></li>
+          <li><a class="dropdown-item" href="#" onclick="showContent('myLecture')">내 강의</a></li>
+          <li><a class="dropdown-item" href="#" onclick="showContent('registerLecture')">강의 등록</a></li>
+        </ul>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarQuestions" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          질문
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="navbarQuestions">
+          <li><a class="dropdown-item" href="#" onclick="showContent('questions')">질문 목록</a></li>
+          <li><a class="dropdown-item" href="#" onclick="showContent('myQuestions')">내 질문</a></li>
+          <li><a class="dropdown-item" href="#" onclick="showContent('writeQuestion')">질문 작성</a></li>
+        </ul>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarInquiry" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          문의
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="navbarInquiry">
+          <li><a class="dropdown-item" href="#" onclick="showContent('inquiries')">문의 목록</a></li>
+          <li><a class="dropdown-item" href="#" onclick="showContent('myInquiries')">내 문의</a></li>
+          <li><a class="dropdown-item" href="#" onclick="showContent('writeInquiry')">문의 작성</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>

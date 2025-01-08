@@ -1,7 +1,6 @@
 package com.seong.portfolio.quiz_quest.settings.security.config;
 
 
-import com.seong.portfolio.quiz_quest.settings.security.config.customFilter.CustomAutoLoginFilter;
 import com.seong.portfolio.quiz_quest.settings.security.config.customFilter.RateLimitingFilter;
 import com.seong.portfolio.quiz_quest.settings.security.config.entryPoint.CustomAuthenticationEntrySpot;
 import com.seong.portfolio.quiz_quest.settings.security.config.handler.CustomAccessDeniedHandler;
@@ -15,7 +14,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.session.SessionRegistry;
 
 import org.springframework.security.web.SecurityFilterChain;
@@ -32,7 +30,6 @@ public class LoginSecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
     private final SessionService sessionService;
-    private final CustomAutoLoginFilter customAutoLoginFilter;
     private final RateLimitingFilter rateLimitingFilter;
 
 
@@ -42,17 +39,16 @@ public class LoginSecurityConfig {
 
 
         http
-                .addFilterAfter(customAutoLoginFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/css/**", "/js/**", "/", "/login", "/favicon.ico", "/p/{number}"))
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/css/**", "/js/**", "/", "/login", "/favicon.ico", "/p/{number}", "/api/v1/problems/**"))
                 .logout((auth) -> auth
                         .logoutUrl("/logoutProc")
                         .logoutSuccessHandler(new CustomLogOutSuccessHandler(sessionRegistry))
                         .permitAll()
                 )
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/loginProc", "/join", "/joinProc", "/loggedInUserCount", "/invalidateUser", "/user-usage-time", "/saveUsageTimer", "/logoutProc", "/favicon.ico").permitAll()
-                        .requestMatchers("/", "/p/{number}").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers("/loginProc", "/join", "/joinProc", "/api/v1/users/**", "/api/v1/rankings/**", "/logoutProc", "/favicon.ico", "/api/v1/problems/**").permitAll()
+                        .requestMatchers("/", "/p/{number}", "/p").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/login").anonymous()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .requestMatchers("/css/**", "/js/**").permitAll()

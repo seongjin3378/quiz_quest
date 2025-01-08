@@ -1,7 +1,7 @@
 package com.seong.portfolio.quiz_quest.quartz.user.job;
 
-import com.seong.portfolio.quiz_quest.ranking.repo.RankingRepository;
-import com.seong.portfolio.quiz_quest.ranking.vo.RankingVO;
+import com.seong.portfolio.quiz_quest.rankings.repo.RankingRepository;
+import com.seong.portfolio.quiz_quest.rankings.vo.RankingVO;
 import com.seong.portfolio.quiz_quest.user.repo.UserRepository;
 import com.seong.portfolio.quiz_quest.user.service.SessionService;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.List;
-import java.util.Set;
 
 @RequiredArgsConstructor
 public class UserUsageTimeJob implements Job {
