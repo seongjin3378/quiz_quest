@@ -1,13 +1,19 @@
 package com.seong.portfolio.quiz_quest.rankings.Controller;
 
+import com.seong.portfolio.quiz_quest.rankings.repo.RankingRepository;
 import com.seong.portfolio.quiz_quest.rankings.service.RankingService;
+import com.seong.portfolio.quiz_quest.rankings.vo.RankingVO;
 import com.seong.portfolio.quiz_quest.rankings.vo.UserUsageTimerVO;
+import com.seong.portfolio.quiz_quest.user.repo.UserRepository;
 import com.seong.portfolio.quiz_quest.user.service.SessionService;
 import io.github.bucket4j.Bucket;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/rankings")
@@ -16,10 +22,8 @@ public class RankingRestController {
     private static final Logger logger = LoggerFactory.getLogger(RankingRestController.class);
     private final SessionService sessionService;
 
-
-    public RankingRestController(RankingService rankingService, SessionService sessionService/*, ApplicationContext applicationContext*/) {
+    public RankingRestController(RankingService rankingService, SessionService sessionService) {
         this.rankingService = rankingService;
-        //this.applicationContext = applicationContext;
         this.sessionService = sessionService;
     }
 
@@ -27,6 +31,7 @@ public class RankingRestController {
     public ResponseEntity<Object> saveTimer(@RequestBody UserUsageTimerVO vo) {
         String userId = sessionService.getSessionId();
         int result = 0 ;
+        logger.info(userId);
         if(!userId.equals("anonymousUser")) {
             result = rankingService.updateUserUsageTime(vo.getUserUsageTimer());
         }

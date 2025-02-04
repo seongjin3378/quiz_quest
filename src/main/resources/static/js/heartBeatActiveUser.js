@@ -14,7 +14,7 @@ function sendHeartbeat() {
     })
         .then(response => {
             console.log('Success:', response.data);
-            document.getElementById("currentUsers").textContent = response.data;
+            //document.getElementById("currentUsers").textContent = response.data;
         })
         .catch(error => {
             console.error('Error:', error);

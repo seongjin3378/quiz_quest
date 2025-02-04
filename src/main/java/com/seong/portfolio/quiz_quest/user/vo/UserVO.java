@@ -1,8 +1,6 @@
 package com.seong.portfolio.quiz_quest.user.vo;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
@@ -12,4 +10,6 @@ public class UserVO {
     private String password;
     private String email;
     private String role;
+    private int xp;
+    private int level;
 }

@@ -4,12 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>문제 풀이 화면</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/solving.css}">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/solving.css}">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
 </head>
+
 <body>
+<div class="error-message" id="errorMessage">
+    <span id="errorText"></span>
+    <button class="close-button" id="closeButton">&times;</button>
+</div>
+
+
+<div id="loadingOverlay" class="d-flex">
+<div id="progressBar" class="progress-bar" role="progressbar"></div>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">정답</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="experience-bar">
+                    <div class="experience-fill" id="experienceFill"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="nextQuestionBtn">다음 문제로 가기</button>
+                <button type="button" class="btn btn-info" onClick="readCommentsBtn()">댓글 읽기</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">문제 페이지로 가기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:include="fragments/commentModal :: commentModal"></footer>
+<script th:src="@{/js/commentModal.js}"></script>
+<!--<script>
+    let activeReplyListId = null; // 현재 활성화된 답글 목록 ID
+
+    function toggleReply(replyId) {
+        const replySection = document.getElementById(replyId);
+        replySection.style.display = replySection.style.display === 'none' ? 'block' : 'none';
+
+    }
+
+    function toggleReplies(replyListId) {
+        const replyList = document.getElementById(replyListId);
+        const replyListSection = document.getElementsByClassName("reply-list")[0];
+
+
+
+        // 현재 활성화된 답글 목록이 있다면 닫기
+        if (activeReplyListId && activeReplyListId !== replyListId) {
+            document.getElementById(activeReplyListId).style.display = 'none';
+        }else{
+            replyListSection.style.display = replyListSection.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // 답글 목록 토글
+        replyList.style.display = replyList.style.display === 'none' ? 'block' : 'none';
+
+        // 활성화된 답글 목록 ID 업데이트
+        activeReplyListId = replyList.style.display === 'block' ? replyListId : null;
+    }
+</script>-->
+
+
+
 <div id="header">
-    <h1>사용시간: <span id="usage-time">00:00</span></h1>
+    <h1>사용시간: <input type="hidden" id="usage-time" th:value="${userUsageTime}"> <span id="usage-time-view">00:00</span></h1>
 </div>
 <div id="main">
     <div id="left">
@@ -47,8 +118,8 @@
 
         <select id="combo-box">
             <option value="python">python</option>
-            <option value="option2">옵션 2</option>
-            <option value="option3">옵션 3</option>
+            <option value="java">java</option>
+            <option value="c++">c++</option>
         </select>
 
         <textarea id="code-area" placeholder="여기에 코드를 작성하세요..."></textarea>
@@ -70,6 +141,10 @@
     //글로벌 변수
     const problemIndexGlobal = [[${session.problemIndex}]];
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <script th:src="@{/js/solving.js}"></script>
+<script th:src="@{/js/heartBeatActiveUser.js}"></script>
 </body>
 </html>

@@ -9,6 +9,8 @@
         <result property="password" column="password" />
         <result property="email" column="email" />
         <result property="role" column="role" />
+        <result property="xp" column="xp"/>
+        <result property="level" column="level"/>
     </resultMap>
 
     <insert id="save" parameterType="com.seong.portfolio.quiz_quest.user.vo.UserVO">

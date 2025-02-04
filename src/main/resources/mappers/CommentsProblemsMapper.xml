@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.seong.portfolio.quiz_quest.comments.problem.repo.ProblemCommentsRepository">
+
+    <insert id="save" parameterType="com.seong.portfolio.quiz_quest.comments.problem.vo.ProblemCommentsVO" useGeneratedKeys="true" keyProperty="commentId">
+      <if test="parentCommentId == null">
+      INSERT INTO problem_comments(problem_id, comment_content, author)
+      VALUES (#{problemId}, #{commentContent}, #{author});
+      </if>
+      <if test="parentCommentId != null">
+          INSERT INTO problem_comments(problem_id, parent_comment_id, comment_content, author)
+          VALUES (#{problemId}, #{parentCommentId}, #{commentContent}, #{author});
+      </if>
+    </insert>
+
+    <select id="findByCommentId" parameterType="Map" resultMap="pcMap">
+        SELECT
+            pc.comment_id,
+            pc.comment_content,
+            pc.created_at,
+            pc.author,
+            u.level
+        FROM problem_comments pc
+        INNER JOIN users u ON pc.author = u.user_id
+        WHERE comment_id = #{commentId};
+    </select>
+
+    <select id="findAllByProblemId" parameterType="Map" resultMap="pcMap">
+
+        SELECT
+        pc.comment_id,
+        pc.comment_content,
+        pc.created_at,
+        pc.author,
+        u.level,
+        (SELECT COUNT(*) FROM problem_comments WHERE parent_comment_id = pc.comment_id) AS reply_count,
+        <!--커서 기반 페이지네이션을 이용할 경우 createdAt과 commentId를 문자열로  -->
+        CONCAT(
+                LPAD(POW(10, 10) - UNIX_TIMESTAMP(pc.created_at), 10, '0'),
+                LPAD(POW(10, 10) - pc.comment_id, 10, '0')
+                ) AS `cursor`
+
+        FROM problem_comments pc
+        INNER JOIN users u ON pc.author = u.user_id
+
+        WHERE
+            pc.comment_id IN (
+            SELECT comment_id
+            FROM problem_comments
+            WHERE parent_comment_id IS NULL
+            )
+        AND pc.problem_id = #{problemId}
+        <if test="cursor != null">
+            AND  CONCAT(LPAD(POW(10, 10) - UNIX_TIMESTAMP(pc.created_at), 10, '0'), LPAD(POW(10, 10) - pc.comment_id, 10, '0'))
+            <if test="sortType == 'DESC'">
+                <![CDATA[>]]>
+            </if>
+            <if test="sortType == 'ASC'">
+                <![CDATA[<]]>
+            </if>
+            #{cursor}
+        </if>
+        ORDER BY
+        <if test="sortType == 'DESC'">
+            pc.created_at DESC, pc.comment_id DESC
+        </if>
+        <if test="sortType == 'ASC'">
+            pc.created_at ASC, pc.comment_id ASC
+        </if>
+        LIMIT 10;
+    </select>
+
+    <select id="findAllByParentCommentId" parameterType="Map" resultMap="pcMap">
+        SELECT
+        pc.comment_id,
+        pc.comment_content,
+        pc.created_at,
+        pc.author,
+        u.level,
+
+        <!--커서 기반 페이지네이션을 이용할 경우 createdAt과 commentId를 문자열로  -->
+        CONCAT(
+        LPAD(POW(10, 10) - UNIX_TIMESTAMP(pc.created_at), 10, '0'),
+        LPAD(POW(10, 10) - pc.comment_id, 10, '0')
+        ) AS `cursor`
+
+        FROM problem_comments pc
+        INNER JOIN users u ON pc.author = u.user_id
+        WHERE
+        pc.parent_comment_id = #{parentCommentId}
+        <if test="cursor != null">
+            AND  CONCAT(LPAD(POW(10, 10) - UNIX_TIMESTAMP(pc.created_at), 10, '0'), LPAD(POW(10, 10) - pc.comment_id, 10, '0'))
+            <if test="sortType == 'DESC'">
+                <![CDATA[>]]>
+            </if>
+            <if test="sortType == 'ASC'">
+                <![CDATA[<]]>
+            </if>
+            #{cursor}
+        </if>
+        ORDER BY
+        <if test="sortType == 'DESC'">
+            pc.created_at DESC, pc.comment_id DESC
+        </if>
+        <if test="sortType == 'ASC'">
+            pc.created_at ASC, pc.comment_id ASC
+        </if>
+        LIMIT 10;
+    </select>
+
+
+    <resultMap id="rcMap" type="com.seong.portfolio.quiz_quest.comments.problem.vo.ReplyProblemCommentsVO">
+        <id property="replyCommentId" column="reply_comment_id"/> <!-- 댓글 ID -->
+        <result property="replyCommentContent" column="reply_comment_content"/> <!-- 부모 댓글 ID -->
+        <result property="replyCreatedAt" column="reply_created_at"/> <!-- 생성 시간 -->
+        <result property="replyAuthor" column="reply_author"/> <!-- 문제 ID -->
+        <result property="replyLevel" column="reply_level"/>
+    </resultMap>
+
+    <resultMap id="pcMap" type="com.seong.portfolio.quiz_quest.comments.problem.vo.ProblemCommentsVO">
+        <id property="commentId" column="comment_id"/> <!-- 댓글 ID -->
+        <result property="commentContent" column="comment_content"/> <!-- 댓글 내용 -->
+        <result property="createdAt" column="created_at"/> <!-- 생성 시간 -->
+        <result property="problemId" column="problem_id"/> <!-- 문제 ID -->
+        <result property="author" column="author"/>
+        <result property="level" column="level"/>
+        <result property="cursor" column="cursor"/>
+        <result property="replyCount" column="reply_count"/>
+        <!--<collection property="replyCommentList" resultMap="rcMap"/>--> <!-- 부모 댓글 ID -->
+    </resultMap>
+
+
+</mapper>

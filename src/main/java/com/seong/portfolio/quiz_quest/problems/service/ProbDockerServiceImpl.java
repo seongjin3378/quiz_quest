@@ -11,17 +11,20 @@ import com.seong.portfolio.quiz_quest.user.service.SessionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class ProblemServiceImpl implements ProblemService {
+public class ProbDockerServiceImpl implements ProbDockerService {
     private final SessionService sessionService;
     @Value("${user.upload.path}")
     private String uploadPath;
@@ -31,6 +34,7 @@ public class ProblemServiceImpl implements ProblemService {
     private final DockerEnvService dockerEnvService;
     private final DockerClient dockerClient;
     private final DockerExecService dockerExecService;
+    private final ProbValidateService probValidateService;
     @Override
     public void saveCode(MultipartFile file, String extension, String uuId) throws IOException {
         String fileName = file.getOriginalFilename();
@@ -43,6 +47,14 @@ public class ProblemServiceImpl implements ProblemService {
         File destinationFile = new File(uploadPath, uuId + extension);
         log.info("destination File: {}", destinationFile.getAbsolutePath());
         file.transferTo(destinationFile);
+
+        if(extension.equals(".java")) {
+            String content = new String(Files.readAllBytes(destinationFile.toPath()));
+            String modifiedContent = content.replaceAll("public class", "class ");
+            try (FileOutputStream fos = new FileOutputStream(destinationFile)) {
+                fos.write(modifiedContent.getBytes());
+            }
+        }
 
     }
 
@@ -99,18 +111,25 @@ public class ProblemServiceImpl implements ProblemService {
         );
         Process process = processBuilder.start();
         StringBuilder output = new StringBuilder();
+
         for(String input : exInputList)
         {
+
+
             dockerExecService.processInput(DockerVO.builder()
                     .exInput(input).build(), process);
             output.append(dockerExecService.readContainerOutput(process));
+
+
             process.destroy();
+
             process = processBuilder.start();
         }
         return output.toString();
     }
 
     @Override
+    @Async
     public void terminateContainer(CreateContainerResponse container, String imageName) {
         dockerExecService.terminate(container, imageName);
     }

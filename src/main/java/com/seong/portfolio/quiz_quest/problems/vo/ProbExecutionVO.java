@@ -20,5 +20,6 @@ public class ProbExecutionVO {
     private CreateContainerResponse container;
     private List<TestCasesVO> testCases;
     MultipartFile file;
+    private int timeLimit;
 
 }

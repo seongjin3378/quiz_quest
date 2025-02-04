@@ -19,7 +19,7 @@ ranking Type
 @Mapper
 public interface RankingRepository {
     int save(RankingVO vo);
-    void updateRankingScore(RankingVO vo);
+    int updateRankingScore(RankingVO vo);
     int findRankingScore(RankingVO vo);
     int saveOrUpdateRanking(RankingVO vo);
     List<RankingVO> findTopNByOrderByRankingScoreDesc(int n);

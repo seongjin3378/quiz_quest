@@ -1,6 +1,7 @@
 package com.seong.portfolio.quiz_quest.problems.vo;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.seong.portfolio.quiz_quest.problems.testCases.vo.TestCasesVO;
 import lombok.*;
 
@@ -21,5 +22,7 @@ public class ProblemVO  {
     private List<TestCasesVO> testCases;
     private int isVisible;
     private long memoryLimit;
-
+    private int timeLimit;
+    private int all_value;
+    private int index;
 }
