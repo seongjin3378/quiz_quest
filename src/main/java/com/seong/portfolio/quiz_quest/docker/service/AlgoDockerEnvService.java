@@ -15,21 +15,18 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class AlgoDockerEnvService implements DockerEnvService {
     private final DockerClient dockerClient;
-    private final SessionService sessionService;
 
 
     @Override
     public File createDockerFile(DockerVO dockerVO) {
-        String dockerFileContent = "FROM "+ dockerVO.getCompiler() +"\n" +
-                "WORKDIR /app\n"+
-                "COPY "+dockerVO.getName() +" .\n" +
-                "CMD [\""+dockerVO.getLanguage()+"\", \""+dockerVO.getName()+"\"]";
+        String dockerFileContent = getDockerFileContentAsString(dockerVO);
 
         String path = dockerVO.getPath();
         File dockerFile = new File(path);
@@ -42,6 +39,27 @@ public class AlgoDockerEnvService implements DockerEnvService {
             throw new RuntimeException("Failed to create Docker file");
 
         }
+    }
+
+    private static String getDockerFileContentAsString(DockerVO dockerVO) {
+        String CMD_AND_RUN;
+        if(dockerVO.getLanguage().equals("c++")) {
+            CMD_AND_RUN = "RUN g++ -o my_application "+ dockerVO.getName()+"\n"+
+                  "CMD [\"./my_application\"]";
+        }
+        else if(dockerVO.getLanguage().equals("java")) {
+            String[] parts = dockerVO.getName().split("\\.");
+            CMD_AND_RUN = "RUN javac "+ dockerVO.getName()+"\n"+
+                    "CMD [\"java\", \"Main\"]";
+        }
+        else{ //python
+            CMD_AND_RUN = "CMD [\"" + dockerVO.getLanguage()+"\", \""+ dockerVO.getName()+"\"]";
+        }
+
+        return "FROM " + dockerVO.getCompiler() + "\n" +
+                "WORKDIR /app\n" +
+                "COPY " + dockerVO.getName() + " .\n" +
+                CMD_AND_RUN;
     }
 
     @Override

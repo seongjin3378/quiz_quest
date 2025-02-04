@@ -13,11 +13,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.List;
+import java.util.Set;
 
 @RequiredArgsConstructor
 public class UserUsageTimeJob implements Job {
     private final RankingRepository rankingRepository;
-    private final SessionService sessionService;
     private final RedisTemplate<String, Object> redisTemplate;
     private final UserRepository userRepository;
     private static final Logger logger = LoggerFactory.getLogger(UserUsageTimeJob.class);
@@ -26,9 +26,19 @@ public class UserUsageTimeJob implements Job {
 
         logger.info("잡 실행");
         List<String> userIdList = userRepository.findAllUserId();
+        Set<String> keys = redisTemplate.keys("JSESSIONID:*");
+
+        /*
+         접속중인 사용자는 db 접근 제외,
+         사용중인 유저가 db 접근을 하는 로직이 있어, db락으로 충돌 가능성이 있음
+        */
+
         for (String userId : userIdList) {
-            RankingVO vo = RankingVO.builder().userId(userId).rankingType("usage_time").build();
-            rankingRepository.saveOrUpdateRanking(vo);
+            if(!keys.contains("JSESSIONID:" + userId))
+            {
+                RankingVO vo = RankingVO.builder().userId(userId).rankingType("usage_time").build();
+                rankingRepository.saveOrUpdateRanking(vo);
+            }
         }
 
 

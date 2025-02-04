@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public interface ProblemService {
+public interface ProbDockerService {
     void saveCode(MultipartFile file, String extension, String uuId) throws IOException;
 
     File execCreateDockerFile(String language, String uuid);

@@ -25,12 +25,13 @@ public class RankingServiceImpl implements RankingService {
     public int updateUserUsageTime(int rankingScore) {
         String userId = sessionService.getSessionId();
         Boolean isUserIdExists = redisTemplate.hasKey("JSESSIONID:" + userId);
-        logger.info("userId: {}", userId);
+        logger.info("userId: {}, isUserIdExists: {}", userId, isUserIdExists);
+
 
         if (isUserIdExists && rankingScore > 0) {
             logger.info("함수 실행중");
             RankingVO vo = RankingVO.builder().userId(userId).rankingType("usage_time").build();
-            int prevRankingScore = rankingRepository.findRankingScore(vo);
+            int prevRankingScore = findRankingScore(vo);
             if(prevRankingScore + 60 == rankingScore) {
                 vo.setRankingScore(rankingScore); // 분으로 저장할지 1.2 시간 처럼 저장할지 생각 중
                 logger.info("rankingScore: {}", rankingScore);
@@ -43,12 +44,20 @@ public class RankingServiceImpl implements RankingService {
             }
 
         }
+        logger.info("0 출력");
         return 0;
     }
 
     @Override
     public int findRankingScore(RankingVO vo) {
-        return rankingRepository.findRankingScore(vo);
+        int rankingScore = rankingRepository.findRankingScore(vo);
+        String userId = sessionService.getSessionId();
+
+        if(rankingScore == -1) { // 랭킹 스코어를 찾지 못할 시 DB 초기화
+            initializeRankingDB(UserVO.builder().userId(userId).build());
+        }
+        rankingScore = rankingRepository.findRankingScore(vo);
+        return rankingScore;
     }
 
     @Override

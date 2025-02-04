@@ -13,10 +13,12 @@
         <result property="lastAccessDate" column="last_access_date"/>
     </resultMap>
 
+
     <insert id="save" parameterType="com.seong.portfolio.quiz_quest.rankings.vo.RankingVO">
         INSERT INTO ranking(ranking_type, ranking_rank, user_id, ranking_score)
         VALUES (#{rankingType}, #{rankingRank}, #{userId}, #{rankingScore});
     </insert>
+
 
     <update id="updateRankingScore" parameterType="com.seong.portfolio.quiz_quest.rankings.vo.RankingVO">
         UPDATE ranking r1
@@ -33,18 +35,24 @@
           AND r1.ranking_type = #{rankingType};
     </update>
 
-    <select id="findRankingScore" parameterType="com.seong.portfolio.quiz_quest.rankings.vo.RankingVO">
-        SELECT r1.ranking_score
-        FROM ranking r1
-                 JOIN (
-            SELECT last_access_date
-            FROM ranking
-            WHERE user_id = #{userId}
-              AND ranking_type = #{rankingType}
-            ORDER BY last_access_date DESC
-                LIMIT 1
-        ) r2 ON r1.last_access_date = r2.last_access_date
-        WHERE r1.ranking_type = #{rankingType} and r1.user_id = #{userId};
+    <select id="findRankingScore" parameterType="com.seong.portfolio.quiz_quest.rankings.vo.RankingVO" resultType="Integer">
+
+        SELECT COALESCE((
+                            SELECT r1.ranking_score
+                            FROM ranking r1
+                                     JOIN (
+                                SELECT last_access_date
+                                FROM ranking
+                                WHERE user_id = #{userId}
+                                  AND ranking_type = #{rankingType}
+                                ORDER BY last_access_date DESC
+                                    LIMIT 1
+                            ) r2 ON r1.last_access_date = r2.last_access_date
+                            WHERE r1.ranking_type = #{rankingType}
+                                      AND r1.user_id = #{userId}
+                                      AND WEEK(r1.last_access_date, 1) = WEEK(CURDATE(), 1) <!-- 월요일을 시작 주로 설정-->
+                                      AND YEAR(r1.last_access_date) = YEAR(CURDATE())
+    ), -1) AS rankingScore;
     </select>
 
     <insert id="saveOrUpdateRanking" parameterType="com.seong.portfolio.quiz_quest.rankings.vo.RankingVO" >

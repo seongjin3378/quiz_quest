@@ -9,16 +9,21 @@ import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient;
 import com.github.dockerjava.transport.DockerHttpClient;
 
+import com.seong.portfolio.quiz_quest.comments.problem.repo.ProblemCommentsRepository;
+import com.seong.portfolio.quiz_quest.comments.problem.vo.ProblemCommentsVO;
 import com.seong.portfolio.quiz_quest.docker.service.DockerEnvService;
 import com.seong.portfolio.quiz_quest.docker.service.DockerExecService;
 import com.seong.portfolio.quiz_quest.docker.vo.DockerEnumVO;
 import com.seong.portfolio.quiz_quest.docker.vo.DockerVO;
+import com.seong.portfolio.quiz_quest.problems.enums.ProblemType;
 import com.seong.portfolio.quiz_quest.problems.repo.ProblemRepository;
-import com.seong.portfolio.quiz_quest.problems.service.ProblemService;
+import com.seong.portfolio.quiz_quest.problems.service.ProbDockerService;
 import com.seong.portfolio.quiz_quest.problems.testCases.vo.TestCasesVO;
 import com.seong.portfolio.quiz_quest.problems.vo.ProblemVO;
 import com.seong.portfolio.quiz_quest.rankings.repo.RankingRepository;
 import com.seong.portfolio.quiz_quest.user.service.SessionService;
+import com.seong.portfolio.quiz_quest.utils.pagination.reflex.PaginationRepoReflex;
+import com.seong.portfolio.quiz_quest.utils.pagination.vo.PaginationVO;
 import org.junit.jupiter.api.Test;
 
 import org.slf4j.Logger;
@@ -29,6 +34,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,7 +72,6 @@ class QuizQuestApplicationTests {
                 .build();
     }
 
-
     @Autowired
     private SessionService sessionService;
     @Autowired
@@ -84,15 +89,79 @@ class QuizQuestApplicationTests {
     private final Logger logger = LoggerFactory.getLogger(QuizQuestApplicationTests.class);
 
     @Autowired
-    private ProblemService problemService;
+    private ProbDockerService probDockerService;
 
+    @Autowired
+    private ProblemCommentsRepository problemCommentsRepository;
+
+
+    @Autowired
+    private PaginationRepoReflex paginationRepoReflex;
+
+
+    public void DockerMeasureTest()
+    {
+        // Docker 명령어 설정
+        String imageName = "<image_name>";  // 사용할 Docker 이미지 이름
+        String command = "<your_command>";    // 실행할 명령어
+
+        // ProcessBuilder 객체 생성
+        ProcessBuilder processBuilder = new ProcessBuilder("docker", "run", "--rm", imageName, "/bin/sh", "-c", "time " + command);
+
+        try {
+            // 프로세스 시작
+            Process process = processBuilder.start();
+
+            // 프로세스의 출력 읽기
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+
+            // 프로세스의 오류 출력 읽기
+            BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            while ((line = errorReader.readLine()) != null) {
+                System.err.println(line);
+            }
+
+            // 프로세스 종료 대기
+            int exitCode = process.waitFor();
+            System.out.println("Exit Code: " + exitCode);
+
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
     @Test
+    public void InnerJoinTest()
+    {
+        List<ProblemCommentsVO> problemCommentsVOList = problemCommentsRepository.findAllByProblemId(18L, "ASC", "82628991489999999999");
+
+// 각 요소를 출력 , "DESC", " -2024011719999999999"
+        for (ProblemCommentsVO comment : problemCommentsVOList) {
+            logger.info("{} {}", comment.getCursor(), comment.getCommentId());
+        }
+
+    }
+    public void PaginationRepositoryTest() throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+
+        PaginationVO<ProblemRepository, String> paginationVO = new PaginationVO<>();
+        paginationVO.setRepository(problemRepository);
+        paginationVO.setIndex(0);
+        paginationVO.setColumn("problem_type");
+        paginationVO.setValue(ProblemType.getDisplayNameByIndex(1));
+        paginationVO.setValueOfOnePage(100);
+        logger.info("{}", paginationRepoReflex.count(paginationVO));
+    }
+
+
     public void ProblemServiceTest() throws IOException {
         UUID uuid = UUID.randomUUID();
         String uuidString = uuid.toString();
-        File dockerFile = problemService.execCreateDockerFile("python", uuidString);
-        problemService.execBuildImage(uuidString, dockerFile);
-        CreateContainerResponse container = problemService.execCreateContainer(uuidString, 1_000_000_000L, 512 * 1024 * 1024, "python");
+        File dockerFile = probDockerService.execCreateDockerFile("python", uuidString);
+        probDockerService.execBuildImage(uuidString, dockerFile);
+        CreateContainerResponse container = probDockerService.execCreateContainer(uuidString, 1_000_000_000L, 512 * 1024 * 1024, "python");
 
         ProblemVO problemVO = problemRepository.findByProblemId(ProblemVO.builder().problemId(18L).isVisible(-1).build());
         List<TestCasesVO> testCases = problemVO.getTestCases();
@@ -101,9 +170,9 @@ class QuizQuestApplicationTests {
         {
             testInputs.add(testCase.getInputValue()+"\n");
         }
-        String result = problemService.executeContainer(container, "python", uuidString, testInputs);
+        String result = probDockerService.executeContainer(container, "python", uuidString, testInputs);
         System.out.println(result);
-        problemService.terminateContainer(container, uuidString);
+        probDockerService.terminateContainer(container, uuidString);
     }
 
 
@@ -116,7 +185,7 @@ class QuizQuestApplicationTests {
     {
 
 
-        List<ProblemVO> problemsVOList = problemRepository.findAll();
+        List<ProblemVO> problemsVOList = problemRepository.findAll(1);
         for (ProblemVO problemsVO : problemsVOList) {
             logger.info(problemsVO.getProblemTitle());
         }
