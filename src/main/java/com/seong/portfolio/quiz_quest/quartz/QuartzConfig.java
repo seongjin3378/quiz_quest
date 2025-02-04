@@ -27,7 +27,7 @@ public class QuartzConfig {
                 .forJob(UserUsageTimeJobDetail())
                 .withIdentity("UserUsageTimeJobTrigger")
                 .withSchedule(CronScheduleBuilder.cronSchedule(cronExpression))
-                .startNow() // 테스트를 위해 즉시 실행
+                .startNow()
                 .build();
     }
 }

@@ -6,7 +6,29 @@
 
     <select id="findAll" resultMap="problemMap">
         SELECT problem_id, problem_title, problem_type
-        FROM problems;
+        FROM problems
+        ORDER BY problem_id ASC
+            LIMIT 100 OFFSET #{value};
+
+    </select>
+
+    <select id="findAllByColumnAndValue" parameterType="map" resultMap="problemMap">
+        SELECT problem_id, problem_title, problem_type
+        FROM problems
+        WHERE ${column} = #{value}
+        ORDER BY problem_id ASC
+            LIMIT 10 OFFSET #{index};
+
+    </select>
+
+    <select id="count" parameterType="map" resultType="Integer">
+        SELECT COUNT(*)
+        FROM problems
+        <where>
+            <if test="value != -1 ">
+                ${columnValue} = #{value}
+            </if>
+        </where>
     </select>
 
     <select id="findByProblemId" parameterType="com.seong.portfolio.quiz_quest.problems.vo.ProblemVO" resultMap="problemMap">
@@ -16,6 +38,7 @@
             p.problem_type,
             p.problem_content,
             p.memory_limit,
+            p.time_limit,
             tc.test_case_id,
             tc.input_value,
             tc.output_value
@@ -42,6 +65,7 @@
         <result property="problemType" column="problem_type"/>
         <result property="problemContent" column="problem_content"/>
         <result property="memoryLimit" column="memory_limit"/>
+        <result property="timeLimit" column="time_limit"/>
         <collection property="testCases" resultMap="testCasesResultMap"/> <!--1:n을 위해 Collection을 이용 -->
     </resultMap>
 

@@ -33,6 +33,5 @@ public interface DockerExecService {
      ProcessBuilder create(DockerVO dockerVO) throws IOException;
      void processInput(DockerVO dockerVO, Process process);
      String readContainerOutput(Process process);
-
      void terminate(CreateContainerResponse container, String imageName);
 }

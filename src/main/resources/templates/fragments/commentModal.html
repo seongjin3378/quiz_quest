@@ -1,0 +1,84 @@
+<div th:fragment="commentModal">
+  <div class="modal fade" id="commentsModal" tabindex="-1" aria-labelledby="commentsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg"> <!-- 모달 크기 조정 -->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="commentsModalLabel">댓글</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body d-flex"> <!-- d-flex 추가 -->
+
+          <div class="comment-section" style="flex: 1; max-height: 450px; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; -ms-overflow-style: none;">
+            <div class="comment">
+            <textarea class="form-control mt-2" placeholder="답글을 입력하세요..."></textarea>
+            <button type="button" class="btn btn-primary mt-2" onClick="requestWriteComment(this)">답글 작성</button>
+            </div>
+            <!-- 댓글 영역 -->
+            <div th:each="item, iterStat : ${problemComments}" class="comment">
+              <div class="comment-header">
+                <span class="comment-author" th:text="'작성자:' + ${item.author}"></span>
+                <span class="comment-date" th:text="'작성일:' + ${item.createdAt}"></span>
+                <span class="comment-level" th:text="'LEVEL ' + ${item.level}"></span>
+              </div>
+              <p class="comment-body" th:text="${item.commentContent}"></p>
+              <div class="d-flex" style="gap: 5px; margin-top: 10px;">
+                <button type="button" class="btn btn-link reply-btn" th:onclick="'toggleReply('+ '\'reply'+ ${iterStat.index}+ '\')'">답글 달기</button>
+                <button type="button" class="btn btn-link more-btn"
+                        th:data-comment-id="${item.commentId}"
+                        th:data-replies-id= "'replies' + ${iterStat.index}"
+                        onclick="toggleReplies(this.dataset.repliesId, this.dataset.commentId)"
+                        th:text="'답글 보기('+ ${item.replyCount} +')'"></button>
+                <button type="button" class="btn btn-link report-btn">신고</button>
+              </div>
+              <div class="reply-section" th:id="'reply' + ${iterStat.index}" style="display:none;">
+                <textarea class="form-control mt-2" placeholder="답글을 입력하세요..."></textarea>
+
+                <button type="button" class="btn btn-primary mt-2"
+                        th:data-comment-id="${item.commentId}"
+                        onclick="requestWriteReply(this.dataset.commentId, 'none', this)">
+                  답글 작성
+                </button>
+              </div>
+
+            </div>
+
+          </div>
+          <input type="hidden" id="cursor" th:value="${cursor}"/>
+          <!-- 답글 목록 영역 -->
+          <div class="reply-list" style="display: none; flex: 1; margin-left: 20px; max-height: 400px; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; -ms-overflow-style: none;">
+            <h6>답글 목록</h6>
+<!--            <div th:each="item, iterStat : ${problemComments}">
+              <div class="reply" th:id="'replies'+${iterStat.index}" style="display:none;">
+                <div th:if="${item.commentId != item2.replyCommentId}" th:each="item2, iterStat2 : ${item.replyCommentList}" class="comment">
+                  <div class="comment-header">
+                    <span class="comment-author" th:text="'작성자:' + ${item2.replyAuthor}"></span>
+                    <span class="comment-date" th:text="'작성일:' + ${item2.replyCreatedAt}"></span>
+                    <span class="comment-level" th:text="'LEVEL ' + ${item2.replyLevel}"></span>
+                  </div>
+                  <p class="comment-body" th:utext="${item2.replyCommentContent}"></p>
+                  <div class="d-flex" style="gap: 5px; margin-top: 10px;">
+                    <button type="button" class="btn btn-link reply-btn" th:onclick="'toggleReply('+ '\'replyReply'+${iterStat.index}+'-'+ ${iterStat2.index}+ '\')'">답글 달기</button>
+                    <button type="button" class="btn btn-link report-btn">신고</button>
+                  </div>
+                  <div class="reply-section" th:id="'replyReply'+${iterStat.index}+'-' + ${iterStat2.index}" style="display:none;">
+                    <textarea class="form-control mt-2" placeholder="답글을 입력하세요..."></textarea>
+                    <button type="button" class="btn btn-primary mt-2"
+                            th:data-comment-id="${item.commentId}"
+                            th:data-reply-author="${item2.replyAuthor}"
+                            onclick="requestWriteReply(this.dataset.commentId, this.dataset.replyAuthor, this)">
+                      답글 작성
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>-->
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

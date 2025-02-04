@@ -26,7 +26,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.IF_
 @Configuration
 @EnableWebSecurity()
 @RequiredArgsConstructor
-public class LoginSecurityConfig {
+public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
     private final SessionService sessionService;
@@ -48,7 +48,7 @@ public class LoginSecurityConfig {
                 )
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/loginProc", "/join", "/joinProc", "/api/v1/users/**", "/api/v1/rankings/**", "/logoutProc", "/favicon.ico", "/api/v1/problems/**").permitAll()
-                        .requestMatchers("/", "/p/{number}", "/p").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers("/", "/p/{index}/s/{sortType}", "/p/n/{index}").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/login").anonymous()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .requestMatchers("/css/**", "/js/**").permitAll()
