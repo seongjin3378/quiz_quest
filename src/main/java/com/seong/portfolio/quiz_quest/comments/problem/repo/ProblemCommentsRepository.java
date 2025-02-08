@@ -10,6 +10,6 @@ import java.util.List;
 public interface ProblemCommentsRepository {
     long save(ProblemCommentsVO problemCommentsVO);
     List<ProblemCommentsVO> findAllByProblemId(@Param("problemId") long problemId, @Param("sortType") String sortType, @Param("cursor") String cursor);
-    ProblemCommentsVO findByCommentId(@Param("commentId") long commentId);
+    List<ProblemCommentsVO>  findAllByCommentIdAndProblemId(@Param("ProblemCommentsVO")ProblemCommentsVO problemCommentsVO, @Param("largestCommentId") long largestCommentId);
     List<ProblemCommentsVO> findAllByParentCommentId(@Param("parentCommentId") long parentCommentId, @Param("sortType") String sortType, @Param("cursor") String cursor);
 }

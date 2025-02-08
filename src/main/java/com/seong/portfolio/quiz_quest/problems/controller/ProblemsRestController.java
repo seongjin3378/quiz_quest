@@ -2,6 +2,7 @@ package com.seong.portfolio.quiz_quest.problems.controller;
 
 
 import com.seong.portfolio.quiz_quest.comments.problem.repo.ProblemCommentsRepository;
+import com.seong.portfolio.quiz_quest.comments.problem.service.ProblemCommentService;
 import com.seong.portfolio.quiz_quest.comments.problem.vo.ProblemCommentsVO;
 import com.seong.portfolio.quiz_quest.comments.problem.vo.ReplyProblemCommentsVO;
 import com.seong.portfolio.quiz_quest.problems.service.ProbDockerExecutionService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/problems")
@@ -23,7 +25,7 @@ public class ProblemsRestController {
 
     private final ProbDockerExecutionService probDockerExecutionService;
     private final ProblemCommentsRepository problemCommentsRepository;
-    private final SessionService sessionService;
+    private final ProblemCommentService problemCommentService;
 
     @PostMapping("/{problemId}/{language}/upload-and-validate")
     public ResponseEntity<String> saveProblemAndValidate(@PathVariable long problemId, @PathVariable String language, @RequestPart MultipartFile file) {
@@ -48,20 +50,19 @@ public class ProblemsRestController {
 
         return ResponseEntity.ok(problemCommentsVO);
     }
-    @PostMapping("/comments")
-    public ResponseEntity<ProblemCommentsVO> saveProblemComment(@RequestBody ProblemCommentsVO problemCommentsVO) {
 
-        problemCommentsVO.setAuthor(sessionService.getSessionId());
-        long commentId = problemCommentsRepository.save(problemCommentsVO);
-        ProblemCommentsVO result = problemCommentsRepository.findByCommentId(commentId);
 
+    @PostMapping("/{sortType}/comments")
+    public ResponseEntity<List<ProblemCommentsVO>> saveAndReturnProblemComments(@RequestBody ProblemCommentsVO problemCommentsVO, @PathVariable String sortType) {
+
+        List<ProblemCommentsVO> result = problemCommentService.saveAndReturnProblemComments(problemCommentsVO, sortType);
         return ResponseEntity.ok(result);
     }
     @GetMapping("/{parentCommentId}/{cursor}/{sortType}/reply-comments")
     public ResponseEntity<List<ProblemCommentsVO>> getReplyProblemComments(@PathVariable long parentCommentId, @PathVariable String cursor, @PathVariable String sortType) {
         List<ProblemCommentsVO> replyCommentsVO;
         if(cursor.equals("0")) {
-            replyCommentsVO = problemCommentsRepository.findAllByParentCommentId(parentCommentId, sortType, null);
+            replyCommentsVO = problemCommentsRepository.findAllByParentCommentId(parentCommentId, sortType, "0");
         }else{
             replyCommentsVO = problemCommentsRepository.findAllByParentCommentId(parentCommentId, sortType, cursor);
         }

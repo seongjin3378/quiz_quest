@@ -1,5 +1,6 @@
 package com.seong.portfolio.quiz_quest.settings.mybatis;
 
+import com.zaxxer.hikari.HikariDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -21,10 +22,10 @@ public class MyBatisConfig {
     String mPath;
 
     @Bean(name="dataSource")
-    @ConfigurationProperties(prefix = "spring.datasource")
+    @ConfigurationProperties(prefix = "spring.datasource.hikari")
     public DataSource DataSource()
     {
-        return DataSourceBuilder.create().build();
+        return DataSourceBuilder.create().type(HikariDataSource.class).build();
     }
 
     @Bean(name="SqlSessionFactory")

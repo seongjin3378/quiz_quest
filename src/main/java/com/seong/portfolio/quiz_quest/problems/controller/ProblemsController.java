@@ -49,7 +49,7 @@ public class ProblemsController {
         model.addAttribute("userUsageTime", userUsageTime);
 
         ProblemVO problemVO = problemRepository.findByProblemId(ProblemVO.builder().problemId(index).isVisible(1).build());
-        List<ProblemCommentsVO> problemCommentsVO = problemCommentsRepository.findAllByProblemId(index, "DESC", null);
+        List<ProblemCommentsVO> problemCommentsVO = problemCommentsRepository.findAllByProblemId(index, "DESC", "0");
         int lastIndex = !problemCommentsVO.isEmpty() ? problemCommentsVO.size() - 1 : 0;
         String cursor = lastIndex != 0 ? problemCommentsVO.get(lastIndex).getCursor() : "0";
         model.addAttribute("problem", problemVO);

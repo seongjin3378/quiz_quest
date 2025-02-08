@@ -13,15 +13,31 @@
     </select>
 
     <select id="findAllByColumnAndValue" parameterType="map" resultMap="problemMap">
-        SELECT problem_id, problem_title, problem_type
-        FROM problems
-        WHERE ${column} = #{value}
-        ORDER BY problem_id ASC
+        <!-- ${}로 인한 -->
+        <if test="column == 'problemId'
+                                or column == 'problemTitle'
+                                or column == 'problemType'
+                                or column == 'problemContent'
+                                or column == 'memoryLimit'
+                                or column == 'timeLimit'">
+            SELECT problem_id, problem_title, problem_type
+            FROM problems
+            WHERE
+            ${column} = #{value}
+
+            ORDER BY problem_id ASC
             LIMIT 10 OFFSET #{index};
+        </if>
 
     </select>
 
     <select id="count" parameterType="map" resultType="Integer">
+        <if test="column == 'problemId'
+                                or column == 'problemTitle'
+                                or column == 'problemType'
+                                or column == 'problemContent'
+                                or column == 'memoryLimit'
+                                or column == 'timeLimit'">
         SELECT COUNT(*)
         FROM problems
         <where>
@@ -29,6 +45,7 @@
                 ${columnValue} = #{value}
             </if>
         </where>
+        </if>
     </select>
 
     <select id="findByProblemId" parameterType="com.seong.portfolio.quiz_quest.problems.vo.ProblemVO" resultMap="problemMap">

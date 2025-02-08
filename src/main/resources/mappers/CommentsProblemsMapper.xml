@@ -15,7 +15,7 @@
       </if>
     </insert>
 
-    <select id="findByCommentId" parameterType="Map" resultMap="pcMap">
+    <select id="findAllByCommentIdAndProblemId" parameterType="Map" resultMap="pcMap" >
         SELECT
             pc.comment_id,
             pc.comment_content,
@@ -24,7 +24,8 @@
             u.level
         FROM problem_comments pc
         INNER JOIN users u ON pc.author = u.user_id
-        WHERE comment_id = #{commentId};
+        WHERE comment_id > #{largestCommentId}  AND problem_id = #{ProblemCommentsVO.problemId} AND parent_comment_id IS NULL
+        ;
     </select>
 
     <select id="findAllByProblemId" parameterType="Map" resultMap="pcMap">
@@ -52,7 +53,7 @@
             WHERE parent_comment_id IS NULL
             )
         AND pc.problem_id = #{problemId}
-        <if test="cursor != null">
+        <if test="cursor != 0">
             AND  CONCAT(LPAD(POW(10, 10) - UNIX_TIMESTAMP(pc.created_at), 10, '0'), LPAD(POW(10, 10) - pc.comment_id, 10, '0'))
             <if test="sortType == 'DESC'">
                 <![CDATA[>]]>
@@ -90,7 +91,7 @@
         INNER JOIN users u ON pc.author = u.user_id
         WHERE
         pc.parent_comment_id = #{parentCommentId}
-        <if test="cursor != null">
+        <if test="cursor != 0">
             AND  CONCAT(LPAD(POW(10, 10) - UNIX_TIMESTAMP(pc.created_at), 10, '0'), LPAD(POW(10, 10) - pc.comment_id, 10, '0'))
             <if test="sortType == 'DESC'">
                 <![CDATA[>]]>

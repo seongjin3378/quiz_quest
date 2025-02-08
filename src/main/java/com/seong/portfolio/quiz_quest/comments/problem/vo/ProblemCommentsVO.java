@@ -1,9 +1,6 @@
 package com.seong.portfolio.quiz_quest.comments.problem.vo;
 
-import com.seong.portfolio.quiz_quest.user.vo.UserVO;
 import lombok.*;
-
-import java.sql.Timestamp;
 import java.util.List;
 
 
@@ -23,5 +20,4 @@ public class ProblemCommentsVO {
     private List<ReplyProblemCommentsVO> replyCommentList;    // 부모 댓글 ID (null 가능)
     private Long parentCommentId;
     private int replyCount;
-
 }

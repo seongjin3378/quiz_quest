@@ -27,7 +27,8 @@ dependencies {
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	runtimeOnly 'com.mysql:mysql-connector-j'
+	/*runtimeOnly 'com.mysql:mysql-connector-j'*/
+	implementation 'mysql:mysql-connector-java:8.0.33'
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.9.0' // 최신 버전
 	implementation 'org.springframework.boot:spring-boot-starter-logging'
 	implementation 'org.projectlombok:lombok:1.18.24' // Lombok 의존성 추가

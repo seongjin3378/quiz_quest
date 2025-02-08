@@ -5,8 +5,17 @@
         <div class="modal-header">
           <h5 class="modal-title" id="commentsModalLabel">댓글</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <div class="dropdown ms-auto">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="sortButton" data-bs-toggle="dropdown" aria-expanded="false">
+              최신순
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="sortButton">
+              <li><a class="dropdown-item" href="#" id="sortLatest">최신순</a></li>
+              <li><a class="dropdown-item" href="#" id="sortOldest">오래된 순</a></li>
+            </ul>
+          </div>
         </div>
-        <div class="modal-body d-flex"> <!-- d-flex 추가 -->
+        <div class="modal-body d-flex" id="modal-body"> <!-- d-flex 추가 -->
 
           <div class="comment-section" style="flex: 1; max-height: 450px; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; -ms-overflow-style: none;">
             <div class="comment">
@@ -72,6 +81,7 @@
                 </div>
               </div>
             </div>-->
+
           </div>
 
         </div>

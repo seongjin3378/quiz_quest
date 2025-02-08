@@ -188,27 +188,3 @@ function readCommentsBtn()
     const commentsModal = new bootstrap.Modal(document.getElementById('commentsModal'));
     commentsModal.show();
 }
-
-document.addEventListener("DOMContentLoaded", function() {
-    let activeReplyListId = null; // 현재 활성화된 답글 목록 ID
-
-    function toggleReply(replyId) {
-        const replySection = document.getElementById(replyId);
-        replySection.style.display = replySection.style.display === 'none' ? 'block' : 'none';
-    }
-
-    function toggleReplies(replyListId) {
-        const replyList = document.getElementById(replyListId);
-
-        // 현재 활성화된 답글 목록이 있다면 닫기
-        if (activeReplyListId && activeReplyListId !== replyListId) {
-            document.getElementById(activeReplyListId).style.display = 'none';
-        }
-
-        // 답글 목록 토글
-        replyList.style.display = replyList.style.display === 'none' ? 'block' : 'none';
-
-        // 활성화된 답글 목록 ID 업데이트
-        activeReplyListId = replyList.style.display === 'block' ? replyListId : null;
-    }
-});
