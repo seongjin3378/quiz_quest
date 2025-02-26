@@ -30,10 +30,11 @@ public class CustomLogOutSuccessHandler implements LogoutSuccessHandler {
         logger.info("remove userId: {}", userId);
         sessionRegistry.removeSessionInformation(userId);
         SecurityContextHolder.getContext().setAuthentication(null); //인증 권한을 해제
+        expireCookie(request, response);
         response.sendRedirect("/login"); // 로그인 페이지로 이동
     }
 
-    /*
+
     private void expireCookie(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         HttpSession session = request.getSession(false);
@@ -41,15 +42,14 @@ public class CustomLogOutSuccessHandler implements LogoutSuccessHandler {
             session.invalidate();
         }
         // 쿠키 삭제
-        Cookie cookie = new Cookie("JSESSIONID", null);
+        Cookie cookie = new Cookie("refresh_token", null);
         cookie.setPath("/"); // 쿠키의 경로 설정
         cookie.setMaxAge(0); // 쿠키 만료 설정
         response.addCookie(cookie);
-        response.sendRedirect("/login");
-        logger.info("로그아웃 성공");
+        logger.info("쿠키 삭제");
     }
 
-     */
+    
 
 
 

@@ -1,19 +1,14 @@
 package com.seong.portfolio.quiz_quest.user.controller;
 
 
-import com.seong.portfolio.quiz_quest.user.service.SessionService;
-import com.seong.portfolio.quiz_quest.user.service.UserService;
-import jakarta.servlet.http.HttpSession;
+import com.seong.portfolio.quiz_quest.user.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.session.SessionInformation;
-import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Set;
 
 

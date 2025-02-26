@@ -167,7 +167,11 @@ function requestWriteComment(buttonElement) {
     const commentSection = document.querySelector('.comment-section');
     const secondComment = commentSection.children[1];
 
-    const largestCommentId = secondComment.querySelector('[data-comment-id]').dataset['commentId'];
+    let largestCommentId = 0;
+    if (secondComment) {
+        largestCommentId = secondComment.querySelector('[data-comment-id]').dataset['commentId'];
+    }
+
     console.log(largestCommentId);
 
     let comment;

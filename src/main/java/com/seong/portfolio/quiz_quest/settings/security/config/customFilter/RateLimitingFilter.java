@@ -1,6 +1,6 @@
 package com.seong.portfolio.quiz_quest.settings.security.config.customFilter;
 
-import com.seong.portfolio.quiz_quest.user.service.SessionService;
+import com.seong.portfolio.quiz_quest.user.service.session.SessionService;
 import io.github.bucket4j.Bucket;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import net.jodah.expiringmap.ExpiringMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -32,6 +33,7 @@ public class RateLimitingFilter extends OncePerRequestFilter {
 
     private final static Logger logger = LoggerFactory.getLogger(RateLimitingFilter.class);
 
+    @Autowired
     public RateLimitingFilter(ApplicationContext applicationContext, SessionService sessionService) {
         this.applicationContext = applicationContext;
         this.sessionService = sessionService;

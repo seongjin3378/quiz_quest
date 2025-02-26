@@ -10,6 +10,7 @@ public class UserVO {
     private String password;
     private String email;
     private String role;
-    private int xp;
-    private int level;
+    private Integer xp;
+    private Integer level;
+    private String refreshToken;
 }

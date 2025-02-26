@@ -11,6 +11,7 @@
         <result property="role" column="role" />
         <result property="xp" column="xp"/>
         <result property="level" column="level"/>
+        <result property="refreshToken" column="refresh_token"/>
     </resultMap>
 
     <insert id="save" parameterType="com.seong.portfolio.quiz_quest.user.vo.UserVO">
@@ -32,6 +33,15 @@
         FROM users
         WHERE user_id = #{value};
     </select>
+    <select id="findUserIdByRefreshToken" parameterType="String" resultType="String">
+        SELECT user_id
+        FROM users
+        WHERE refresh_token = #{value};
+    </select>
+
+    <update id="updateRefreshTokenByUserId" parameterType="Map">
+        UPDATE users SET refresh_token = #{refreshToken} WHERE user_id = #{userId};
+    </update>
 
     <select id="findAllUserId" resultType="String">
         SELECT user_id FROM users;

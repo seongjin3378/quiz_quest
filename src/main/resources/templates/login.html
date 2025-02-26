@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>로그인 페이지</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/login.css}">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
 
@@ -27,10 +29,9 @@
         <div class="footer">
             <a href="#">비밀번호 재설정</a>
             <div class="social-buttons">
-                <a href="#"><img src="https://image-url.com/google-icon.png" alt="Google"></a>
-                <a href="#"><img src="https://image-url.com/github-icon.png" alt="GitHub"></a>
-                <a href="#"><img src="https://image-url.com/facebook-icon.png" alt="Facebook"></a>
-                <a href="#"><img src="https://image-url.com/naver-icon.png" alt="Naver"></a>
+                <a  class="google"  href="/oauth2/authorization/google"><img th:src="@{/img/google-logo.svg}" alt="google-login"/> </a>
+                <a class="fab fa-github github" href="/oauth2/authorization/github"></a>
+                <!--<a href="#"><img src="https://image-url.com/naver-icon.png" alt="Naver"></a>-->
             </div>
         </div>
     </div>

@@ -2,9 +2,8 @@ package com.seong.portfolio.quiz_quest.problems.vo;
 
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.seong.portfolio.quiz_quest.problems.testCases.vo.TestCasesVO;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -12,6 +11,8 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class ProbExecutionVO {
     private String uuid;
     private long memoryLimit;
@@ -19,7 +20,12 @@ public class ProbExecutionVO {
     private String language;
     private CreateContainerResponse container;
     private List<TestCasesVO> testCases;
-    MultipartFile file;
+    private MultipartFile file;
     private int timeLimit;
+    private long problemId;
+    private String problemTitle;
+    private String problemType;
+    private String problemContent;
+
 
 }

@@ -1,4 +1,4 @@
-package com.seong.portfolio.quiz_quest.user.service;
+package com.seong.portfolio.quiz_quest.user.service.user;
 
 import com.seong.portfolio.quiz_quest.user.vo.UserVO;
 

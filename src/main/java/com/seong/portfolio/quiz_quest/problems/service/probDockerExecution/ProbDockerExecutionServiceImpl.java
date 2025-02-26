@@ -1,8 +1,9 @@
-package com.seong.portfolio.quiz_quest.problems.service;
+package com.seong.portfolio.quiz_quest.problems.service.probDockerExecution;
 
-import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.seong.portfolio.quiz_quest.problems.repo.ProblemRepository;
+import com.seong.portfolio.quiz_quest.problems.service.probDocker.ProbDockerService;
+import com.seong.portfolio.quiz_quest.problems.service.probValidate.ProbValidate;
 import com.seong.portfolio.quiz_quest.problems.testCases.vo.TestCasesVO;
 import com.seong.portfolio.quiz_quest.problems.utils.ProbDockerUtils;
 import com.seong.portfolio.quiz_quest.problems.utils.ProbFileUtils;
@@ -10,8 +11,9 @@ import com.seong.portfolio.quiz_quest.problems.vo.ProbExecutionVO;
 import com.seong.portfolio.quiz_quest.problems.vo.ProblemVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
@@ -20,36 +22,44 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class ProbDockerExecutionService {
+@Qualifier("ProbDockerExecution")
+public class ProbDockerExecutionServiceImpl implements ProbDockerExecutionService {
     private final ProblemRepository problemRepository;
     private final ProbDockerService probDockerService;
-    private final ProbValidateService probValidateService;
+    private final ProbValidate probValidate;
     private final ProbFileUtils probFileUtils;
 
-
-    public void execute(Long problemId, String language, MultipartFile file) throws IOException {
-        ProbExecutionVO executionVO = setProbExecutionVO(problemId, language, file);
+    @Transactional(readOnly = true)
+    public void execute(ProbExecutionVO probExecutionVO) throws IOException {
+        ProbExecutionVO executionVO = setProbExecutionVO(probExecutionVO);
         executeProblem(executionVO);
     }
 
-    private ProbExecutionVO setProbExecutionVO(Long problemId, String language, MultipartFile file)
-    {
+
+    public ProbExecutionVO setProbExecutionVO(ProbExecutionVO probExecutionVO) {
         UUID uniqueUUID = UUID.randomUUID();
         String uuidString = uniqueUUID.toString();
-        ProblemVO problemVO = problemRepository.findByProblemId(ProblemVO.builder().problemId(problemId).isVisible(-1).build());
-        return new ProbExecutionVO(uuidString, problemVO.getMemoryLimit()* 1024 * 1024, 60_000_000L, language, null, problemVO.getTestCases(), file, problemVO.getTimeLimit());
+        ProblemVO problemVO = problemRepository.findByProblemId(ProblemVO.builder().problemId(probExecutionVO.getProblemId()).isVisible(-1).build());
+        return ProbExecutionVO.builder()
+                .uuid(uuidString)
+                .memoryLimit((long) problemVO.getMemoryLimit() * 1024 * 1024)
+                .nanoCpus(60_000_000L)
+                .language(probExecutionVO.getLanguage())
+                .testCases(problemVO.getTestCases())
+                .file(probExecutionVO.getFile())
+                .timeLimit(problemVO.getTimeLimit())
+                .build();
     }
-    private String getOutputValueAsString(List<TestCasesVO> TestCases)
-    {
+
+    public String getOutputValueAsString(List<TestCasesVO> TestCases) {
         StringBuilder result = new StringBuilder();
-        for(TestCasesVO testCasesVO : TestCases )
-        {
+        for (TestCasesVO testCasesVO : TestCases) {
             result.append(testCasesVO.getOutputValue()).append("\n");
         }
         return result.toString();
     }
 
-    private void executeProblem(ProbExecutionVO probExecutionVO) throws IOException {
+    public void executeProblem(ProbExecutionVO probExecutionVO) throws IOException {
         boolean isAnswerValid;
         boolean isTimeValid;
         try {
@@ -59,13 +69,13 @@ public class ProbDockerExecutionService {
 
             String result = ProbDockerUtils.execute(probDockerService, probExecutionVO);
 
-            isAnswerValid = probValidateService.validateAnswers(probResult, result);
+            isAnswerValid = probValidate.validateAnswers(probResult, result);
             if (!isAnswerValid) throw new IllegalArgumentException("Answer is not valid!");
-            isTimeValid = probValidateService.validateTimeLimit(probExecutionVO.getTimeLimit());
+            isTimeValid = probValidate.validateTimeLimit(probExecutionVO.getTimeLimit());
             if (!isTimeValid) throw new IllegalArgumentException("Time is not valid!");
         } catch (Exception e) {
             throw new RuntimeException(e);
-        }finally {
+        } finally {
             probFileUtils.delete(probExecutionVO.getUuid());
             ProbDockerUtils.terminate(probDockerService, probExecutionVO);
         }

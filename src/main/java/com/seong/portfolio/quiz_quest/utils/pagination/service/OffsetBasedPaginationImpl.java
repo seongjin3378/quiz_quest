@@ -53,7 +53,7 @@ public class OffsetBasedPaginationImpl implements PaginationService{
         }
         model.addAttribute("pageItemStart", pageItemStart);
         model.addAttribute("pageItemEnd", pageItemEnd);
-        model.addAttribute("problemsList", vo.getValueOfList());
+        model.addAttribute("pageItemList", vo.getValueOfList());
         model.addAttribute("currentPage", vo.getIndex());
         model.addAttribute("sortType", vo.getSortType());
     }

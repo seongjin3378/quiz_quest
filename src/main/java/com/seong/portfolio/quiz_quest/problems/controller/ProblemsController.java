@@ -5,11 +5,13 @@ import com.seong.portfolio.quiz_quest.comments.problem.repo.ProblemCommentsRepos
 import com.seong.portfolio.quiz_quest.comments.problem.vo.ProblemCommentsVO;
 import com.seong.portfolio.quiz_quest.problems.enums.ProblemType;
 import com.seong.portfolio.quiz_quest.problems.repo.ProblemRepository;
+import com.seong.portfolio.quiz_quest.problems.testCases.utils.TestCasesFormatterUtil;
+import com.seong.portfolio.quiz_quest.problems.testCases.vo.TestCasesVO;
 import com.seong.portfolio.quiz_quest.problems.vo.ProblemVO;
 import com.seong.portfolio.quiz_quest.rankings.service.RankingService;
 import com.seong.portfolio.quiz_quest.rankings.vo.RankingVO;
-import com.seong.portfolio.quiz_quest.user.service.SessionService;
-import com.seong.portfolio.quiz_quest.user.service.UserService;
+import com.seong.portfolio.quiz_quest.user.service.session.SessionService;
+import com.seong.portfolio.quiz_quest.user.service.user.UserService;
 import com.seong.portfolio.quiz_quest.utils.pagination.service.PaginationService;
 import com.seong.portfolio.quiz_quest.utils.pagination.utils.PaginationUtil;
 import com.seong.portfolio.quiz_quest.utils.pagination.vo.PaginationVO;
@@ -18,6 +20,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,9 +38,9 @@ public class ProblemsController {
     private final ProblemCommentsRepository problemCommentsRepository;
     private final SessionService sessionService;
     private final RankingService rankingService;
-    private final UserService userService;
 
     @GetMapping("/p/n/{index}")
+    @Transactional
     public String solvePageV(@PathVariable long index, Model model, HttpSession session)
     {
         String userId = sessionService.getSessionId();
@@ -52,6 +55,10 @@ public class ProblemsController {
         List<ProblemCommentsVO> problemCommentsVO = problemCommentsRepository.findAllByProblemId(index, "DESC", "0");
         int lastIndex = !problemCommentsVO.isEmpty() ? problemCommentsVO.size() - 1 : 0;
         String cursor = lastIndex != 0 ? problemCommentsVO.get(lastIndex).getCursor() : "0";
+        List<TestCasesVO> formatTestCases = TestCasesFormatterUtil.getTestCasesWithReplace(problemVO.getTestCases(), "\n", "↵");
+        problemVO.setTestCases(formatTestCases);
+        problemVO.setProblemContent(problemVO.getProblemContent().replaceAll("\n", "↵"));
+
         model.addAttribute("problem", problemVO);
         model.addAttribute("problemComments", problemCommentsVO);
         log.info("cursor: {}", cursor);

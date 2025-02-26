@@ -2,7 +2,7 @@ package com.seong.portfolio.quiz_quest.comments.problem.service;
 
 import com.seong.portfolio.quiz_quest.comments.problem.repo.ProblemCommentsRepository;
 import com.seong.portfolio.quiz_quest.comments.problem.vo.ProblemCommentsVO;
-import com.seong.portfolio.quiz_quest.user.service.SessionService;
+import com.seong.portfolio.quiz_quest.user.service.session.SessionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

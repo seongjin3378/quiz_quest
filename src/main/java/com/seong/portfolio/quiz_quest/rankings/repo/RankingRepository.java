@@ -3,6 +3,7 @@ package com.seong.portfolio.quiz_quest.rankings.repo;
 
 import com.seong.portfolio.quiz_quest.rankings.vo.RankingVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ ranking Type
 public interface RankingRepository {
     int save(RankingVO vo);
     int updateRankingScore(RankingVO vo);
+
     int findRankingScore(RankingVO vo);
     int saveOrUpdateRanking(RankingVO vo);
     List<RankingVO> findTopNByOrderByRankingScoreDesc(int n);

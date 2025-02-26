@@ -1,4 +1,4 @@
-package com.seong.portfolio.quiz_quest.problems.service;
+package com.seong.portfolio.quiz_quest.problems.service.probDocker;
 
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import org.springframework.web.multipart.MultipartFile;

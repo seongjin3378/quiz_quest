@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.seong.portfolio.quiz_quest.problems.testCases.repo.TestCasesRepository">
+<insert id="save" parameterType="com.seong.portfolio.quiz_quest.problems.vo.ProbExecutionVO">
+    INSERT INTO test_cases(problem_id, input_value, output_value, is_visible )
+    VALUES
+    <foreach collection="testCases" item="testCase" separator=",">
+        (#{testCase.problemId}, #{testCase.inputValue}, #{testCase.outputValue}, #{testCase.isVisible})
+    </foreach>
+    ;
+
+</insert>
+</mapper>

@@ -1,4 +1,4 @@
-package com.seong.portfolio.quiz_quest.problems.service;
+package com.seong.portfolio.quiz_quest.problems.service.probDocker;
 
 
 import com.github.dockerjava.api.DockerClient;
@@ -7,7 +7,8 @@ import com.seong.portfolio.quiz_quest.docker.service.DockerEnvService;
 import com.seong.portfolio.quiz_quest.docker.service.DockerExecService;
 import com.seong.portfolio.quiz_quest.docker.vo.DockerEnumVO;
 import com.seong.portfolio.quiz_quest.docker.vo.DockerVO;
-import com.seong.portfolio.quiz_quest.user.service.SessionService;
+import com.seong.portfolio.quiz_quest.problems.service.probValidate.ProbValidate;
+import com.seong.portfolio.quiz_quest.user.service.session.SessionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,7 +35,7 @@ public class ProbDockerServiceImpl implements ProbDockerService {
     private final DockerEnvService dockerEnvService;
     private final DockerClient dockerClient;
     private final DockerExecService dockerExecService;
-    private final ProbValidateService probValidateService;
+    private final ProbValidate probValidate;
     @Override
     public void saveCode(MultipartFile file, String extension, String uuId) throws IOException {
         String fileName = file.getOriginalFilename();
@@ -114,7 +115,6 @@ public class ProbDockerServiceImpl implements ProbDockerService {
 
         for(String input : exInputList)
         {
-
 
             dockerExecService.processInput(DockerVO.builder()
                     .exInput(input).build(), process);

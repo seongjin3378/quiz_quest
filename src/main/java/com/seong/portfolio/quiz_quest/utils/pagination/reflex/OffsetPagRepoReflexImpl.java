@@ -40,7 +40,7 @@ public class OffsetPagRepoReflexImpl implements PaginationRepoReflex {
         {
             result = (Integer) paramMethod.invoke(vo.getRepository(), vo.getColumn(), vo.getSortType()) / vo.getValueOfOnePage();
         }else{
-            result = (Integer) paramMethod.invoke(vo.getRepository(), "-1", -1) / vo.getValueOfOnePage();
+            result = (Integer) paramMethod.invoke(vo.getRepository(), vo.getColumn(), -1) / vo.getValueOfOnePage();
         }
 
         return result;

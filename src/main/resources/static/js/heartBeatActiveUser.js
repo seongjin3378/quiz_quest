@@ -1,5 +1,8 @@
 
 let heartbeatInterval;
+const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
 
 function sendHeartbeat() {
     const data = new URLSearchParams();

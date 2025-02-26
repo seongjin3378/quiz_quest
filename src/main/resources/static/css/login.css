@@ -8,6 +8,7 @@ body {
     background: linear-gradient(135deg, #74ebd5, #acb6e5); /* 그라데이션 배경 */
     margin: 0;
 }
+
 .logo {
     font-size: 36px; /* 로고 크기 */
     font-weight: bold; /* 두꺼운 글씨 */
@@ -72,10 +73,38 @@ body {
     margin-bottom: 10px;
 }
 .social-buttons {
-    margin-top: 10px;
+    display: flex;
+    justify-content: center; /* 가로 중앙 정렬 */
+    gap: 20px; /* 버튼 간격 */
+    margin-top: 20px; /* 상단 여백 */
 }
-.social-buttons img {
-    width: 30px;
-    margin: 0 5px;
-    vertical-align: middle;
+.social-buttons a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px; /* 버튼 너비 */
+    height: 40px; /* 버튼 높이 */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none; /* 링크의 기본 밑줄 제거 */
+    font-size: 16px;
+    transition: background-color 0.3s; /* 배경색 전환 효과 */
 }
+.social-buttons a.google {
+    background-color: #DB4437; /* 구글 버튼 색상 */
+}
+.social-buttons a.google:hover {
+    background-color: #444; /* 구글 호버 색상 */
+}
+.social-buttons a.github {
+    background-color: #333; /* GitHub 버튼 색상 */
+    font-size: 20px;
+}
+.social-buttons a.google {
+    background-color: white; /* GitHub 버튼 색상 */
+}
+.social-buttons a.github:hover {
+    background-color: #444; /* GitHub 호버 색상 */
+}
+

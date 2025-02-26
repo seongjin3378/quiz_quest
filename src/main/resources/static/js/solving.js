@@ -1,5 +1,30 @@
+
 const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
 const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+const problemContentElement = document.getElementById("problem-content");
+const problemContentText = problemContentElement.innerText.replaceAll("↵", "<br>");
+problemContentElement.innerHTML = '';
+problemContentElement.insertAdjacentHTML('beforeend', problemContentText);
+const problemInputValue = document.querySelectorAll(".input-value");
+const problemOutputValue = document.querySelectorAll(".output-value");
+
+
+
+function inputOutputFormatter(element, searchValue, replaceValue)
+{
+    element.forEach((item) => {
+        if(item.innerText.includes(searchValue)) {
+            const itemText = item.innerText.replaceAll(searchValue, replaceValue);
+            item.innerHTML = '';
+            item.insertAdjacentHTML('beforeend', itemText);
+        }
+    });
+}
+
+inputOutputFormatter(problemInputValue, "↵", "<br>");
+inputOutputFormatter(problemOutputValue, "↵", "<br>");
+
 
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
@@ -84,26 +109,7 @@ function submitComment() {
     alert("댓글이 작성되었습니다.");
 }
 
-function updateExperienceBar() {
-    const experienceFill = document.getElementById('experienceFill');
-    experienceFill.style.width = '70%'; // 원하는 경험치 비율로 설정
-}
-function showError(message) {
-    const errorMessageDiv = document.getElementById('errorMessage');
-    const errorText = document.getElementById('errorText');
-    errorText.textContent = message; // 에러 메시지 설정
-    errorMessageDiv.style.display = 'block'; // 표시
-    errorMessageDiv.style.opacity = '1'; // 초기 불투명도 설정
 
-    // 10초 후에 서서히 사라지기 시작
-    setTimeout(() => {
-        errorMessageDiv.style.opacity = '0'; // 투명하게 만들기
-        // 1초 후에 숨김 처리
-        setTimeout(() => {
-            errorMessageDiv.style.display = 'none'; // 완전히 숨김
-        }, 1000); // 1초 후
-    }, 10000); // 10초 후
-}
 
 
 document.getElementById('closeButton').addEventListener('click', function() {
@@ -112,10 +118,9 @@ document.getElementById('closeButton').addEventListener('click', function() {
 });
 
 
-function checkAnswer()
+function checkAnswerRequest()
 {
     let inputText = document.getElementById("code-area").value;
-
     const blob = new Blob([inputText], {type: 'text/plain'});
     const formData = new FormData();
     formData.append('file', blob, "file.py");
@@ -124,62 +129,47 @@ function checkAnswer()
     const url = '/api/v1/problems/'+problemIndexGlobal+'/'+language+'/upload-and-validate';
     console.log(url);
 
-    const loadingOverlay = document.getElementById('loadingOverlay');
-    loadingOverlay.style.display = 'flex';
-
-    // 프로그레스 바 애니메이션
-    let progress = 0;
-    const progressBar = document.getElementById('progressBar');
-
-    const interval = setInterval(() => {
-        if (progress < 90) { // 90%까지 증가
-            progress += 5; // 5%씩 증가
-            progressBar.style.width = progress + '%';
-        }
-    }, 500); // 100ms마다 증가
-
+    showLoadingOverlay();
+    const interval = getOverlayInterval();
 
     axios.post(url, formData, {
         headers: {
+            [csrfHeader]: csrfToken, // CSRF 토큰을 헤더에 추가
             'Content-Type': 'multipart/form-data' // 멀티파트 전송을 위한 헤더
         }
     })
         .then(response => {
             // 성공적으로 응답을 받았을 때
             console.log('응답 데이터:', response.data);
-            progress = 100;
-            progressBar.style.width = progress + '%';
+            setFullProgressBar()
             clearInterval(interval); // 프로그레스 증가 중단
             setTimeout(() => {
-                loadingOverlay.style.display = 'none';
+                hideLoadingOverlay()
             }, 500); // 0.5초 후에 숨김
             if(response.data === "Yes")
             {
                 // 로딩 오버레이 숨기기
                 const myModal = new bootstrap.Modal(document.getElementById('myModal'));
-                progressBar.style.backgroundColor = '#25FF00';
+                setProgressBarColor('#25FF00');
                 myModal.show();
                 updateExperienceBar()
             }else{
-                progressBar.style.backgroundColor = '#D32F2F';
+                setProgressBarColor('#D32F2F');
             }
         })
         .catch(error => {
             // 에러가 발생했을 때
             const errorResponse = error.response.data;
             showError(errorResponse);
-
-            progress = 100;
-            progressBar.style.width = progress + '%';
+            setFullProgressBar()
             clearInterval(interval); // 프로그레스 증가 중단
-            setTimeout(() => {
-                loadingOverlay.style.display = 'none';
-            }, 500); // 0.5초 후에 숨김
-            progressBar.style.backgroundColor = '#D32F2F';
+            setProgressBarColor('#D32F2F');
         });
 }
 
-function readCommentsBtn()
+
+
+ function readCommentsBtn()
 {
     const myModal = new bootstrap.Modal(document.getElementById('myModal'));
     myModal.hide();
@@ -188,3 +178,5 @@ function readCommentsBtn()
     const commentsModal = new bootstrap.Modal(document.getElementById('commentsModal'));
     commentsModal.show();
 }
+
+

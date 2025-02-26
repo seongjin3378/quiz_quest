@@ -22,7 +22,7 @@
     <div id="content" class="card-body">
       <!-- 예시 게시글 1 -->
 
-      <div th:each="problem : ${problemsList}">
+      <div th:each="problem : ${pageItemList}">
         <div class="post d-flex align-items-center mb-2">
           <div class="post-info me-3" style="flex-shrink: 0;">
             <p class="post-number" style="margin: 0;" th:text="'문제 번호: ' + ${problem.problemId}"></p> <!-- 문제 번호 출력 -->

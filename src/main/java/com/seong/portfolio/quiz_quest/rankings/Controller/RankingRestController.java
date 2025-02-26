@@ -1,19 +1,12 @@
 package com.seong.portfolio.quiz_quest.rankings.Controller;
 
-import com.seong.portfolio.quiz_quest.rankings.repo.RankingRepository;
 import com.seong.portfolio.quiz_quest.rankings.service.RankingService;
-import com.seong.portfolio.quiz_quest.rankings.vo.RankingVO;
 import com.seong.portfolio.quiz_quest.rankings.vo.UserUsageTimerVO;
-import com.seong.portfolio.quiz_quest.user.repo.UserRepository;
-import com.seong.portfolio.quiz_quest.user.service.SessionService;
-import io.github.bucket4j.Bucket;
-import jakarta.annotation.PostConstruct;
+import com.seong.portfolio.quiz_quest.user.service.session.SessionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/rankings")

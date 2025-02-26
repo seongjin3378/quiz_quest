@@ -11,15 +11,18 @@
             LIMIT 100 OFFSET #{value};
 
     </select>
-
+    <insert id="save" parameterType="com.seong.portfolio.quiz_quest.problems.vo.ProbExecutionVO" useGeneratedKeys="true" keyProperty="problemId">
+        INSERT INTO problems (problem_title, problem_type, problem_content, memory_limit, time_limit)
+        VALUES (#{problemTitle}, #{problemType}, #{problemContent}, #{memoryLimit}, #{timeLimit});
+    </insert>
     <select id="findAllByColumnAndValue" parameterType="map" resultMap="problemMap">
         <!-- ${}로 인한 -->
-        <if test="column == 'problemId'
-                                or column == 'problemTitle'
-                                or column == 'problemType'
-                                or column == 'problemContent'
-                                or column == 'memoryLimit'
-                                or column == 'timeLimit'">
+        <if test="column == 'problem_id'
+                                or column == 'problem_title'
+                                or column == 'problem_type'
+                                or column == 'problem_content'
+                                or column == 'memory_limit'
+                                or column == 'time_limit'">
             SELECT problem_id, problem_title, problem_type
             FROM problems
             WHERE
@@ -32,12 +35,12 @@
     </select>
 
     <select id="count" parameterType="map" resultType="Integer">
-        <if test="column == 'problemId'
-                                or column == 'problemTitle'
-                                or column == 'problemType'
-                                or column == 'problemContent'
-                                or column == 'memoryLimit'
-                                or column == 'timeLimit'">
+        <if test="column == 'problem_id'
+                                or column == 'problem_title'
+                                or column == 'problem_type'
+                                or column == 'problem_content'
+                                or column == 'memory_limit'
+                                or column == 'time_limit'">
         SELECT COUNT(*)
         FROM problems
         <where>
@@ -72,6 +75,7 @@
 
     <resultMap id="testCasesResultMap" type="com.seong.portfolio.quiz_quest.problems.testCases.vo.TestCasesVO">
         <id property="testCaseId" column="test_case_id"/>
+        <result property="problemId" column="problem_id"/>
         <result property="inputValue" column="input_value"/>
         <result property="outputValue" column="output_value"/>
     </resultMap>

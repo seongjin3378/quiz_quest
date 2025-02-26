@@ -3,7 +3,6 @@ package com.seong.portfolio.quiz_quest.quartz.user.job;
 import com.seong.portfolio.quiz_quest.rankings.repo.RankingRepository;
 import com.seong.portfolio.quiz_quest.rankings.vo.RankingVO;
 import com.seong.portfolio.quiz_quest.user.repo.UserRepository;
-import com.seong.portfolio.quiz_quest.user.service.SessionService;
 import lombok.RequiredArgsConstructor;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -11,6 +10,7 @@ import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -21,7 +21,9 @@ public class UserUsageTimeJob implements Job {
     private final RedisTemplate<String, Object> redisTemplate;
     private final UserRepository userRepository;
     private static final Logger logger = LoggerFactory.getLogger(UserUsageTimeJob.class);
+
     @Override
+    @Transactional
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 
         logger.info("잡 실행");

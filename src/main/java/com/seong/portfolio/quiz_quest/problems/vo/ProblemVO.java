@@ -8,21 +8,19 @@ import lombok.*;
 import java.util.List;
 
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProblemVO  {
     private long problemId;
     private String problemTitle;
     private String problemType;
     private String problemContent;
-    private long testCaseId;
-    private List<TestCasesVO> testCases;
-    private int isVisible;
-    private long memoryLimit;
+    private int memoryLimit;
     private int timeLimit;
-    private int all_value;
-    private int index;
+    private List<TestCasesVO> testCases;
+    private long testCaseId;
+    private int isVisible;
+   private int index;
 }

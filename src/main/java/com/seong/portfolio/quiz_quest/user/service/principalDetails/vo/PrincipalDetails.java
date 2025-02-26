@@ -1,19 +1,33 @@
-package com.seong.portfolio.quiz_quest.user.vo;
+package com.seong.portfolio.quiz_quest.user.service.principalDetails.vo;
 
+import com.seong.portfolio.quiz_quest.user.vo.UserVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
-public class CustomUserDetails implements UserDetails {
+public class PrincipalDetails implements UserDetails, OAuth2User {
     private UserVO userVO;
+    private Map<String, Object> attributes;
 
-    public CustomUserDetails(UserVO userVO) {
+    //CustomUserDetailsService
+    public PrincipalDetails(UserVO userVO) {
         this.userVO = userVO;
+    }
+
+    public PrincipalDetails(UserVO userVO, Map<String, Object> attributes ) {
+        this.userVO = userVO;
+        this.attributes = attributes;
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return attributes;
     }
 
     @Override
@@ -56,5 +70,10 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public String getName() {
+        return "";
     }
 }

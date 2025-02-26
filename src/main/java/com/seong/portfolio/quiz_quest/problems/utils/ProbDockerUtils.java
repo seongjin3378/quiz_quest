@@ -1,9 +1,10 @@
 package com.seong.portfolio.quiz_quest.problems.utils;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.seong.portfolio.quiz_quest.docker.vo.DockerEnumVO;
-import com.seong.portfolio.quiz_quest.problems.service.ProbDockerService;
+import com.seong.portfolio.quiz_quest.problems.service.probDocker.ProbDockerService;
 import com.seong.portfolio.quiz_quest.problems.testCases.vo.TestCasesVO;
 import com.seong.portfolio.quiz_quest.problems.vo.ProbExecutionVO;
+import lombok.extern.slf4j.Slf4j;
 
 
 import java.io.File;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public class ProbDockerUtils {
 
 
@@ -28,6 +30,8 @@ public class ProbDockerUtils {
         ArrayList<String> testInputs = new ArrayList<>();
         for(TestCasesVO testCase : testCases)
         {
+            log.info("testCase.getInputValue : {}", testCase.getInputValue());
+
             testInputs.add(testCase.getInputValue()+"\n");
         }
 

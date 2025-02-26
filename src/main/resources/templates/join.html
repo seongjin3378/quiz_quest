@@ -15,6 +15,7 @@
   <div class="login-container">
     <h2>회원가입</h2>
     <form th:action="@{/joinProc}" method="POST">
+      <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
       <div class="input-field">
         <input name="userId" type="text" placeholder="아이디" required>
       </div>

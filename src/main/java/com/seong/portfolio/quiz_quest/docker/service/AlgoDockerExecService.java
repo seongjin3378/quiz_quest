@@ -9,7 +9,7 @@ import com.github.dockerjava.api.model.Image;
 import com.seong.portfolio.quiz_quest.docker.utils.ParseTimeToMilliseconds;
 import com.seong.portfolio.quiz_quest.docker.vo.DockerVO;
 import com.seong.portfolio.quiz_quest.docker.vo.DockerValidationData;
-import com.seong.portfolio.quiz_quest.user.service.SessionService;
+import com.seong.portfolio.quiz_quest.user.service.session.SessionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -78,7 +78,7 @@ public class AlgoDockerExecService implements DockerExecService {
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         String line = "";
         StringBuilder result = new StringBuilder();
-        String regex = "^\\d+m\\d+(\\.\\d+)?s$";
+        /*String regex = "^\\d+m\\d+(\\.\\d+)?s$";*/
         try {
             while ((line = reader.readLine()) != null) {
                 /*타임 체크 하는 라인은 읽지 않음*/
@@ -98,6 +98,7 @@ public class AlgoDockerExecService implements DockerExecService {
                     log.info(line);
 
                     log.info(String.valueOf(time));
+
                     dockerValidationData.setTimeMap(sessionService.getSessionId(), time);
                 }
             }

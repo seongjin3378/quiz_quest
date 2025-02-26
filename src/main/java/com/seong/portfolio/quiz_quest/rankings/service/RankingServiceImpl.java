@@ -4,14 +4,14 @@ package com.seong.portfolio.quiz_quest.rankings.service;
 import com.seong.portfolio.quiz_quest.rankings.enums.RankingType;
 import com.seong.portfolio.quiz_quest.rankings.repo.RankingRepository;
 import com.seong.portfolio.quiz_quest.rankings.vo.RankingVO;
-import com.seong.portfolio.quiz_quest.user.service.SessionService;
+import com.seong.portfolio.quiz_quest.user.service.session.SessionService;
 import com.seong.portfolio.quiz_quest.user.vo.UserVO;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -23,6 +23,7 @@ public class RankingServiceImpl implements RankingService {
     private static final Logger logger = LoggerFactory.getLogger(RankingServiceImpl.class);
 
     @Override
+    @Transactional
     public int updateUserUsageTime(int rankingScore) {
         String userId = sessionService.getSessionId();
         Boolean isUserIdExists = redisTemplate.hasKey("JSESSIONID:" + userId);

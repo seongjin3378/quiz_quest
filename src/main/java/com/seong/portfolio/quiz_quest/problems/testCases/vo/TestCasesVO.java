@@ -1,15 +1,17 @@
 package com.seong.portfolio.quiz_quest.problems.testCases.vo;
 
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TestCasesVO {
-    private long testCaseId;
+    private long testCaseId; //pk
     private String inputValue;
     private String outputValue;
+    private int isVisible;
+    private long problemId; //fk
 }

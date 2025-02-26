@@ -1,6 +1,7 @@
-package com.seong.portfolio.quiz_quest.user.service;
+package com.seong.portfolio.quiz_quest.user.service.user;
 
 import com.seong.portfolio.quiz_quest.user.repo.UserRepository;
+import com.seong.portfolio.quiz_quest.user.service.session.SessionService;
 import com.seong.portfolio.quiz_quest.user.vo.UserVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
