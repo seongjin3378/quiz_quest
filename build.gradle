@@ -41,6 +41,7 @@ dependencies {
 	implementation group: 'com.github.docker-java', name: 'docker-java', version: '3.4.1'
 	implementation 'com.github.docker-java:docker-java-transport-httpclient5:3.4.0'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
 }
 

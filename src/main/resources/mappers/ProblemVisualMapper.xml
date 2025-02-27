@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.seong.portfolio.quiz_quest.problems.problemVisual.repo.ProblemVisualRepository">
+
+    <resultMap id="pvMap" type="com.seong.portfolio.quiz_quest.problems.problemVisual.vo.ProbVisualVO">
+        <result property="visualSrc" column="visual_src" />
+        <result property="visualCaptions" column="visual_captions" />
+        <result property="visualTables" column="visual_tables" />
+        <result property="problemId" column="problem_id" />
+    </resultMap>
+
+    <insert id="save" parameterType="com.seong.portfolio.quiz_quest.problems.problemVisual.vo.ProbVisualVO">
+        INSERT INTO Problem_Visual (visual_src, visual_captions, visual_tables, problem_id)
+        VALUES
+        <if test="visualSrc != null">
+
+        <foreach collection="visualSrc" item="src" index="index" separator=",">
+            (#{src}, #{visualCaptions[${index}]}, null, #{problemId})
+        </foreach>
+            <if test="visualTables != null">
+                ,
+            </if>
+        </if>
+
+        <if test="visualTables != null and visualTables != ''">
+            (null, null, #{visualTables, jdbcType=VARCHAR}, #{problemId})
+        </if>
+        ;
+    </insert>
+
+</mapper>

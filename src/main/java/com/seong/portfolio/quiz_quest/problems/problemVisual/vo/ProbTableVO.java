@@ -1,4 +1,4 @@
-package com.seong.portfolio.quiz_quest.problems.vo;
+package com.seong.portfolio.quiz_quest.problems.problemVisual.vo;
 
 
 import lombok.AllArgsConstructor;

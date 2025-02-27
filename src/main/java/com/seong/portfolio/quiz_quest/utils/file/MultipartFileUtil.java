@@ -12,6 +12,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+
+/*
+* 이미지 파일 객체를 for문으로 조회
+* --------------------위 작업들을 반복 ---------------------------
+* - newFileName을 지정한파일 이름 + 인덱스번호 +  . + 원본 파일 이름에 확장자(getFileExtension로 분리)로 지정
+* - 서브 디렉토리를 검색
+* - 생성 경로 Path 를 생성(newPath, newFileName)
+* - 파일 생성
+* - 상대 경로를 destinationDir List에 저장
+ * - 인덱스 번호 추가
+* ----------------위 작업들을 반복-------------------------------
+* - destinationDir List를 return 으로 반환함
+* */
+
+
 @Slf4j
 public class MultipartFileUtil extends ManageSubDirectories {
     public static List<String> saveFiles(MultipartFile[] files, String uploadDir, String fileName) throws IOException {
@@ -25,14 +40,11 @@ public class MultipartFileUtil extends ManageSubDirectories {
                 String newPath = manageSubdirectories(uploadDir); // 서브디렉토리 검색
                 Path destinationFilePath = Paths.get(newPath, newFileName);
                 try {
-                    if (!destinationFilePath.toFile().exists()) {
                         Files.write(destinationFilePath, file.getBytes());
                         log.info("파일 생성 성공: {}", destinationFilePath.toAbsolutePath());
                         String relativePath = destinationFilePath.toAbsolutePath().toString().replace(uploadDir, "");
                         destinationDirs.add(relativePath);
-                    } else {
-                        log.error("파일이 이미 존재합니다: {}" , destinationFilePath.toAbsolutePath());
-                    }
+
                 } catch (IOException e) {
                     log.error("파일 생성 중 오류 발생: {}", e.getMessage());
                 }

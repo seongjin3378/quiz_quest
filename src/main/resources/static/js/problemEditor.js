@@ -75,8 +75,8 @@ function getFormDataFromSaveRequest() {
         .filter(value => value); // 빈 값이 아닌 것만 필터링합니다.
 
     const probVisualVO = {
-        uploadedImageCaptions :uploadedImageCaptions,
-        uploadedTables : uploadedTables
+        visualCaptions : uploadedImageCaptions,
+        visualTables : JSON.stringify(uploadedTables)
     }
     formData.append('probExecutionVO', new Blob([JSON.stringify(probExecutionVO)], { type: 'application/json' }));
     formData.append('file', blob, "file.py");
@@ -129,22 +129,6 @@ function saveRequest() {
         });
 }
 
-/*function showError(message) {
-    const errorMessageDiv = document.getElementById('errorMessage');
-    const errorText = document.getElementById('errorText');
-    errorText.textContent = message; // 에러 메시지 설정
-    errorMessageDiv.style.display = 'block'; // 표시
-    errorMessageDiv.style.opacity = '1'; // 초기 불투명도 설정
-
-    // 10초 후에 서서히 사라지기 시작
-    setTimeout(() => {
-        errorMessageDiv.style.opacity = '0'; // 투명하게 만들기
-        // 1초 후에 숨김 처리
-        setTimeout(() => {
-            errorMessageDiv.style.display = 'none'; // 완전히 숨김
-        }, 1000); // 1초 후
-    }, 10000); // 10초 후
-}*/
 
 // Add event listener to existing remove buttons
 document.querySelectorAll('.btn-remove').forEach(button => {
@@ -274,108 +258,81 @@ function createTableFromDialog() {
 }
 
 
-let uploadedTables = []; // 전역 변수로 저장할 테이블을 JSON 형식으로 저장
+let uploadedTables = []; // 표 데이터를 저장하는 전역 배열
+
 function saveTableDataAsJson(table) {
     const captionInput = document.getElementById('tableCaption');
     const captionText = captionInput.value;
 
+    // 표 데이터 객체 생성 (ID 없이)
     const tableData = {
         caption: captionText,
         rows: []
     };
 
+    // 표의 행과 셀 데이터 추출
     const rows = table.querySelectorAll('tr');
     rows.forEach(row => {
         const rowData = [];
-        const cells = row.querySelectorAll('td, th'); // td와 th 모두 선택
+        const cells = row.querySelectorAll('td, th');
         cells.forEach(cell => {
-            rowData.push(cell.textContent); // 셀의 텍스트를 배열에 추가
+            rowData.push(cell.textContent);
         });
-        tableData.rows.push(rowData); // 행 데이터를 추가
+        tableData.rows.push(rowData);
     });
 
-    // 전역 변수에 JSON 형식으로 저장
-    uploadedTables.push(tableData);
-
-    // 콘솔에 저장된 데이터 출력
-    console.log('저장된 테이블 데이터:', JSON.stringify(uploadedTables, null, 2)); // 보기 좋게 출력
+    uploadedTables.push(tableData); // 배열에 추가
+    return uploadedTables.length - 1; // 저장된 인덱스 반환
 }
 
 
 function saveTable() {
     if (currentTableContainer) {
         const table = currentTableContainer.querySelector('table');
-        const captionInput = document.getElementById('tableCaption');
-        const captionText = captionInput.value;
+        const tableIndex = saveTableDataAsJson(table); // 표 데이터를 저장하고 인덱스 받기
 
+        // 미리보기 섹션 표시
         const previewSection = document.getElementById('previewSection');
         const previewContent = document.getElementById('previewContent');
-
         previewSection.style.display = 'block';
 
+        // 미리보기 컨테이너 생성
         const tablePreviewContainer = document.createElement('div');
         tablePreviewContainer.className = 'table-preview-container';
+        tablePreviewContainer.setAttribute('data-table-index', tableIndex); // 인덱스 저장
 
+        // 표 복사 및 캡션 추가
         const clonedTable = table.cloneNode(true);
         const captionElement = document.createElement('p');
-        captionElement.textContent = captionText || '캡션 없음';
+        captionElement.textContent = document.getElementById('tableCaption').value || '캡션 없음';
         captionElement.style.textAlign = 'center';
         captionElement.style.fontStyle = 'italic';
 
+        // 삭제 버튼 생성
         const removeBtn = document.createElement('button');
         removeBtn.textContent = '×';
         removeBtn.className = 'remove-btn';
         removeBtn.onclick = function() {
-            tablePreviewContainer.remove();
+            const index = parseInt(tablePreviewContainer.getAttribute('data-table-index'), 10);
+                // 표가 하나 이상일 때만 삭제
+                uploadedTables.splice(index, 1); // 배열에서 해당 데이터 제거
+                tablePreviewContainer.remove(); // DOM에서 미리보기 제거
+
+                // 남은 미리보기 컨테이너의 인덱스 업데이트
+                const remainingContainers = previewContent.querySelectorAll('.table-preview-container');
+                remainingContainers.forEach((container, newIndex) => {
+                    container.setAttribute('data-table-index', newIndex);
+                });
         };
 
+        // 미리보기 컨테이너에 요소 추가
         tablePreviewContainer.appendChild(clonedTable);
-        tablePreviewContainer.appendChild(captionElement); // 캡션 추가
+        tablePreviewContainer.appendChild(captionElement);
         tablePreviewContainer.appendChild(removeBtn);
         previewContent.appendChild(tablePreviewContainer);
 
-        saveTableDataAsJson(table);
+        // 모달 닫기
         const modal = bootstrap.Modal.getInstance(document.getElementById('tableModal'));
         modal.hide();
-    }
-}
-
-function savePreview() {
-    const previewSection = document.getElementById('previewSection');
-    const previewContent = document.getElementById('previewContent');
-    previewSection.style.display = 'block';
-
-    const title = document.getElementById('problem-title').value;
-    const content = document.getElementById('problem-content').value;
-
-    const titleElement = document.createElement('h4');
-    titleElement.textContent = title || '제목 없음';
-    const contentElement = document.createElement('p');
-    contentElement.textContent = content || '내용 없음';
-
-    previewContent.prepend(contentElement);
-    previewContent.prepend(titleElement);
-
-    // 이미지와 캡션을 미리보기에 추가
-    const imagePreviewSection = document.getElementById('imagePreviewSection');
-    while (imagePreviewSection.firstChild) {
-        const imageContainer = imagePreviewSection.firstChild;
-        const img = imageContainer.querySelector('img');
-        const captionInput = imageContainer.querySelector('input');
-        const captionText = captionInput.value;
-
-        const previewImageContainer = document.createElement('div');
-        previewImageContainer.className = 'image-preview-container';
-
-        const previewImg = img.cloneNode(true);
-        const captionElement = document.createElement('p');
-        captionElement.textContent = captionText || '캡션 없음';
-        captionElement.style.textAlign = 'center';
-        captionElement.style.fontStyle = 'italic';
-
-        previewImageContainer.appendChild(previewImg);
-        previewImageContainer.appendChild(captionElement);
-        previewContent.appendChild(previewImageContainer);
-        imagePreviewSection.removeChild(imageContainer);
     }
 }

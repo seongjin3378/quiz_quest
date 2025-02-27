@@ -1,10 +1,13 @@
 package com.seong.portfolio.quiz_quest.settings.mybatis;
 
+import com.seong.portfolio.quiz_quest.settings.mybatis.handler.StringListTypeHandler;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.type.TypeHandlerRegistry;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
+import org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -14,6 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
+import java.util.List;
 
 @Configuration
 public class MyBatisConfig {
@@ -33,6 +37,9 @@ public class MyBatisConfig {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(dataSource);
         sqlSessionFactoryBean.setMapperLocations(applicationContext.getResources(mPath));
+
+        sqlSessionFactoryBean.setConfiguration(createMyBatisConfiguration());
+
         return sqlSessionFactoryBean.getObject();
     }
 
@@ -40,4 +47,13 @@ public class MyBatisConfig {
     public SqlSessionTemplate sqlSessionTemplate(@Qualifier("SqlSessionFactory") SqlSessionFactory sqlSessionFactory) throws Exception {
         return new SqlSessionTemplate(sqlSessionFactory);
     }
+
+    private org.apache.ibatis.session.Configuration createMyBatisConfiguration() {
+        org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
+        TypeHandlerRegistry registry = configuration.getTypeHandlerRegistry();
+        registry.register(List.class, new StringListTypeHandler());
+        return configuration;
+    }
+
+
 }

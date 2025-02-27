@@ -19,14 +19,10 @@ import java.util.UUID;
 @Slf4j
 @Qualifier("ProbWriteDockerExecution")
 public class ProbWriteDockerExecutionServiceImpl implements ProbDockerExecutionService {
-    private final ProblemRepository problemRepository;
     private final ProbDockerExecutionService probDockerExecutionService;
-    private final TestCasesRepository testCasesRepository;
 
-    public ProbWriteDockerExecutionServiceImpl(ProblemRepository problemRepository, @Qualifier("ProbDockerExecution") ProbDockerExecutionService probDockerExecutionService, TestCasesRepository testCasesRepository) {
-        this.problemRepository = problemRepository;
+    public ProbWriteDockerExecutionServiceImpl(ProblemRepository problemRepository, @Qualifier("ProbDockerExecution") ProbDockerExecutionService probDockerExecutionService) {
         this.probDockerExecutionService = probDockerExecutionService;
-        this.testCasesRepository = testCasesRepository;
     }
 
     // 외부에서 이것만 사용
@@ -34,20 +30,6 @@ public class ProbWriteDockerExecutionServiceImpl implements ProbDockerExecutionS
     public void execute(ProbExecutionVO probExecutionVO) throws IOException {
         ProbExecutionVO executionVO = setProbExecutionVO(probExecutionVO);
         executeProblem(executionVO);
-        problemRepository.save(probExecutionVO);
-        log.info("problemId {}", executionVO.getProblemId());
-        List<TestCasesVO> testcases = getTestCasesListWithProblemId(probExecutionVO);
-        probExecutionVO.setTestCases(testcases);
-        testCasesRepository.save(probExecutionVO);
-    }
-    private List<TestCasesVO> getTestCasesListWithProblemId(ProbExecutionVO executionVO){
-        List<TestCasesVO> testcases = new ArrayList<>();
-        for(TestCasesVO testcaseVO : executionVO.getTestCases())
-        {
-            testcaseVO.setProblemId(executionVO.getProblemId());
-            testcases.add(testcaseVO);
-        }
-        return testcases;
     }
 
     public ProbExecutionVO setProbExecutionVO(ProbExecutionVO probExecutionVO) {
