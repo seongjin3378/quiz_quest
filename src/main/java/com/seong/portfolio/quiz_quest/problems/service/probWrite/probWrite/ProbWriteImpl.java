@@ -60,7 +60,7 @@ public class ProbWriteImpl implements ProbWrite {
             if(probVisualVO.getVisualCaptions().size() != files.length)
             {
                 log.info("캡션 입력 안함");
-                throw new IllegalArgumentException("Please enter a caption for the image file.");
+                throw new IllegalArgumentException("Please enter a caption for the image files.");
 
             }
 

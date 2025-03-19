@@ -38,6 +38,7 @@ import static com.mysql.cj.conf.ConnectionUrlParser.parseUserInfo;
   - 인증되지 않은 사용자가 보호된 리소스에 접근하려고 할 때 호출
   - 예로, 로그인되지 않은 상태에서 보호된 페이지에 접근면 AuthenticationEntryPoint가 실행됨
  */
+
 @Component
 @RequiredArgsConstructor
 public class CustomAuthenticationEntrySpot implements AuthenticationEntryPoint {

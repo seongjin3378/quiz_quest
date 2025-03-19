@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class QuartzSchedulerConfig {
     private final Scheduler scheduler;
     private static final Logger logger = LoggerFactory.getLogger(QuartzSchedulerConfig.class);
+    private final ApplicationContext applicationContext;
 
     @PostConstruct
     public void startScheduler()
@@ -26,11 +27,10 @@ public class QuartzSchedulerConfig {
             {
                 logger.info("스케줄러 시작");
                 scheduler.start();
-                /* 즉시 실행 테스트
-                JobDetail userUsageTimeJobDetail = (JobDetail) applicationContext.getBean("UserUsageTimeJobDetail");
+               /* JobDetail userUsageTimeJobDetail = (JobDetail) applicationContext.getBean("InitializeUsageTimeJobDetail");
                 scheduler.triggerJob(userUsageTimeJobDetail.getKey());
-                logger.info("트리거 즉시 실행");
-                 */
+                logger.info("트리거 즉시 실행");*/
+
             }
         } catch (SchedulerException e) {
             throw new RuntimeException(e);

@@ -1,6 +1,4 @@
 
-const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
 const problemContentElement = document.getElementById("problem-content");
 const problemContentText = problemContentElement.innerText.replaceAll("↵", "<br>");

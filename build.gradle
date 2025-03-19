@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.5'
 	id 'io.spring.dependency-management' version '1.1.6'
+	id 'org.jetbrains.kotlin.jvm'
 }
 
 group = 'com.seong.portfolio'
@@ -42,6 +43,7 @@ dependencies {
 	implementation 'com.github.docker-java:docker-java-transport-httpclient5:3.4.0'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
 }
 
@@ -49,3 +51,4 @@ dependencies {
 test {
 	useJUnitPlatform()
 }
+

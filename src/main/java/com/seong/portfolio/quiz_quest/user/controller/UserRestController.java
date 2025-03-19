@@ -1,7 +1,7 @@
 package com.seong.portfolio.quiz_quest.user.controller;
 
 
-import com.seong.portfolio.quiz_quest.user.service.user.UserService;
+import com.seong.portfolio.quiz_quest.user.service.user.ActiveUserService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,12 +18,12 @@ import java.util.Set;
 public class UserRestController {
     private final RedisTemplate<String, Object> redisTemplate;
     Logger logger = LoggerFactory.getLogger(UserRestController.class);
-    private final UserService userService;
+    private final ActiveUserService activeUserService;
 
     @GetMapping("/loggedInUserCount")
     public ResponseEntity<Integer> loggedInUserCount() {
         Set<String> keys = redisTemplate.keys("JSESSIONID:*");
-        userService.deleteActiveUsers(keys);
+        activeUserService.delete(keys);
         printAllJSessionIds();
         return ResponseEntity.ok(keys.size()); // HTTP 200 OK와 함께 사용자 수 반환
     }
@@ -43,8 +43,8 @@ public class UserRestController {
 
     @PostMapping("/current")
     public ResponseEntity<Integer> setActiveUser() {
-        userService.setActiveUserWithExpiry();
-        int userCount = userService.getAllActiveUsers();
+        activeUserService.setIdWithExpiry();
+        int userCount = activeUserService.getAllCount();
 
         return ResponseEntity.ok(userCount);
     }

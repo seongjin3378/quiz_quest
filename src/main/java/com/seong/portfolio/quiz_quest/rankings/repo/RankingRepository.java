@@ -3,9 +3,11 @@ package com.seong.portfolio.quiz_quest.rankings.repo;
 
 import com.seong.portfolio.quiz_quest.rankings.vo.RankingVO;
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.transaction.annotation.Transactional;
+import org.apache.ibatis.annotations.Param;
 
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /*
@@ -17,13 +19,21 @@ ranking Type
 
 /* findTopNByOrderByRankingScoreDesc*/
 /*  RankingScore가 높은 순으로 내림차순으로 n개의 데이터를 가져옴 */
+
+
+/*saveOrUpdateRanking: rankingScore가 최신 데이터 기준 값이 0 일 경우 createAt 데이터를 최신으로 업데이트
+* 0이 아닐 경우 새로운 ranking 테이블을 생성함
+* */
 @Mapper
 public interface RankingRepository {
     int save(RankingVO vo);
-    int updateRankingScore(RankingVO vo);
+    int updateRankingScore(RankingVO vo); //@Param rankingType, userId, rankingScore
 
     int findRankingScore(RankingVO vo);
     int saveOrUpdateRanking(RankingVO vo);
-    List<RankingVO> findTopNByOrderByRankingScoreDesc(int n);
-    int existsByUserId(RankingVO vo);
+    List<RankingVO> findAllByRankingType(@Param("rankingType") String rankingType);
+    LinkedHashSet<RankingVO> findAllByPkSet(@Param("pkSet") LinkedHashSet<Object> pkSet);
+    LinkedHashSet<RankingVO> findAllByPkSetAndFilterByTimeUnit(@Param("pkSet") LinkedHashSet<Object> pkSet, @Param("timeUnit") String timeUnit);
+    void updateCreateAtToLatestDate();
+
 }

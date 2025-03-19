@@ -1,32 +1,11 @@
 package com.seong.portfolio.quiz_quest;
 
 
-import com.github.dockerjava.api.DockerClient;
-import com.github.dockerjava.api.command.*;
-import com.github.dockerjava.api.model.*;
-import com.github.dockerjava.core.DefaultDockerClientConfig;
-import com.github.dockerjava.core.DockerClientBuilder;
-import com.github.dockerjava.httpclient5.ApacheDockerHttpClient;
-import com.github.dockerjava.transport.DockerHttpClient;
-
-import com.seong.portfolio.quiz_quest.comments.problem.repo.ProblemCommentsRepository;
-import com.seong.portfolio.quiz_quest.comments.problem.vo.ProblemCommentsVO;
-import com.seong.portfolio.quiz_quest.docker.service.DockerEnvService;
-import com.seong.portfolio.quiz_quest.docker.service.DockerExecService;
-import com.seong.portfolio.quiz_quest.docker.vo.DockerEnumVO;
-import com.seong.portfolio.quiz_quest.docker.vo.DockerVO;
-import com.seong.portfolio.quiz_quest.problems.enums.ProblemType;
-import com.seong.portfolio.quiz_quest.problems.repo.ProblemRepository;
-import com.seong.portfolio.quiz_quest.problems.service.probDocker.ProbDockerService;
 import com.seong.portfolio.quiz_quest.problems.service.probDockerExecution.ProbDockerExecutionService;
 import com.seong.portfolio.quiz_quest.problems.testCases.vo.TestCasesVO;
 import com.seong.portfolio.quiz_quest.problems.vo.ProbExecutionVO;
-import com.seong.portfolio.quiz_quest.problems.vo.ProblemVO;
-import com.seong.portfolio.quiz_quest.rankings.repo.RankingRepository;
-import com.seong.portfolio.quiz_quest.user.service.session.SessionService;
-import com.seong.portfolio.quiz_quest.utils.pagination.reflex.PaginationRepoReflex;
-import com.seong.portfolio.quiz_quest.utils.pagination.vo.PaginationVO;
-import org.junit.jupiter.api.BeforeEach;
+import com.seong.portfolio.quiz_quest.quartz.interfaces.JobService;
+import com.seong.portfolio.quiz_quest.rankings.repo.RedisRankingRepository;
 import org.junit.jupiter.api.Test;
 
 import org.slf4j.Logger;
@@ -34,25 +13,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 
 @SpringBootTest(classes = QuizQuestApplication.class)
 class QuizQuestApplicationTests {
@@ -61,7 +32,56 @@ class QuizQuestApplicationTests {
     @Qualifier("ProbWriteDockerExecution")
     private ProbDockerExecutionService probDockerExecutionService;
 
-    @BeforeEach
+    @Autowired
+    private RedisRankingRepository redisRankingRepository;
+
+    private Logger logger = LoggerFactory.getLogger(QuizQuestApplicationTests.class);
+
+    @Autowired
+    private  RedisTemplate<String, Object> redisTemplate;
+
+
+    @Qualifier("InitializeUsageTimeJob")
+            @Autowired
+    private JobService initializeUsageTimeJob;
+    //
+
+    @Test
+    public void quartzServiceTest()
+    {
+    initializeUsageTimeJob.execute();
+    }
+    public void RedisRankingTest() throws IOException {
+     /*   RankingKeyEnumVO rankingEnumVO = RankingKeyEnumVO.fromString("usage_time");
+    redisRankingRepository.addToSortedSet(RedisRankingVO.builder().key(rankingEnumVO.getRankingKey().getKey()).pk(39L).build(), score);*/
+/*
+        RedisRankingVO redisRankingVO = new RedisRankingVO();
+
+        redisRankingVO.setKey(RankingKey.USAGE_TIME.getKey());
+        redisRankingVO.setMinScore(60);
+        redisRankingVO.setMaxScore(9999999);
+        redisRankingVO.setOffsetStart(0);
+        redisRankingVO.setCount(10);
+        redisRankingVO.setSortSetKey(RankingSortSetKey.USAGE_TIME.getKey());
+        Set<RankingVO> result = redisRankingRepository.getSortedSetByScoreDesc(redisRankingVO, DateUtils::isThisYear);
+        for(RankingVO rankingVO : result) {
+            logger.info("{}, {}, {}, {}", rankingVO.getUserId(), rankingVO.getRankingType(), rankingVO.getRankingScore(), rankingVO.getCreatedAt());
+        }*/
+
+        Double a = 0.66;
+        System.out.println(a.intValue());
+/*        RedisRankingVO redisRankingVO = new RedisRankingVO();
+        redisRankingVO.setKey(RankingKeyEnumVO.fromString("usage_time").getRankingKey().getKey());
+        redisRankingVO.setOffsetStart(0);
+        redisRankingVO.setCount(10);
+        Set<ZSetOperations.TypedTuple<Object>> reverseRangeWithScores = redisRankingRepository.findAllByTimeUnitOrderByScoreDesc(redisRankingVO, "year");
+        assert reverseRangeWithScores != null;
+        for (ZSetOperations.TypedTuple<Object> tuple : reverseRangeWithScores) {
+            System.out.println("Value: " + tuple.getValue() + ", Score: " + tuple.getScore());
+        }*/
+    }
+
+
     public void setUp() {
         // 사용자 정보를 설정
         UserDetails userDetails = User.withUsername("testUser")
@@ -76,7 +96,7 @@ class QuizQuestApplicationTests {
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-    @Test
+
     public void ProbDockerExecutionTest() throws IOException {
         MockMultipartFile file = new MockMultipartFile(
                 "file",

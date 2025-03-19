@@ -41,17 +41,7 @@ public class OAuth2LoginSuccessHandler  implements AuthenticationSuccessHandler 
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-       /* OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) authentication;
-        String registrationId = oauthToken.getAuthorizedClientRegistrationId();
-        OAuth2AuthorizedClient user = oAuth2AuthorizedClientService.loadAuthorizedClient(registrationId, authentication.getName());
 
-        OAuth2RefreshToken refreshToken = user.getRefreshToken();
-        log.info("Authentication getName {}", authentication.getName());
-        log.info("Authentication accessToken {}", user.getAccessToken().getTokenValue());
-        assert refreshToken != null;
-        List<?> getRefreshTokenArray = getRefreshTokenCookie(refreshToken);
-        Cookie refreshTokenCookie = (Cookie) getRefreshTokenArray.get(0);
-        String refreshTokenValue = (String) getRefreshTokenArray.get(1);*/
 
         OAuth2RefreshToken refreshToken = tokenPolicy.getRefreshToken(authentication);
         List<?> result = tokenPolicy.getCookieAndTokenValue(refreshToken);
@@ -63,25 +53,6 @@ public class OAuth2LoginSuccessHandler  implements AuthenticationSuccessHandler 
         response.sendRedirect("/");
         }
 
-    /*private static List<?> getRefreshTokenCookie(OAuth2RefreshToken refreshToken) {
-        String refreshTokenValue = "";
-        if(refreshToken != null) {
-            refreshTokenValue = refreshToken.getTokenValue();
-        }else{
-            refreshTokenValue = UUID.randomUUID().toString();
-        }
-        // Refresh Token을 쿠키에 추가
-
-        Cookie refreshTokenCookie = new Cookie("refresh_token",  refreshTokenValue);
-        refreshTokenCookie.setHttpOnly(true); // JavaScript에서 접근 불가능하도록 설정
-        refreshTokenCookie.setPath("/"); // 쿠키의 유효 경로 설정
-        refreshTokenCookie.setMaxAge(3600 * 24 * 90); // 쿠키의 만료 시간 설정 (예: 90일)
-        List<Object> result = new ArrayList<>();
-        result.add(refreshTokenCookie);
-        result.add(refreshTokenValue);
-
-        return result;
-    }*/
 
 
 }

@@ -1,8 +1,7 @@
 package com.seong.portfolio.quiz_quest.user.controller;
 
 
-import com.seong.portfolio.quiz_quest.rankings.service.RankingService;
-import com.seong.portfolio.quiz_quest.user.service.session.SessionService;
+import com.seong.portfolio.quiz_quest.rankings.service.ranking.RankingService;
 import com.seong.portfolio.quiz_quest.user.service.user.UserService;
 import com.seong.portfolio.quiz_quest.user.vo.UserVO;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class JoinController {
     private final UserService userService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final SessionService sessionService;
     private final RankingService rankingService;
     @GetMapping("/join")
     public String join() {
@@ -32,7 +30,7 @@ public class JoinController {
         vo.setRole("ROLE_USER");
         vo.setXp(0);
         userService.joinProcess(vo);
-        rankingService.initializeRankingDB(vo);
+        rankingService.initRankingRepository(vo);
         return "/login";
     }
 

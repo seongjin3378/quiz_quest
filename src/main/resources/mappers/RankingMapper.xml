@@ -7,29 +7,49 @@
     <resultMap id="rankingMap" type="com.seong.portfolio.quiz_quest.rankings.vo.RankingVO">
         <id property="pk" column="pk"/>
         <result property="rankingType" column="ranking_type"/>
-        <result property="rankingRank" column="ranking_rank"/>
         <result property="userId" column="user_id"/>
         <result property="rankingScore" column="ranking_score"/>
-        <result property="lastAccessDate" column="last_access_date"/>
+        <result property="createdAt" column="created_at"/>
     </resultMap>
 
 
-    <insert id="save" parameterType="com.seong.portfolio.quiz_quest.rankings.vo.RankingVO">
-        INSERT INTO ranking(ranking_type, ranking_rank, user_id, ranking_score)
-        VALUES (#{rankingType}, #{rankingRank}, #{userId}, #{rankingScore});
+    <insert id="save" parameterType="com.seong.portfolio.quiz_quest.rankings.vo.RankingVO" >
+        INSERT INTO ranking(ranking_type, user_id, ranking_score)
+        VALUES (#{rankingType}, #{userId}, #{rankingScore});
     </insert>
+
+    <select id="findAllByRankingType" parameterType="String" resultMap="rankingMap">
+        SELECT * FROM ranking WHERE ranking_type = #{rankingType}
+    </select>
+
+
+    <select id="findAllByPkSet" parameterType="map" resultMap="rankingMap">
+        SELECT * FROM ranking WHERE pk IN
+        <foreach item="pk" collection="pkSet" open="(" separator="," close=")">
+            #{pk}
+        </foreach>
+        ORDER BY ranking_score DESC;  <!-- ranking_score 컬럼을 기준으로 내림차순 정렬 -->
+    </select>
+
+    <select id="findAllByPkSetAndFilterByTimeUnit" parameterType="map" resultMap="rankingMap">
+        SELECT * FROM ranking WHERE pk IN
+        <foreach item="pk" collection="pkSet" open="(" separator="," close=")">
+            #{pk}
+        </foreach>
+        ORDER BY ranking_score DESC;  <!-- ranking_score 컬럼을 기준으로 내림차순 정렬 -->
+    </select>
 
 
     <update id="updateRankingScore" parameterType="com.seong.portfolio.quiz_quest.rankings.vo.RankingVO">
         UPDATE ranking r1
             JOIN (
-            SELECT last_access_date
+            SELECT created_at
             FROM ranking
             WHERE user_id = #{userId}
             AND ranking_type = #{rankingType}
-            ORDER BY last_access_date DESC /*최근 접속일을 내림차순으로 정렬*/
+            ORDER BY created_at DESC /*최근 접속일을 내림차순으로 정렬*/
             LIMIT 1 /*Limit 1이기 때문에 최근 접속한 last_acces_date 컬럼만 조회*/
-            ) r2 ON r1.last_access_date = r2.last_access_date /*최근 액세스한 레코드와 일치하는 것만 조인*/
+            ) r2 ON r1.created_at = r2.created_at /*최근 액세스한 레코드와 일치하는 것만 조인*/
             SET r1.ranking_score = #{rankingScore}
         WHERE r1.user_id = #{userId}
           AND r1.ranking_type = #{rankingType};
@@ -41,17 +61,17 @@
                             SELECT r1.ranking_score
                             FROM ranking r1
                                      JOIN (
-                                SELECT last_access_date
+                                SELECT created_at
                                 FROM ranking
                                 WHERE user_id = #{userId}
                                   AND ranking_type = #{rankingType}
-                                ORDER BY last_access_date DESC
+                                ORDER BY created_at DESC
                                     LIMIT 1
-                            ) r2 ON r1.last_access_date = r2.last_access_date
+                            ) r2 ON r1.created_at = r2.created_at
                             WHERE r1.ranking_type = #{rankingType}
                                       AND r1.user_id = #{userId}
-                                      AND WEEK(r1.last_access_date, 1) = WEEK(CURDATE(), 1) <!-- 월요일을 시작 주로 설정-->
-                                      AND YEAR(r1.last_access_date) = YEAR(CURDATE())
+                                      AND WEEK(r1.created_at, 1) = WEEK(CURDATE(), 1) <!-- 월요일을 시작 주로 설정-->
+                                      AND YEAR(r1.created_at) = YEAR(CURDATE())
     ), -1) AS rankingScore;
     </select>
 
@@ -59,33 +79,33 @@
         <selectKey resultType="int" keyProperty="pk" order="BEFORE"> <!--order: 메인 쿼리보다 먼저 실행되도록 지정-->
 
             SELECT COALESCE((
-            SELECT r1.pk <!-- 기본 키를 선택 -->
-            FROM ranking r1
-            JOIN (
-            SELECT last_access_date
-            FROM ranking
-            WHERE user_id = #{userId} <!-- userId 파라미터 사용 -->
-            AND ranking_type = #{rankingType} <!-- rankingType 파라미터 사용 -->
-            ORDER BY last_access_date DESC
-            LIMIT 1
-            ) r2 ON r1.last_access_date = r2.last_access_date
-            WHERE r1.ranking_type = #{rankingType}
-            AND r1.ranking_score = 0 <!-- 랭킹 타입 조건 -->
+                SELECT r1.pk <!-- 기본 키를 선택 -->
+                FROM ranking r1
+                WHERE r1.ranking_type = #{rankingType}
+                AND r1.user_id = #{userId}
+                AND created_at >= DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY)
+                AND created_at <![CDATA[<]]> DATE_ADD(DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY), INTERVAL 7 DAY)
+                ORDER BY created_at DESC
+                LIMIT 1
             ), -1) AS pk; <!-- NULL일 경우 -1을 반환 -->
         </selectKey>
 
         <!-- 결과가 없을 경우 기본 키를 -1로 설정 -->
         <choose>
             <when test="pk != -1"> <!-- pk 가 있을경우 -->
-                UPDATE ranking SET last_access_date = CURRENT_DATE WHERE pk = #{pk}
+                UPDATE ranking SET created_at = CURRENT_DATE WHERE pk = #{pk}
             </when>
             <otherwise> <!-- pk가 없을 경우 -->
-                INSERT INTO ranking (ranking_type, ranking_rank, user_id, ranking_score, last_access_date)
-                VALUES ('usage_time', -1, #{userId}, 0, CURRENT_TIMESTAMP); <!-- -rank를 -1로 두는 이유는 검색되지 않기 위함 -->
+                INSERT INTO ranking (ranking_type, user_id, ranking_score, created_at)
+                VALUES (#{rankingType},  #{userId}, 0, CURRENT_TIMESTAMP); <!-- -rank를 -1로 두는 이유는 검색되지 않기 위함 -->
             </otherwise>
         </choose>
     </insert>
-
+    
+    
+    <update id="updateCreateAtToLatestDate">
+        UPDATE ranking SET created_at = CURRENT_DATE WHERE ranking_score = 0;
+    </update>
 
     <select id ="existsByUserId" parameterType="com.seong.portfolio.quiz_quest.rankings.vo.RankingVO" resultType="Integer">
         SELECT

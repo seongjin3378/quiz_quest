@@ -1,7 +1,9 @@
-package com.seong.portfolio.quiz_quest.rankings.service;
+package com.seong.portfolio.quiz_quest.rankings.service.ranking;
 
 import com.seong.portfolio.quiz_quest.rankings.vo.RankingVO;
 import com.seong.portfolio.quiz_quest.user.vo.UserVO;
+
+import java.util.List;
 
 
 /* updateUserUsageTime
@@ -12,9 +14,8 @@ import com.seong.portfolio.quiz_quest.user.vo.UserVO;
 */
 
 public interface RankingService {
-    int updateUserUsageTime(int rankingScore);
-
+//    int updateUserUsageTime(int rankingScore); 사용안함
     int findRankingScore(RankingVO vo);
-    int saveOrUpdateRanking(RankingVO vo);
-    void initializeRankingDB(UserVO vo);
+    void initRankingRepository(UserVO vo);
+    List<RankingVO> findAllByRankingType(String rankingType);
 }

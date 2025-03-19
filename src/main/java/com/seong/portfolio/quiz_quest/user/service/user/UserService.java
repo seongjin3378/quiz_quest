@@ -6,7 +6,5 @@ import java.util.Set;
 
 public interface UserService {
     void joinProcess(UserVO vo);
-    int getAllActiveUsers();
-    void setActiveUserWithExpiry();
-    void deleteActiveUsers( Set<String> keys );
+
 }

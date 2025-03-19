@@ -1,17 +1,18 @@
 package com.seong.portfolio.quiz_quest.problems.controller;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.seong.portfolio.quiz_quest.comments.problem.repo.ProblemCommentsRepository;
 import com.seong.portfolio.quiz_quest.comments.problem.vo.ProblemCommentsVO;
 import com.seong.portfolio.quiz_quest.problems.enums.ProblemType;
 import com.seong.portfolio.quiz_quest.problems.repo.ProblemRepository;
-import com.seong.portfolio.quiz_quest.problems.testCases.utils.TestCasesFormatterUtil;
-import com.seong.portfolio.quiz_quest.problems.testCases.vo.TestCasesVO;
+import com.seong.portfolio.quiz_quest.problems.service.problem.ProblemService;
 import com.seong.portfolio.quiz_quest.problems.vo.ProblemVO;
-import com.seong.portfolio.quiz_quest.rankings.service.RankingService;
-import com.seong.portfolio.quiz_quest.rankings.vo.RankingVO;
+import com.seong.portfolio.quiz_quest.rankings.service.ranking.RankingService;
+import com.seong.portfolio.quiz_quest.rankings.service.redis.RedisRankingService;
+import com.seong.portfolio.quiz_quest.rankings.vo.RankingKeyEnumVO;
+import com.seong.portfolio.quiz_quest.rankings.vo.RedisRankingVO;
 import com.seong.portfolio.quiz_quest.user.service.session.SessionService;
-import com.seong.portfolio.quiz_quest.user.service.user.UserService;
 import com.seong.portfolio.quiz_quest.utils.pagination.service.PaginationService;
 import com.seong.portfolio.quiz_quest.utils.pagination.utils.PaginationUtil;
 import com.seong.portfolio.quiz_quest.utils.pagination.vo.PaginationVO;
@@ -32,32 +33,33 @@ import java.util.List;
 @Controller
 @Slf4j
 @RequiredArgsConstructor
-public class ProblemsController {
+public class  ProblemsController {
     private final ProblemRepository problemRepository;
     private final PaginationService paginationService;
     private final ProblemCommentsRepository problemCommentsRepository;
     private final SessionService sessionService;
     private final RankingService rankingService;
+    private final RedisRankingService redisRankingService;
+    private final ProblemService problemService;
 
     @GetMapping("/p/n/{index}")
     @Transactional
-    public String solvePageV(@PathVariable long index, Model model, HttpSession session)
-    {
+    public String solvePageV(@PathVariable long index, Model model, HttpSession session) throws JsonProcessingException {
         String userId = sessionService.getSessionId();
-        RankingVO vo = RankingVO.builder().userId(userId).rankingType("usage_time").build();
-
-        int userUsageTime = rankingService.findRankingScore(vo);
-
+       /* 정책 바뀜
+       RankingVO vo = RankingVO.builder().userId(userId).rankingType("usage_time").build();*/
+        /*int userUsageTime = rankingService.findRankingScore(vo);
+        * */
+        String key = RankingKeyEnumVO.fromString("usage_time").getRankingKey().getKey()+":week";
+        RedisRankingVO vo = RedisRankingVO.builder().key(key).value(userId).build();
+        int userUsageTime = redisRankingService.findRankingScore(vo);
+        log.info("user usage time is {}", userUsageTime);
 
         model.addAttribute("userUsageTime", userUsageTime);
 
-        ProblemVO problemVO = problemRepository.findByProblemId(ProblemVO.builder().problemId(index).isVisible(1).build());
-        List<ProblemCommentsVO> problemCommentsVO = problemCommentsRepository.findAllByProblemId(index, "DESC", "0");
-        int lastIndex = !problemCommentsVO.isEmpty() ? problemCommentsVO.size() - 1 : 0;
-        String cursor = lastIndex != 0 ? problemCommentsVO.get(lastIndex).getCursor() : "0";
-        List<TestCasesVO> formatTestCases = TestCasesFormatterUtil.getTestCasesWithReplace(problemVO.getTestCases(), "\n", "↵");
-        problemVO.setTestCases(formatTestCases);
-        problemVO.setProblemContent(problemVO.getProblemContent().replaceAll("\n", "↵"));
+        ProblemVO problemVO = problemService.findProblem(index);
+        List<ProblemCommentsVO> problemCommentsVO = problemService.findAllProblemComments(index);
+        String cursor = problemService.findCursor(problemCommentsVO);
 
         model.addAttribute("problem", problemVO);
         model.addAttribute("problemComments", problemCommentsVO);

@@ -29,39 +29,6 @@ public class UserServiceImpl implements UserService {
         userRepository.save(vo);
     }
 
-    @Override
-    public int getAllActiveUsers() {
-        Set<String> keys = redisTemplate.keys("JSESSIONID:*");
-
-        return keys.size();
-    }
-
-    @Override
-    public void setActiveUserWithExpiry() {
-        String userId = sessionService.getSessionId();
-        log.info("userId: {}", userId);
-        String key = "JSESSIONID:" + userId;
-
-
-        if(!userId.equals("Anonymous") ) {
-
-            redisTemplate.opsForValue().set(key, "");
-            log.info("세션 생성: {}, Redis에 저장된 활성 세션 수: {}", userId, redisTemplate.opsForValue().get(key));
-            redisTemplate.expire(key, 60, TimeUnit.MINUTES);
-        }
-    }
-
-    @Override
-    public void deleteActiveUsers(Set<String> keys ) {
-        for (String key : keys) {
-            // TTL 값을 확인합니다.
-            Long ttl = redisTemplate.getExpire(key);
-            // TTL이 음수인 경우 해당 키를 삭제
-            if (ttl < 0) {
-                redisTemplate.delete(key);
-            }
-        }
-    }
 
 
 }

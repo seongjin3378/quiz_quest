@@ -15,4 +15,10 @@ public enum RankingType {
     {
         return label;
     }
+
+    public static String[] getLabels() {
+        return java.util.Arrays.stream(RankingType.values())
+                .map(RankingType::label)  // 각 enum의 label() 호출
+                .toArray(String[]::new);  // String 배열로 변환
+    }
 }
