@@ -17,7 +17,7 @@ public class ProblemServiceImpl implements ProblemService {
     private final ProblemRepository problemRepository;
     private final ProblemCommentsRepository problemCommentsRepository;
     @Override
-    public ProblemVO findProblem(long id) {
+    public ProblemVO findByProblemIdAndReplace(long id) {
         ProblemVO problemVO = problemRepository.findByProblemId(ProblemVO.builder().problemId(id).isVisible(1).build());
         List<TestCasesVO> formatTestCases = TestCasesFormatterUtil.getTestCasesWithReplace(problemVO.getTestCases(), "\n", "↵");
         problemVO.setTestCases(formatTestCases);
@@ -36,5 +36,10 @@ public class ProblemServiceImpl implements ProblemService {
     public String findCursor(List<ProblemCommentsVO> problemCommentsVO) {
         int lastIndex = !problemCommentsVO.isEmpty() ? problemCommentsVO.size() - 1 : 0;
         return lastIndex != 0 ? problemCommentsVO.get(lastIndex).getCursor() : "0";
+    }
+
+    @Override
+    public ProblemVO findByProblemId(long id) {
+        return problemRepository.findByProblemId(ProblemVO.builder().problemId(id).isVisible(1).build());
     }
 }

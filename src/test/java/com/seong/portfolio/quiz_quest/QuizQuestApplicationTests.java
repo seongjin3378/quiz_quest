@@ -1,11 +1,13 @@
 package com.seong.portfolio.quiz_quest;
 
 
+import com.seong.portfolio.quiz_quest.problems.problemHistory.service.ProblemHistoryService;
 import com.seong.portfolio.quiz_quest.problems.service.probDockerExecution.ProbDockerExecutionService;
 import com.seong.portfolio.quiz_quest.problems.testCases.vo.TestCasesVO;
 import com.seong.portfolio.quiz_quest.problems.vo.ProbExecutionVO;
 import com.seong.portfolio.quiz_quest.quartz.interfaces.JobService;
 import com.seong.portfolio.quiz_quest.rankings.repo.RedisRankingRepository;
+import com.seong.portfolio.quiz_quest.user.repo.UserRepository;
 import org.junit.jupiter.api.Test;
 
 import org.slf4j.Logger;
@@ -46,7 +48,29 @@ class QuizQuestApplicationTests {
     private JobService initializeUsageTimeJob;
     //
 
+    @Autowired
+    private ProblemHistoryService problemHistoryService;
+
+    @Autowired
+    private UserRepository userRepository;
     @Test
+    public void userDB_test()
+    {
+        userRepository.findLevelAndXpByUserId("test0");
+    }
+
+    public void history_test()
+    {
+        /*problemHistoryService.saveProblem(25, "test0");*/
+        int exists = problemHistoryService.isProblemSolved(25, "test0");
+
+        if(exists==1)
+        {
+            logger.info("Problem Solved");
+
+        }
+
+    }
     public void quartzServiceTest()
     {
     initializeUsageTimeJob.execute();

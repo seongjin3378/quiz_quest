@@ -17,6 +17,7 @@ public class ProbExecutionVO {
     private String uuid;
     private long memoryLimit;
     private long nanoCpus;
+    private int xp;
     private String language;
     private CreateContainerResponse container;
     private List<TestCasesVO> testCases;
@@ -26,6 +27,7 @@ public class ProbExecutionVO {
     private String problemTitle;
     private String problemType;
     private String problemContent;
+    private ProblemVO problemVO;
 
 
 }

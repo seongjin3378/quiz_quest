@@ -24,7 +24,6 @@ import java.util.UUID;
 @Slf4j
 @Qualifier("ProbDockerExecution")
 public class ProbDockerExecutionServiceImpl implements ProbDockerExecutionService {
-    private final ProblemRepository problemRepository;
     private final ProbDockerService probDockerService;
     private final ProbValidate probValidate;
     private final ProbFileUtils probFileUtils;
@@ -39,7 +38,7 @@ public class ProbDockerExecutionServiceImpl implements ProbDockerExecutionServic
     public ProbExecutionVO setProbExecutionVO(ProbExecutionVO probExecutionVO) {
         UUID uniqueUUID = UUID.randomUUID();
         String uuidString = uniqueUUID.toString();
-        ProblemVO problemVO = problemRepository.findByProblemId(ProblemVO.builder().problemId(probExecutionVO.getProblemId()).isVisible(-1).build());
+        ProblemVO problemVO = probExecutionVO.getProblemVO();
         return ProbExecutionVO.builder()
                 .uuid(uuidString)
                 .memoryLimit((long) problemVO.getMemoryLimit() * 1024 * 1024)

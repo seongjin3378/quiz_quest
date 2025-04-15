@@ -78,7 +78,8 @@ public class RankingServiceImpl implements RankingService {
         String userId = sessionService.getSessionId();
 
         if(rankingScore == -1) { // 랭킹 스코어를 찾지 못할 시 DB 초기화
-            initRankingRepository(UserVO.builder().userId(userId).build());
+            UserVO userVO = UserVO.builder().userId(userId).build();
+            initRankingRepository(userVO);
         }
         rankingScore = rankingRepository.findRankingScore(vo);
         return rankingScore;

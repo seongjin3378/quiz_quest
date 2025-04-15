@@ -67,6 +67,7 @@ function getFormDataFromSaveRequest() {
         problemTitle: document.getElementById('problem-title').value,
         problemType: document.getElementById('problem-type').value,
         problemContent: document.getElementById('problem-content').value,
+        xp: document.getElementById('xp').value,
         testCases: testCases
     };
 

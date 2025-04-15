@@ -6,7 +6,8 @@ import com.seong.portfolio.quiz_quest.problems.vo.ProblemVO;
 import java.util.List;
 
 public interface ProblemService {
-    ProblemVO findProblem(long id);
+    ProblemVO findByProblemIdAndReplace(long id);
     List<ProblemCommentsVO> findAllProblemComments(long id);
     String findCursor(List<ProblemCommentsVO> problemCommentsVO);
+    ProblemVO findByProblemId(long id);
 }

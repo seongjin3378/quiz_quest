@@ -2,6 +2,7 @@ package com.seong.portfolio.quiz_quest.user.service.principalDetails.vo;
 
 import com.seong.portfolio.quiz_quest.user.vo.UserVO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -11,6 +12,7 @@ import java.util.Collection;
 import java.util.Map;
 
 @RequiredArgsConstructor
+@Slf4j
 public class PrincipalDetails implements UserDetails, OAuth2User {
     private UserVO userVO;
     private Map<String, Object> attributes;
@@ -18,6 +20,7 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
     //CustomUserDetailsService
     public PrincipalDetails(UserVO userVO) {
         this.userVO = userVO;
+        log.info("UserId: {}, pwd: {}", userVO.getUserId(), userVO.getPassword());
     }
 
     public PrincipalDetails(UserVO userVO, Map<String, Object> attributes ) {

@@ -2,7 +2,6 @@ package com.seong.portfolio.quiz_quest.problems.controller;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.seong.portfolio.quiz_quest.comments.problem.repo.ProblemCommentsRepository;
 import com.seong.portfolio.quiz_quest.comments.problem.vo.ProblemCommentsVO;
 import com.seong.portfolio.quiz_quest.problems.enums.ProblemType;
 import com.seong.portfolio.quiz_quest.problems.repo.ProblemRepository;
@@ -36,7 +35,6 @@ import java.util.List;
 public class  ProblemsController {
     private final ProblemRepository problemRepository;
     private final PaginationService paginationService;
-    private final ProblemCommentsRepository problemCommentsRepository;
     private final SessionService sessionService;
     private final RankingService rankingService;
     private final RedisRankingService redisRankingService;
@@ -57,7 +55,7 @@ public class  ProblemsController {
 
         model.addAttribute("userUsageTime", userUsageTime);
 
-        ProblemVO problemVO = problemService.findProblem(index);
+        ProblemVO problemVO = problemService.findByProblemIdAndReplace(index);
         List<ProblemCommentsVO> problemCommentsVO = problemService.findAllProblemComments(index);
         String cursor = problemService.findCursor(problemCommentsVO);
 

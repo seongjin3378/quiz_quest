@@ -7,7 +7,7 @@ import com.seong.portfolio.quiz_quest.rankings.service.redis.RedisRankingService
 import com.seong.portfolio.quiz_quest.rankings.vo.RankingKeyEnumVO;
 import com.seong.portfolio.quiz_quest.rankings.vo.RankingVO;
 import com.seong.portfolio.quiz_quest.rankings.vo.RedisRankingVO;
-import com.seong.portfolio.quiz_quest.user.service.user.ActiveUserService;
+import com.seong.portfolio.quiz_quest.user.service.active.ActiveUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;

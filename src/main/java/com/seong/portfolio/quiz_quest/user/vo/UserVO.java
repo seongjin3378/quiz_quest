@@ -5,12 +5,21 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
+
 public class UserVO {
+
     private String userId;
     private String password;
     private String email;
     private String role;
-    private Integer xp;
-    private Integer level;
+    private int xp;
+    private int level;
     private String refreshToken;
+    private long userNum;
+    // 기본 생성자
+
+
+    // 모든 필드를 포함하는 생성자
 }

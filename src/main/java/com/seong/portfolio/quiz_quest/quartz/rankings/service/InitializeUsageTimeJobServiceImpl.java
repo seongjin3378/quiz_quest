@@ -7,19 +7,15 @@ import com.seong.portfolio.quiz_quest.rankings.repo.RankingRepository;
 import com.seong.portfolio.quiz_quest.rankings.repo.RedisRankingRepository;
 import com.seong.portfolio.quiz_quest.rankings.vo.RankingKeyEnumVO;
 import com.seong.portfolio.quiz_quest.rankings.vo.RankingVO;
-import com.seong.portfolio.quiz_quest.user.service.user.ActiveUserService;
+import com.seong.portfolio.quiz_quest.user.service.active.ActiveUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.Set;
 
 @Service

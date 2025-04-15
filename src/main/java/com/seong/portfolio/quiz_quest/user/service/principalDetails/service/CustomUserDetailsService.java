@@ -25,7 +25,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         UserVO vo = userRepository.findByUserId(username);
         logger.info("userName: {}", username);
         if(vo != null) {
-            logger.info("vo: {}", vo);
+            logger.info("user id {}", vo.getUserId());
             return new PrincipalDetails(vo);
         }
         logger.info("vo: {}", vo);

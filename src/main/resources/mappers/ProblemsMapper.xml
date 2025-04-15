@@ -12,8 +12,8 @@
 
     </select>
     <insert id="save" parameterType="com.seong.portfolio.quiz_quest.problems.vo.ProbExecutionVO" useGeneratedKeys="true" keyProperty="problemId">
-        INSERT INTO problems (problem_title, problem_type, problem_content, memory_limit, time_limit)
-        VALUES (#{problemTitle}, #{problemType}, #{problemContent}, #{memoryLimit}, #{timeLimit});
+        INSERT INTO problems (problem_title, problem_type, problem_content, memory_limit, time_limit, xp)
+        VALUES (#{problemTitle}, #{problemType}, #{problemContent}, #{memoryLimit}, #{timeLimit}, #{xp});
     </insert>
 
 
@@ -61,6 +61,7 @@
             p.problem_content,
             p.memory_limit,
             p.time_limit,
+            p.xp,
             tc.test_case_id,
             tc.input_value,
             tc.output_value
@@ -89,6 +90,7 @@
         <result property="problemContent" column="problem_content"/>
         <result property="memoryLimit" column="memory_limit"/>
         <result property="timeLimit" column="time_limit"/>
+        <result property="xp" column="xp"/>
         <collection property="testCases" resultMap="testCasesResultMap"/> <!--1:n을 위해 Collection을 이용 -->
     </resultMap>
 

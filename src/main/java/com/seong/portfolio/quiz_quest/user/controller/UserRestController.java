@@ -1,7 +1,7 @@
 package com.seong.portfolio.quiz_quest.user.controller;
 
 
-import com.seong.portfolio.quiz_quest.user.service.user.ActiveUserService;
+import com.seong.portfolio.quiz_quest.user.service.active.ActiveUserService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

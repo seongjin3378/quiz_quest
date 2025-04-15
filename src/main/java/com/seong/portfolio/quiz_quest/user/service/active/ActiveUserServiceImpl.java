@@ -1,4 +1,4 @@
-package com.seong.portfolio.quiz_quest.user.service.user;
+package com.seong.portfolio.quiz_quest.user.service.active;
 
 import com.seong.portfolio.quiz_quest.user.repo.UserRepository;
 import com.seong.portfolio.quiz_quest.user.service.session.SessionService;

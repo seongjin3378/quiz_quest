@@ -1,6 +1,5 @@
-package com.seong.portfolio.quiz_quest.user.service.user;
+package com.seong.portfolio.quiz_quest.user.service.active;
 
-import java.util.List;
 import java.util.Set;
 
 public interface ActiveUserService {

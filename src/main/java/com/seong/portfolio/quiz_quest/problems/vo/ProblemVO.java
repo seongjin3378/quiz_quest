@@ -19,6 +19,7 @@ public class ProblemVO  {
     private String problemContent;
     private int memoryLimit;
     private int timeLimit;
+    private int xp;
     private List<TestCasesVO> testCases;
     private long testCaseId;
     private int isVisible;
