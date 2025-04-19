@@ -75,7 +75,7 @@ public class SecurityConfig {
         http
                 .addFilterAfter(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(oauthAutoLoginFilter, UsernamePasswordAuthenticationFilter.class)
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/img/**","/css/**", "/js/**", "/", "/login", "/favicon.ico", "/p/{number}"))
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/img/**","/css/**", "/js/**", "/", "/login", "/favicon.ico", "/p/{number}", "/stream/{userId}", "/emit", "/test/**", "/test"))
                 .logout((auth) -> auth
                         .logoutUrl("/logoutProc")
                         .logoutSuccessHandler(new CustomLogOutSuccessHandler(sessionRegistry))
@@ -85,7 +85,7 @@ public class SecurityConfig {
                         .requestMatchers("/loginProc", "/join", "/joinProc", "/api/v1/users/**", "/api/v1/rankings/**", "/logoutProc", "/favicon.ico", "/api/v1/problems/**").permitAll()
                         .requestMatchers("/", "/p/{index}/s/{sortType}", "/p/n/{index}").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/login").anonymous()
-                        .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/img/**", "/stream/{userId}", "/emit", "/test", "/test/**").permitAll()
 
                         .anyRequest().denyAll()
                 )                .exceptionHandling((exceptions) -> exceptions

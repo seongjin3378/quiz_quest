@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SSE Example</title>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<h1>SSE Example</h1>
+
+<div id="content"></div>
+<script>
+  const eventSource = new EventSource("/stream/test0");
+  const content = document.getElementById("content");
+
+  eventSource.onmessage = (event) => {
+    console.log("메시지 수신:", event.data);
+    content.innerHTML += `<p>${event.data}</p>`;
+  };
+
+  eventSource.onerror = (error) => {
+    console.error("SSE 에러:", error);
+  };
+
+  eventSource.onclose = () => {
+    console.log("SSE 연결 종료");
+  };
+</script>
+<script>
+  function streamTest()
+  {
+    const data = {
+      senderId: 1,
+      receiverId: 2,
+      messageContent: "안녕하세요! 메시지 내용입니다. 테스트입니다",
+      receiver: {
+        userId: "test0"  // receiver 객체에 userId와 username 추가
+      }
+    };
+
+    axios.post('http://localhost:8080/emit', data)
+            .then(response => {
+              console.log('Success:', response.data);
+            })
+            .catch(error => {
+              console.error('Error:', error);
+            });
+  }
+</script>
+
+<Button onclick="streamTest()">스트림 테스트</Button>
+</body>
+</html>

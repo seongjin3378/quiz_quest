@@ -1,6 +1,8 @@
 package com.seong.portfolio.quiz_quest;
 
 
+import com.seong.portfolio.quiz_quest.message.repo.MessageRepository;
+import com.seong.portfolio.quiz_quest.message.vo.MessageVO;
 import com.seong.portfolio.quiz_quest.problems.problemHistory.service.ProblemHistoryService;
 import com.seong.portfolio.quiz_quest.problems.service.probDockerExecution.ProbDockerExecutionService;
 import com.seong.portfolio.quiz_quest.problems.testCases.vo.TestCasesVO;
@@ -22,6 +24,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import reactor.core.publisher.Mono;
 
 import java.io.*;
 import java.util.*;
@@ -53,10 +56,21 @@ class QuizQuestApplicationTests {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private MessageRepository messageRepository;
+
     @Test
-    public void userDB_test()
+    public void messageDB_test()
     {
-        userRepository.findLevelAndXpByUserId("test0");
+
+        List<MessageVO> messageVOList = messageRepository.findAllBySenderId(1L);
+
+        for(MessageVO messageVO : messageVOList)
+        {
+            logger.info(messageVO.getSender().getUserId());
+        }
+
     }
 
     public void history_test()
