@@ -46,6 +46,7 @@ public class RankingServiceImpl implements RankingService {
     }
 
     @Transactional
+    @Deprecated
     public int updateUserUsageTime(int rankingScore) {
         String userId = sessionService.getSessionId();
         Boolean isUserIdExists = redisTemplate.hasKey("JSESSIONID:" + userId);

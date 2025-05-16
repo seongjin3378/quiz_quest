@@ -1,8 +1,8 @@
 package com.seong.portfolio.quiz_quest;
 
 
-import com.seong.portfolio.quiz_quest.message.repo.MessageRepository;
-import com.seong.portfolio.quiz_quest.message.vo.MessageVO;
+import com.seong.portfolio.quiz_quest.notification.repo.NotificationRepository;
+import com.seong.portfolio.quiz_quest.notification.vo.NotificationVO;
 import com.seong.portfolio.quiz_quest.problems.problemHistory.service.ProblemHistoryService;
 import com.seong.portfolio.quiz_quest.problems.service.probDockerExecution.ProbDockerExecutionService;
 import com.seong.portfolio.quiz_quest.problems.testCases.vo.TestCasesVO;
@@ -24,7 +24,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import reactor.core.publisher.Mono;
 
 import java.io.*;
 import java.util.*;
@@ -58,18 +57,28 @@ class QuizQuestApplicationTests {
     private UserRepository userRepository;
 
     @Autowired
-    private MessageRepository messageRepository;
+    private NotificationRepository notificationRepository;
+
+
 
     @Test
     public void messageDB_test()
     {
 
-        List<MessageVO> messageVOList = messageRepository.findAllBySenderId(1L);
+   /*     List<MessageVO> messageVOList = messageRepository.findAllBySenderId(1L);
 
         for(MessageVO messageVO : messageVOList)
         {
             logger.info(messageVO.getSender().getUserId());
-        }
+        }*/
+
+        NotificationVO message = new NotificationVO();
+        message.setSenderId(1L);
+        message.setReceiverId(2L);
+        message.setMessageContent("안녕하세요. 테스트 메시지입니다.");
+        message.setNotice(false);
+
+        notificationRepository.save(message);
 
     }
 

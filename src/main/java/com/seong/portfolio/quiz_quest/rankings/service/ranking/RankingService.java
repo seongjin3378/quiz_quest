@@ -14,7 +14,7 @@ import java.util.List;
 */
 
 public interface RankingService {
-//    int updateUserUsageTime(int rankingScore); 사용안함
+    int updateUserUsageTime(int rankingScore);
     int findRankingScore(RankingVO vo);
     void initRankingRepository(UserVO vo);
     List<RankingVO> findAllByRankingType(String rankingType);

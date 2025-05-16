@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -17,10 +18,8 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final RedisTemplate<String, Object> redisTemplate;
     private final SessionService sessionService;
     private final UserXp userXp;
-    private final ProblemHistoryService problemHistoryService;
     @Override
     public void joinProcess(UserVO vo) {
         int isUser = userRepository.existsByUserId(vo);
@@ -33,6 +32,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
+    @Transactional
     public void xpProcess(int xp, long problemId) {
 
         String userId = sessionService.getSessionId();

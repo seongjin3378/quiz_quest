@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-
 public class UserXpImpl implements UserXp {
 
     public int isLevelUpReturnXp(int xp) {

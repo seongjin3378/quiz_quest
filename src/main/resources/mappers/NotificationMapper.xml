@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.seong.portfolio.quiz_quest.notification.repo.NotificationRepository">
+    <resultMap id="mMap" type="com.seong.portfolio.quiz_quest.notification.vo.NotificationVO">
+        <id property="notificationId" column="notification_id"/>
+        <result property="content" column="content"/>
+        <result property="sentDate" column="sent_date" javaType="java.time.LocalDateTime"/>  <!-- 또는 java.util.Date -->
+        <result property="isNotice" column="is_notice"/>
+        <result property="notificationType" column="notification_type"/>
+        <result property="url" column="url"/>
+        <association property="sender" javaType="com.seong.portfolio.quiz_quest.user.vo.UserVO">
+            <id property="senderId" column="user_num"/>
+            <!-- 필요한 User 정보 컬럼 매핑 -->
+            <result property="userId" column="user_id"/>
+        </association>
+        <!-- Receiver Association -->
+        <association property="receiver" javaType="com.seong.portfolio.quiz_quest.user.vo.UserVO">
+            <id property="receiverId" column="user_num"/>
+            <!-- 필요한 User 정보 컬럼 매핑 -->
+            <result property="userId" column="user_id"/>
+        </association>
+    </resultMap>
+
+<!--  <insert id="save" parameterType="com.seong.portfolio.quiz_quest.notification.vo.MessageVO">
+        INSERT INTO Messages(sender_id, receiver_id, message_content,  is_notice) VALUES (#{senderId}, #{receiverId}, #{messageContent},  #{isNotice});
+  </insert>-->
+
+    <select id="findAllBySenderId" parameterType="com.seong.portfolio.quiz_quest.notification.vo.NotificationVO" resultMap="mMap">
+
+    SELECT
+        m.sender_id,
+        m.content,
+        m.sent_date,
+        m.is_notice,
+        u.user_id,
+        u2.user_id
+    FROM notification
+    AS m
+    INNER JOIN users AS u
+    ON m.sender_id = u.user_num
+    INNER JOIN users AS u2
+    ON m.receiver_id = u2.user_num
+    WHERE sender_id = #{senderId};
+
+    </select>
+
+
+
+</mapper>
