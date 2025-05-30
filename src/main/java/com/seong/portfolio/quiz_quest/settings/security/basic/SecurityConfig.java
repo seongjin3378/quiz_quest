@@ -7,12 +7,9 @@ import com.seong.portfolio.quiz_quest.settings.security.basic.entryPoint.CustomA
 import com.seong.portfolio.quiz_quest.settings.security.basic.handler.CustomAccessDeniedHandler;
 import com.seong.portfolio.quiz_quest.settings.security.basic.handler.CustomLogOutSuccessHandler;
 import com.seong.portfolio.quiz_quest.settings.security.basic.handler.OAuth2LoginSuccessHandler;
-import com.seong.portfolio.quiz_quest.settings.security.basic.refreshToken.TokenPolicy;
 import com.seong.portfolio.quiz_quest.settings.security.basic.resolver.CustomAuthorizationRequestResolver;
-import com.seong.portfolio.quiz_quest.user.repo.UserRepository;
 import com.seong.portfolio.quiz_quest.user.service.principalDetails.service.CustomOauthUserService;
 import com.seong.portfolio.quiz_quest.user.service.principalDetails.service.CustomUserDetailsService;
-import com.seong.portfolio.quiz_quest.user.service.session.SessionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -20,17 +17,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-
 import org.springframework.security.core.session.SessionRegistry;
-
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-
 import static org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED;
 
 
@@ -41,15 +32,11 @@ import static org.springframework.security.config.http.SessionCreationPolicy.IF_
 public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
-    private final SessionService sessionService;
     private final RateLimitingFilter rateLimitingFilter;
     private final CustomOauthUserService customOauthUserService;
     private final OAuth2AuthorizedClientManager authorizedClientManager;
-    private final OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
     private final CustomAuthorizationRequestResolver customAuthorizationRequestResolver;
-    private final UserRepository userRepository;
     private final OauthAutoLoginFilter oauthAutoLoginFilter;
-    private final TokenPolicy<OAuth2RefreshToken> tokenPolicy;
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 
 
@@ -81,7 +68,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/loginProc", "/join", "/joinProc", "/api/v1/users/**", "/api/v1/rankings/**", "/logoutProc", "/favicon.ico", "/api/v1/problems/**").permitAll()
-                        .requestMatchers("/", "/p/{index}/s/{sortType}", "/p/n/{index}").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers("/", "/p/{index}/s/{sortType}", "/p/n/{index}", "/c/{index}/s/{sortType}", "/c/n/{index}", "/c/write", "/api/v1/courses/**", "/c/pic/{UUID}", "/p/pic/{problemVisualId}").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/login").anonymous()
                         .requestMatchers("/css/**", "/js/**", "/img/**", "/api/v1/notification/**", "/test", "/test/**").permitAll()
 

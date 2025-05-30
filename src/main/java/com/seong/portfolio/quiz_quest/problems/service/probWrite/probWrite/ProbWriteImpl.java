@@ -19,8 +19,9 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class ProbWriteImpl implements ProbWrite {
-    @Qualifier("ProbWriteDockerExecution")
+@Deprecated
+public class ProbWriteImpl  {
+  /*  @Qualifier("ProbWriteDockerExecution")
     private final ProbDockerExecutionService probDockerExecutionService;
     private final TestCasesValidate testCasesValidate;
     private final ProbValidate probValidate;
@@ -65,6 +66,6 @@ public class ProbWriteImpl implements ProbWrite {
             }
 
         probWriteService.saveProblemVisualAids(files, probVisualVO, fileName);
-    }
+    }*/
 
 }

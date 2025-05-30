@@ -2,7 +2,7 @@ package com.seong.portfolio.quiz_quest.notification.vo;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.seong.portfolio.quiz_quest.notification.service.enums.NotificationType;
+import com.seong.portfolio.quiz_quest.notification.enums.NotificationType;
 import com.seong.portfolio.quiz_quest.user.vo.UserVO;
 import lombok.*;
 

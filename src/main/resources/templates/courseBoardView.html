@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/courseBoardView.css}">
+    <title>강의 게시글</title>
+</head>
+<body>
+
+
+<div class="post-container" th:object="${course}">
+    <div class="post-header">
+        <h1 class="post-title" th:text="*{courseTitle}">강의 게시글 제목</h1>
+        <div class="post-meta">
+            작성일:  <span th:text="${#temporals.format(course.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
+            |
+            분류: <span th:text="*{courseType}"></span>
+            |
+            조회수: <span th:text="*{totalViews}"></span>
+        </div>
+    </div>
+
+    <div class="post-content" th:utext="*{courseContent}">
+
+    </div>
+
+    <div class="reactions">
+        <button id="likeBtn">
+            👍 <span class="count" id="likeCount" th:text="*{totalLikes}">0</span>
+        </button>
+        <button id="dislikeBtn">
+            👎 <span class="count" id="dislikeCount" th:text="*{totalDislikes}">0</span>
+        </button>
+    </div>
+
+    <div class="comments-section">
+        <h2>댓글</h2>
+        <div id="commentsList">
+            <!-- 개별 댓글 .comment 요소 추가 -->
+        </div>
+        <form class="comment-form" id="commentForm">
+            <textarea id="commentInput" placeholder="댓글을 입력하세요..." required></textarea>
+            <button type="submit">댓글 등록</button>
+        </form>
+    </div>
+</div>
+
+<!--<script>
+    let likes = 0;
+    let dislikes = 0;
+    const likeBtn = document.getElementById('likeBtn');
+    const dislikeBtn = document.getElementById('dislikeBtn');
+    const likeCount = document.getElementById('likeCount');
+    const dislikeCount = document.getElementById('dislikeCount');
+
+    likeBtn.addEventListener('click', () => {
+        likes++;
+        likeCount.textContent = likes;
+    });
+    dislikeBtn.addEventListener('click', () => {
+        dislikes++;
+        dislikeCount.textContent = dislikes;
+    });
+
+    const commentForm = document.getElementById('commentForm');
+    const commentInput = document.getElementById('commentInput');
+    const commentsList = document.getElementById('commentsList');
+
+    commentForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const text = commentInput.value.trim();
+        if (!text) return;
+        const commentEl = document.createElement('div');
+        commentEl.className = 'comment';
+        commentEl.innerHTML = `
+        <div class="comment-header">익명 | ${new Date().toLocaleString()}</div>
+        <div class="comment-body">${text}</div>
+      `;
+        commentsList.prepend(commentEl);
+        commentInput.value = '';
+    });
+</script>-->
+
+<script th:src="@{/js/courseBoardView.js}"></script>
+</body>
+</html>

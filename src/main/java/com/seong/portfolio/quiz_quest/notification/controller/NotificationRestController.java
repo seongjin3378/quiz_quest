@@ -1,12 +1,10 @@
 package com.seong.portfolio.quiz_quest.notification.controller;
 
 
-import com.seong.portfolio.quiz_quest.notification.service.enums.NotificationType;
+import com.seong.portfolio.quiz_quest.notification.enums.NotificationType;
 import com.seong.portfolio.quiz_quest.notification.service.notification.NotificationService;
 import com.seong.portfolio.quiz_quest.notification.vo.NotificationVO;
 import com.seong.portfolio.quiz_quest.user.service.session.SessionService;
-import com.seong.portfolio.quiz_quest.user.service.user.UserService;
-import com.seong.portfolio.quiz_quest.user.vo.UserVO;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +31,6 @@ public class NotificationRestController {
         log.info("Last Event ID: {}", lastEventId);
         return ResponseEntity.ok(notificationService.subscribe(userNum, lastEventId));
     }
-
     
 
     @PostMapping(value= "/send/{receiverNum}")
@@ -43,7 +40,9 @@ public class NotificationRestController {
 
         if(notificationVO.getNotificationType().equals(NotificationType.COMMENT)) {
             String sender = sessionService.getSessionId();
-            notificationService.send(receiverNum, NotificationType.COMMENT, sender+"님이 댓글을 달았습니다!", notificationVO.getUrl());
+
+            //long receiverId, NotificationType notificationType, String url, String content
+            notificationService.send(receiverNum, NotificationType.COMMENT, notificationVO.getUrl(), sender+"님이 댓글을 달았습니다!");
         }
 
         return ResponseEntity.ok("notification success");

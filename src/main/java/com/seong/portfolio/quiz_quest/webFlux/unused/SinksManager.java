@@ -5,7 +5,7 @@ import reactor.core.publisher.Sinks;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-
+@Deprecated
 public class SinksManager {
 /*    private final Map<String, Sinks.Many<String>> sinks = new ConcurrentHashMap<>();
     private final Sinks.Many<String> sink = Sinks.many().multicast().onBackpressureBuffer();

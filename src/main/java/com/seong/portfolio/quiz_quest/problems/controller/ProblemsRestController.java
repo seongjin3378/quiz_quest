@@ -52,13 +52,7 @@ public class ProblemsRestController {
 
             try {
                 ProblemVO problemVO = problemService.findByProblemId(problemId);
-                probDockerExecutionService.execute(ProbExecutionVO
-                        .builder()
-                        .problemId(problemId)
-                        .language(language)
-                        .file(file)
-                        .problemVO(problemVO)
-                        .build());
+                probDockerExecutionService.execute(getProbExecutionVO(problemId, language, file, problemVO));
                 String userId = sessionService.getSessionId();
                 boolean isFirstSolving = problemHistoryService.isProblemSolved(problemId, userId) == 0;
                 log.info("is First Solving {}", isFirstSolving);
@@ -81,6 +75,17 @@ public class ProblemsRestController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("problemIndex has been tampered");
         }
 
+    }
+
+    private ProbExecutionVO getProbExecutionVO(long problemId, String language, MultipartFile file, ProblemVO problemVO) {
+
+        return ProbExecutionVO
+                .builder()
+                .problemId(problemId)
+                .language(language)
+                .file(file)
+                .problemVO(problemVO)
+                .build();
     }
 
     @GetMapping("/{problemId}/{cursor}/{sortType}/comments")

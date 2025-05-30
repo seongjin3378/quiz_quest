@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
+@Deprecated
 public class MessageRestTestController {
    /* private final SessionService sessionService;
 

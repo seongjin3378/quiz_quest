@@ -13,11 +13,13 @@ import java.util.List;
 public interface ProblemRepository {
     int save(ProbExecutionVO probExecutionVO);
 
-    List<ProblemVO> findAll(int index);
+
 
     ProblemVO findByProblemId(ProblemVO problemVO);
 
-    int count(@Param("column") String column, @Param("value") Object value);
+    int count(@Param("column") String column, @Param("value") Object value); //reflex
 
-    List<ProblemVO> findAllByColumnAndValue(@Param("index") int index, @Param("column") String columnValue, @Param("value") String Value);
+    List<ProblemVO> findAll(int index); // reflex
+
+    List<ProblemVO> findAllByColumnAndValue(@Param("index") int index, @Param("column") String columnValue, @Param("value") String Value); //reflex
 }

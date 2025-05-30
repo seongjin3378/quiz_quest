@@ -45,7 +45,7 @@ import java.io.IOException;
 
 * */
 
-
+@Deprecated // 안씀
 public interface ProbWrite {
     void initializeProbExecutionVO(ProbExecutionVO probExecutionVO, MultipartFile file, String language);
     void validateProbExecution(ProbExecutionVO probExecutionVO);

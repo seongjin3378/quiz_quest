@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class ProbVisualVO {
+    private long problemVisualId;
     private List<String> visualSrc;
     private List<String> visualCaptions; // 이미지 캡션
     private String visualTables; // ProbTableVO 리스트

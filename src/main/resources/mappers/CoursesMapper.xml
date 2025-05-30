@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.seong.portfolio.quiz_quest.courses.repo.CoursesRepository">
+    <insert id="save" parameterType="com.seong.portfolio.quiz_quest.courses.vo.CourseVO" useGeneratedKeys="true" keyProperty="courseId">
+
+        INSERT INTO courses(course_title, course_type, course_content)
+        VALUES( #{courseTitle}, #{courseType}, #{courseContent});
+    </insert>
+
+    <select id="findByCourseId" parameterType="map" resultMap="courseMap">
+        SELECT
+            c.course_id,
+            c.course_title,
+            c.course_type,
+            c.course_content,
+            c.created_at,
+            COALESCE((
+                         SELECT SUM(view_count)
+                         FROM course_view v
+                         WHERE v.course_id = c.course_id
+                     ), 0) AS total_views,
+            COALESCE((
+                         SELECT SUM(CASE WHEN like_count =  1 THEN 1 ELSE 0 END)
+                         FROM course_likes l
+                         WHERE l.course_id = c.course_id
+                     ), 0) AS total_likes,
+            COALESCE((
+                         SELECT SUM(CASE WHEN like_count = -1 THEN 1 ELSE 0 END)
+                         FROM course_likes dl
+                         WHERE dl.course_id = c.course_id
+                     ), 0) AS total_dislikes
+        FROM courses c
+        WHERE c.course_id = #{courseId};
+    </select>
+    <select id="count" parameterType="map" resultType="Integer">
+
+            SELECT COUNT(*)
+            FROM courses
+            <where>
+                <if test="value != -1 ">
+                    ${columnValue} = #{value}
+                </if>
+            </where>
+
+    </select>
+
+    <select id="findAll" resultMap="courseMap">
+        SELECT
+            c.course_id,
+            c.course_title,
+            c.course_type,
+            c.course_content,
+            c.created_at,
+            COALESCE(cv.total_views, 0) AS total_view
+        FROM courses c
+                 LEFT JOIN (
+            SELECT
+                course_id,
+                SUM(view_count) AS total_views
+            FROM course_view
+            GROUP BY course_id
+        ) cv
+        ON cv.course_id = c.course_id
+        ORDER BY c.course_id
+            LIMIT 100 OFFSET #{value};
+
+    </select>
+
+
+    <select id="findAllByColumnAndValue" parameterType="map" resultMap="courseMap">
+        <!-- ${}로 인한 -->
+            SELECT course_id, course_title,course_type, course_content, created_at
+            FROM courses
+            WHERE
+            ${column} = #{value}
+
+            ORDER BY course_id ASC
+            LIMIT 10 OFFSET #{index};
+
+
+    </select>
+
+
+    <resultMap id="courseMap" type="com.seong.portfolio.quiz_quest.courses.vo.CourseVO">
+        <id property="courseId"      column="course_id"/>
+        <result property="courseTitle"   column="course_title"/>
+        <result property="courseType" column= "course_type"/>
+        <result property="courseContent" column="course_content"/>
+        <result property="createdAt"     column="created_at"/>
+        <result property="totalViews" column="total_views"/>
+        <result property="totalLikes" column="total_likes"/>
+        <result property="totalDislikes" column="total_dislikes"/>
+    </resultMap>
+
+</mapper>

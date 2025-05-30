@@ -23,8 +23,8 @@ public class AdminRestProblemController {
 
 
     @PostMapping("/{language}/upload-and-validate") //file은 소스코드 files는 이미지파일들
-    public ResponseEntity<String> writeProblem(@PathVariable String language, @RequestPart("file") MultipartFile file,  @RequestPart(value="files",  required = false) MultipartFile[] files, @RequestPart("probExecutionVO")ProbExecutionVO probExecutionVO, @RequestPart("probVisualVO") ProbVisualVO probVisualVO, HttpSession session) throws IOException {
-
+    public ResponseEntity<String> writeProblem(@PathVariable String language, @RequestPart("file") MultipartFile file,  @RequestPart(value="files",  required = false) MultipartFile[] files, @RequestPart("probExecutionVO")ProbExecutionVO probExecutionVO, @RequestPart("probVisualVO") ProbVisualVO probVisualVO) throws IOException {
+        log.info(probVisualVO.getVisualTables());
         return probWriteExecutionService.execute(probExecutionVO, file, files, probVisualVO, language);
 
     }

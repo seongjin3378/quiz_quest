@@ -1,0 +1,68 @@
+:root {
+    --bg-color: #1e1e1e;
+    --card-bg: #2a2a2a;
+    --text-color: #e0e0e0;
+    --accent-color: #4e9af1;
+    --border-color: #3a3a3a;
+    --hover-color: #3a3a3a;
+    --delete-color: #e74c3c;
+}
+* { box-sizing: border-box; }
+body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Noto Sans KR', sans-serif; padding: 20px; }
+.post-container { max-width: 800px; margin: 0 auto; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px; background: var(--hover-color); }
+.toolbar button, .toolbar label { background: none; border: none; color: var(--text-color); font-size: 1rem; padding: 6px; cursor: pointer; }
+.toolbar input[type="file"] { display: none; }
+.editor { min-height: 300px; padding: 16px; background: #252525; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); color: var(--text-color); overflow-y: auto; }
+.img-wrapper { position: relative; display: inline-block; margin: 4px; }
+.img-wrapper img { max-width: 100%; height: auto; display: block; }
+.img-wrapper .delete-btn { position: absolute; top: 4px; right: 4px; background: var(--delete-color); border: none; color: #fff; border-radius: 4px; cursor: pointer; font-size: 0.8rem; padding: 2px 4px; }
+.form-actions { padding: 16px; }
+.form-actions button { background: var(--accent-color); border: none; color: #fff; padding: 10px 16px; font-size: 1rem; border-radius: 4px; cursor: pointer; }
+.form-actions button:hover { background: #3a8ee0; }
+
+
+.post-header,
+.post-category {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color);
+    gap: 12px;
+}
+
+/* 레이블 고정 너비 */
+.post-header label,
+.post-category label {
+    flex: 0 0 80px;        /* 레이블 영역 너비 고정 */
+    color: var(--text-color);
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+/* 입력 필드가 남은 공간을 채우도록 */
+#postTitle,
+#lectureCategory {
+    flex: 1;               /* 남은 공간 전부 차지 */
+    padding: 8px 12px;
+    font-size: 1rem;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    transition: border-color 0.2s, background-color 0.2s;
+    min-height: 36px;      /* 높이를 버튼, 에디터 등과 시각적으로 맞춤 */
+}
+
+/* 포커스 시 강조 */
+#postTitle:focus,
+#lectureCategory:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    background-color: var(--card-bg);
+}
+
+/* 마지막 .post-category는 bottom border 제거 (선택사항) */
+.post-category {
+    border-bottom: none;
+}

@@ -6,6 +6,7 @@ import reactor.core.publisher.Sinks;
 
 
 @Slf4j
+@Deprecated
 public class SerializedDataEmitter {
 
    /* public static void run(StreamAndEmitter emitter, String message)

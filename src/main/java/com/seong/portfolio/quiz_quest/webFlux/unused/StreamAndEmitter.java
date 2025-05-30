@@ -5,6 +5,7 @@ import org.springframework.http.codec.ServerSentEvent;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
 
+@Deprecated
 public interface StreamAndEmitter {
 
   /*  Flux<ServerSentEvent<String>> streamSSE(String key);

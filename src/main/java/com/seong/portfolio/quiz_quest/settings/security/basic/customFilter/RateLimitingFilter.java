@@ -52,8 +52,7 @@ public class RateLimitingFilter extends OncePerRequestFilter {
                 String userId = sessionService.getSessionId();
                 /*userId 대한 버킷 검색 만약 key 값이 없으면 Scope Bucket 빈 생성해서 맵에 넣음*/
                 Bucket bucket = buckets.computeIfAbsent(userId, k -> applicationContext.getBean("saveUsageTimerBucket", Bucket.class));
-                if (bucket.tryConsume(1)) {
-                } else {/*버킷 설정한 요청 횟수보다 많은 경우 오류 출력*/
+                if (!bucket.tryConsume(1)) {
                     response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
                     return;
                 }

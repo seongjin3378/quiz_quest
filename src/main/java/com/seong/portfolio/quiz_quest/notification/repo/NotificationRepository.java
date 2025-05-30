@@ -11,7 +11,7 @@ import java.util.List;
 public interface NotificationRepository {
     List<NotificationVO> findAllBySenderId(long senderId);
 
-    @Insert("INSERT INTO notification(receiver_Id, content, is_notice) VALUES(#{receiverId}, #{content}, #{isNotice})")
+    @Insert("INSERT INTO notification(receiver_Id, notification_type, url, content, is_notice) VALUES(#{receiverId}, #{notificationType}, #{url}, #{content}, #{isNotice})")
     void save(NotificationVO notificationVO);
 
 }

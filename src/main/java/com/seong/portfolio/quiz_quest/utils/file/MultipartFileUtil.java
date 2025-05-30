@@ -54,7 +54,34 @@ public class MultipartFileUtil extends ManageSubDirectories {
         }
     }
 
+    public static List<String> extractPrefixesBeforeFirstUnderscore(MultipartFile[] files) {
+        List<String> prefixes = new ArrayList<>();
+        if (files == null) {
+            return prefixes;
+        }
 
+        for (MultipartFile file : files) {
+            if (file == null) continue;
+
+            String original = file.getOriginalFilename();
+            if (original == null || original.isEmpty()) {
+                // 파일명이 없으면 건너뛰거나 빈 문자열로 처리
+                continue;
+            }
+
+            // 마지막 '_' 위치 탐색
+            int idx = original.indexOf('_');
+            if (idx > 0) {
+                // '_' 앞부분만 잘라서 리스트에 추가
+                prefixes.add(original.substring(0, idx));
+            } else {
+                // '_'가 없거나 맨 앞(0번)에 있으면, 원본 전체를 추가해도 되고 생략해도 됩니다.
+                prefixes.add(original);
+            }
+        }
+
+        return prefixes;
+    }
     private static String getFileExtension(String fileName) {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
