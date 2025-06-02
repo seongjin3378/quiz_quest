@@ -16,6 +16,7 @@ import com.seong.portfolio.quiz_quest.user.service.session.SessionService;
 import com.seong.portfolio.quiz_quest.utils.pagination.service.PaginationService;
 import com.seong.portfolio.quiz_quest.utils.pagination.utils.PaginationUtil;
 import com.seong.portfolio.quiz_quest.utils.pagination.vo.PaginationVO;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +52,7 @@ public class  ProblemsController {
 
     @GetMapping("/p/n/{index}")
     @Transactional
-    public String solvePageV(@PathVariable long index, Model model, HttpSession session) throws JsonProcessingException {
+    public String solvePageV(@PathVariable long index, Model model, HttpSession session, HttpServletRequest req) throws JsonProcessingException {
         String userId = sessionService.getSessionId();
        /* 정책 바뀜
        RankingVO vo = RankingVO.builder().userId(userId).rankingType("usage_time").build();*/
@@ -66,7 +67,7 @@ public class  ProblemsController {
 
         findCursorAndAddModelByProblemCommentsVO(problemCommentsVO, model);
 
-        findProblemVisualsAndAddModelByIndex(index, model);
+        findProblemVisualsAndAddModelByIndex(index, model, req);
 
         session.setAttribute("problemIndex", Long.toString(index));
         return "solving";
@@ -99,26 +100,24 @@ public class  ProblemsController {
         model.addAttribute("cursor", cursor);
     }
 
-    private void findProblemVisualsAndAddModelByIndex(long index, Model model) {
+    private void findProblemVisualsAndAddModelByIndex(long index, Model model, HttpServletRequest request) {
         List<ProbVisualVO> result = problemVisualService.findAllProblemVisual(index); //problemId
         log.info("result: {}", result);
         List<ProbVisualVO> tableResult = result.stream()
                 .filter(vo -> !Objects.isNull(vo.getVisualTables()))
                 .collect(Collectors.toList());
 
-        String htmlString = result.stream()
+        List<ProbVisualVO> pictures = result.stream()
                 .filter(vo -> Objects.isNull(vo.getVisualTables()))
-                .map(vo -> "<img src=\"/p/pic/" +
-                        vo.getProblemVisualId() +
-                        "\" alt=\"Image\" />")
-                .collect(Collectors.joining());
-
-        log.info(htmlString);
+                .toList();
 
 
+        log.info(pictures.toString());
 
-        model.addAttribute("pictureHtml", htmlString);
+
+        model.addAttribute("pictures", pictures);
         model.addAttribute("visualTables", tableResult);
+        model.addAttribute("request", request);
 
 
     }
