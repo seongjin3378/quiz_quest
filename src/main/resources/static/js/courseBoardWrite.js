@@ -119,7 +119,7 @@ function submitPost() {
     const courseVO = {
         courseTitle:   document.getElementById('postTitle').value.trim(),
         courseType:    document.getElementById('lectureCategory').value,
-        courseContent: htmlString
+        courseContent: htmlString,
     };
     formData.append("courseVO", new Blob([JSON.stringify(courseVO)], { type: 'application/json' }));
 

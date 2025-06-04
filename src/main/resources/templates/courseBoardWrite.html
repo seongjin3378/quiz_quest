@@ -19,13 +19,17 @@
     <!-- 강의 분류 선택 영역 추가 -->
     <div class="post-category">
         <label for="lectureCategory">분류:</label>
-        <select id="lectureCategory" style="padding: 5px; margin-bottom: 10px;">
-            <option value="">분류를 선택하세요</option>
-            <option value="programming">프로그래밍</option>
-            <option value="design">디자인</option>
-            <option value="marketing">마케팅</option>
-            <option value="etc">기타</option>
-            <!-- 필요에 따라 옵션을 추가하세요 -->
+        <select id="lectureCategory"
+                th:field="*{courseTypeList}"
+                style="padding: 5px; margin-bottom: 10px;">
+            <!-- 기본 선택지 -->
+            <option value="" th:text="'분류를 선택하세요'"></option>
+
+            <!-- 실제 패키지 경로를 T() 안에 넣어주는 부분 -->
+            <option th:each="courseType: ${courseTypeList}"
+                    th:value="${courseType}"
+                    th:text="${courseType}">
+            </option>
         </select>
     </div>
 

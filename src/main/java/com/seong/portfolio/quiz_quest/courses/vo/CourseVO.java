@@ -1,5 +1,6 @@
 package com.seong.portfolio.quiz_quest.courses.vo;
 
+import com.seong.portfolio.quiz_quest.courses.enums.CourseTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

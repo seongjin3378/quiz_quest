@@ -2,6 +2,7 @@ package com.seong.portfolio.quiz_quest.courses.controller;
 
 
 import com.seong.portfolio.quiz_quest.courses.courseVisual.service.CourseVisualService;
+import com.seong.portfolio.quiz_quest.courses.enums.CourseTypeEnum;
 import com.seong.portfolio.quiz_quest.courses.repo.CoursesRepository;
 import com.seong.portfolio.quiz_quest.courses.vo.CourseVO;
 import com.seong.portfolio.quiz_quest.problems.enums.ProblemType;
@@ -23,6 +24,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Controller
@@ -37,11 +40,12 @@ public class CoursesController {
     @GetMapping("/c/{index}/s/{sortType}")
     public String courseBoardListV(@PathVariable int index, @PathVariable int sortType, Model model, HttpServletResponse response) throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
       /*  PaginationUtil.handlePagination();*/
+
         PaginationUtil.handlePagination(coursesRepository, response, model, paginationService, new PaginationVO.Builder<>()
                 .index(index)
                 .sortType(sortType)
                 .column("course_type")
-                .value(ProblemType.getDisplayNameByIndex(sortType))
+                .value(CourseTypeEnum.getDisplayNameByIndex(sortType))
                 .valueOfOnePage(10)
                 .url("/c/s")
                 .pageItemCount(10)
@@ -68,9 +72,16 @@ public class CoursesController {
         return "courseBoardView";
     }
     @GetMapping("/c/write")
-    public String courseBoardWriteV() {
+    public String courseBoardWriteV(Model model) {
+
+        List<String> courseTypeList = new ArrayList<>();
+
+        for (CourseTypeEnum courseTypeEnum : CourseTypeEnum.values()) {
+            courseTypeList.add(courseTypeEnum.getDisplayName());
+        }
+        model.addAttribute("courseTypeList", courseTypeList);
         return "courseBoardWrite";
-    }
+    } 
 
     @GetMapping(value = "/c/pic/{UUID}")
     public ResponseEntity<Resource> coursesPictureV(@PathVariable String UUID, Model model) {

@@ -26,8 +26,9 @@ public class PaginationUtil {
             valueOfList = paginationService.getValueOfListBySortType(new PaginationVO.Builder<Object, String>()
                     .column(vo.getColumn())
                     .repository(repository)
-                    .value(ProblemType.getDisplayNameByIndex(vo.getSortType()))
+                    .value((String) vo.getValue())
                     .sortType(vo.getSortType())
+                    .valueOfOnePage(vo.getValueOfOnePage())
                     .index(vo.getIndex())
                     .build());
         }

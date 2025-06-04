@@ -40,7 +40,7 @@
             FROM courses
             <where>
                 <if test="value != -1 ">
-                    ${columnValue} = #{value}
+                    ${column} = #{value}
                 </if>
             </where>
 
@@ -64,7 +64,7 @@
         ) cv
         ON cv.course_id = c.course_id
         ORDER BY c.course_id
-            LIMIT 100 OFFSET #{value};
+            LIMIT 10 OFFSET #{value};
 
     </select>
 

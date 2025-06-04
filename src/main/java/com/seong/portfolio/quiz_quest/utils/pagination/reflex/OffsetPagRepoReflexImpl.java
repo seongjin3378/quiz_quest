@@ -20,8 +20,12 @@ public class OffsetPagRepoReflexImpl implements PaginationRepoReflex {
     public List<?> findAll(PaginationVO<?, ?> vo) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Class<?> repositoryClass = vo.getRepository().getClass().getInterfaces()[0];
         Method paramMethod = repositoryClass.getMethod("findAll", int.class);
-
-        return (List<?>) paramMethod.invoke(vo.getRepository(), vo.getIndex());
+        int limit = 0;
+        if(vo.getIndex() != 0) {
+            limit = vo.getIndex() * vo.getValueOfOnePage();
+            log.info("limit is {} {}", limit, vo.getValueOfOnePage());
+        }
+        return (List<?>) paramMethod.invoke(vo.getRepository(), limit);
     }
 
     @Override
@@ -38,12 +42,23 @@ public class OffsetPagRepoReflexImpl implements PaginationRepoReflex {
         int result;
         if(vo.getValue() != null )
         {
-            result = (Integer) paramMethod.invoke(vo.getRepository(), vo.getColumn(), vo.getSortType()) / vo.getValueOfOnePage();
+            int count = (Integer) paramMethod.invoke(vo.getRepository(), vo.getColumn(), vo.getSortType());
+
+            result = getLastPageItemCount(count, vo.getValueOfOnePage());
+         /*   result = (Integer) paramMethod.invoke(vo.getRepository(), vo.getColumn(), vo.getSortType()) / vo.getValueOfOnePage() ;*/
         }else{
-            result = (Integer) paramMethod.invoke(vo.getRepository(), vo.getColumn(), -1) / vo.getValueOfOnePage();
+            int count = (Integer) paramMethod.invoke(vo.getRepository(), vo.getColumn(), -1);
+            result = getLastPageItemCount(count, vo.getValueOfOnePage());
+          /*  result = (Integer) paramMethod.invoke(vo.getRepository(), vo.getColumn(), -1) / vo.getValueOfOnePage();*/
         }
 
         return result;
+    }
+
+    private int getLastPageItemCount(int count, int valueOfOnePage) {
+        int result = count / valueOfOnePage;
+        log.info("result{}", result);
+        return count % valueOfOnePage !=0 || result == 0 ? result : result-1;
     }
 }
 
