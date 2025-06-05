@@ -1,8 +1,7 @@
 package com.seong.portfolio.quiz_quest.problems.service.probDockerExecution;
 
-import com.seong.portfolio.quiz_quest.problems.testCases.vo.TestCasesVO;
+import com.seong.portfolio.quiz_quest.problems.info.testCases.vo.TestCasesVO;
 import com.seong.portfolio.quiz_quest.problems.vo.ProbExecutionVO;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;

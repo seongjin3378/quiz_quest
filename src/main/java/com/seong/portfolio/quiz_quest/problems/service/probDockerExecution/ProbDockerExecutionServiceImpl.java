@@ -1,10 +1,9 @@
 package com.seong.portfolio.quiz_quest.problems.service.probDockerExecution;
 
 import com.github.dockerjava.api.command.CreateContainerResponse;
-import com.seong.portfolio.quiz_quest.problems.repo.ProblemRepository;
 import com.seong.portfolio.quiz_quest.problems.service.probDocker.ProbDockerService;
 import com.seong.portfolio.quiz_quest.problems.service.probValidate.ProbValidate;
-import com.seong.portfolio.quiz_quest.problems.testCases.vo.TestCasesVO;
+import com.seong.portfolio.quiz_quest.problems.info.testCases.vo.TestCasesVO;
 import com.seong.portfolio.quiz_quest.problems.utils.ProbDockerUtils;
 import com.seong.portfolio.quiz_quest.problems.utils.ProbFileUtils;
 import com.seong.portfolio.quiz_quest.problems.vo.ProbExecutionVO;

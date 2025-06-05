@@ -2,9 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.seong.portfolio.quiz_quest.problems.problemVisual.repo.ProblemVisualRepository">
+<mapper namespace="com.seong.portfolio.quiz_quest.problems.info.problemVisual.repo.ProblemVisualRepository">
 
-    <resultMap id="pvMap" type="com.seong.portfolio.quiz_quest.problems.problemVisual.vo.ProbVisualVO">
+    <resultMap id="pvMap" type="com.seong.portfolio.quiz_quest.problems.info.problemVisual.vo.ProbVisualVO">
         <id property="problemVisualId" column="problem_visual_id"/>
         <result property="visualSrc" column="visual_src" />
         <result property="visualCaptions" column="visual_captions" />
@@ -15,7 +15,7 @@
     <select id="findAllVisualByProblemId" parameterType="map" resultMap="pvMap">
         SELECT * FROM problem_visual WHERE problem_id = #{problemId};
     </select>
-    <insert id="save" parameterType="com.seong.portfolio.quiz_quest.problems.problemVisual.vo.ProbVisualVO">
+    <insert id="save" parameterType="com.seong.portfolio.quiz_quest.problems.info.problemVisual.vo.ProbVisualVO">
         INSERT INTO Problem_Visual (visual_src, visual_captions, visual_tables, problem_id)
         VALUES
         <if test="visualSrc != null">

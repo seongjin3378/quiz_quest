@@ -1,6 +1,6 @@
 package com.seong.portfolio.quiz_quest.problems.service.probWrite.probWrite;
 
-import com.seong.portfolio.quiz_quest.problems.problemVisual.vo.ProbVisualVO;
+import com.seong.portfolio.quiz_quest.problems.info.problemVisual.vo.ProbVisualVO;
 import com.seong.portfolio.quiz_quest.problems.vo.ProbExecutionVO;
 import org.springframework.web.multipart.MultipartFile;
 

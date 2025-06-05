@@ -3,9 +3,9 @@ package com.seong.portfolio.quiz_quest;
 
 import com.seong.portfolio.quiz_quest.notification.repo.NotificationRepository;
 import com.seong.portfolio.quiz_quest.notification.vo.NotificationVO;
-import com.seong.portfolio.quiz_quest.problems.problemHistory.service.ProblemHistoryService;
+import com.seong.portfolio.quiz_quest.problems.info.problemHistory.service.ProblemHistoryService;
 import com.seong.portfolio.quiz_quest.problems.service.probDockerExecution.ProbDockerExecutionService;
-import com.seong.portfolio.quiz_quest.problems.testCases.vo.TestCasesVO;
+import com.seong.portfolio.quiz_quest.problems.info.testCases.vo.TestCasesVO;
 import com.seong.portfolio.quiz_quest.problems.vo.ProbExecutionVO;
 import com.seong.portfolio.quiz_quest.quartz.interfaces.JobService;
 import com.seong.portfolio.quiz_quest.rankings.repo.RedisRankingRepository;

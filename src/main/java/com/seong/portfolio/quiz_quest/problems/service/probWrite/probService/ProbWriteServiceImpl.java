@@ -1,10 +1,10 @@
 package com.seong.portfolio.quiz_quest.problems.service.probWrite.probService;
 
-import com.seong.portfolio.quiz_quest.problems.problemVisual.repo.ProblemVisualRepository;
-import com.seong.portfolio.quiz_quest.problems.problemVisual.vo.ProbVisualVO;
+import com.seong.portfolio.quiz_quest.problems.info.problemVisual.repo.ProblemVisualRepository;
+import com.seong.portfolio.quiz_quest.problems.info.problemVisual.vo.ProbVisualVO;
 import com.seong.portfolio.quiz_quest.problems.repo.ProblemRepository;
-import com.seong.portfolio.quiz_quest.problems.testCases.repo.TestCasesRepository;
-import com.seong.portfolio.quiz_quest.problems.testCases.vo.TestCasesVO;
+import com.seong.portfolio.quiz_quest.problems.info.testCases.repo.TestCasesRepository;
+import com.seong.portfolio.quiz_quest.problems.info.testCases.vo.TestCasesVO;
 import com.seong.portfolio.quiz_quest.problems.vo.ProbExecutionVO;
 import com.seong.portfolio.quiz_quest.utils.file.MultipartFileUtil;
 import lombok.RequiredArgsConstructor;

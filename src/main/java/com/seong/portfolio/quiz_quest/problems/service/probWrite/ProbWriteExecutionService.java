@@ -1,18 +1,15 @@
 package com.seong.portfolio.quiz_quest.problems.service.probWrite;
 
 
-import com.seong.portfolio.quiz_quest.problems.problemVisual.service.ProblemVisualService;
-import com.seong.portfolio.quiz_quest.problems.problemVisual.vo.ProbVisualVO;
+import com.seong.portfolio.quiz_quest.problems.info.problemVisual.service.ProblemVisualService;
+import com.seong.portfolio.quiz_quest.problems.info.problemVisual.vo.ProbVisualVO;
 import com.seong.portfolio.quiz_quest.problems.service.probDockerExecution.ProbDockerExecutionService;
 import com.seong.portfolio.quiz_quest.problems.service.probValidate.ProbValidate;
 import com.seong.portfolio.quiz_quest.problems.service.probWrite.probService.ProbWriteService;
-import com.seong.portfolio.quiz_quest.problems.service.probWrite.probWrite.ProbWrite;
-import com.seong.portfolio.quiz_quest.problems.testCases.service.TestCasesValidate;
-import com.seong.portfolio.quiz_quest.problems.testCases.utils.TestCasesFormatterUtil;
-import com.seong.portfolio.quiz_quest.problems.testCases.vo.TestCasesVO;
+import com.seong.portfolio.quiz_quest.problems.info.testCases.service.TestCasesValidate;
+import com.seong.portfolio.quiz_quest.problems.info.testCases.utils.TestCasesFormatterUtil;
+import com.seong.portfolio.quiz_quest.problems.info.testCases.vo.TestCasesVO;
 import com.seong.portfolio.quiz_quest.problems.vo.ProbExecutionVO;
-import com.seong.portfolio.quiz_quest.user.service.user.UserService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;

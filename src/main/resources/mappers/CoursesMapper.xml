@@ -64,7 +64,7 @@
         ) cv
         ON cv.course_id = c.course_id
         ORDER BY c.course_id
-            LIMIT 10 OFFSET #{value};
+            LIMIT #{valueOfOnePage} OFFSET #{index};
 
     </select>
 
@@ -77,7 +77,7 @@
             ${column} = #{value}
 
             ORDER BY course_id ASC
-            LIMIT 10 OFFSET #{index};
+            LIMIT #{valueOfOnePage} OFFSET #{index};
 
 
     </select>

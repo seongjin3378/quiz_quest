@@ -3,8 +3,7 @@ package com.seong.portfolio.quiz_quest.admin.problems.controller;
 
 import com.seong.portfolio.quiz_quest.problems.service.probWrite.ProbWriteExecutionService;
 import com.seong.portfolio.quiz_quest.problems.vo.ProbExecutionVO;
-import com.seong.portfolio.quiz_quest.problems.problemVisual.vo.ProbVisualVO;
-import jakarta.servlet.http.HttpSession;
+import com.seong.portfolio.quiz_quest.problems.info.problemVisual.vo.ProbVisualVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

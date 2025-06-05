@@ -1,11 +1,10 @@
 package com.seong.portfolio.quiz_quest.courses.controller;
 
 
-import com.seong.portfolio.quiz_quest.courses.courseVisual.service.CourseVisualService;
+import com.seong.portfolio.quiz_quest.courses.info.courseVisual.service.CourseVisualService;
 import com.seong.portfolio.quiz_quest.courses.enums.CourseTypeEnum;
 import com.seong.portfolio.quiz_quest.courses.repo.CoursesRepository;
 import com.seong.portfolio.quiz_quest.courses.vo.CourseVO;
-import com.seong.portfolio.quiz_quest.problems.enums.ProblemType;
 import com.seong.portfolio.quiz_quest.utils.pagination.service.PaginationService;
 import com.seong.portfolio.quiz_quest.utils.pagination.utils.PaginationUtil;
 import com.seong.portfolio.quiz_quest.utils.pagination.vo.PaginationVO;
@@ -39,10 +38,9 @@ public class CoursesController {
     
     @GetMapping("/c/{index}/s/{sortType}")
     public String courseBoardListV(@PathVariable int index, @PathVariable int sortType, Model model, HttpServletResponse response) throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
-      /*  PaginationUtil.handlePagination();*/
-
-        PaginationUtil.handlePagination(coursesRepository, response, model, paginationService, new PaginationVO.Builder<>()
+        PaginationUtil.handlePagination(response, model, paginationService, new PaginationVO.Builder<CoursesRepository, String>()
                 .index(index)
+                .repository(coursesRepository)
                 .sortType(sortType)
                 .column("course_type")
                 .value(CourseTypeEnum.getDisplayNameByIndex(sortType))
@@ -54,14 +52,7 @@ public class CoursesController {
         return "courses";
     }
 
-    /*
-        private long courseId;
-    private String courseTitle;
-    private String courseType;
-    private String courseContent;
-    private LocalDateTime createdAt;
-    private int totalView;
-    * */
+
     @GetMapping("/c/n/{index}")
     public String courseBoardV(@PathVariable long index, Model model) {
         CourseVO courseVO = coursesRepository.findByCourseId(index);

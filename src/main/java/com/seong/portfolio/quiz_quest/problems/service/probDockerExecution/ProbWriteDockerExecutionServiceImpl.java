@@ -2,8 +2,7 @@ package com.seong.portfolio.quiz_quest.problems.service.probDockerExecution;
 
 
 import com.seong.portfolio.quiz_quest.problems.repo.ProblemRepository;
-import com.seong.portfolio.quiz_quest.problems.testCases.repo.TestCasesRepository;
-import com.seong.portfolio.quiz_quest.problems.testCases.vo.TestCasesVO;
+import com.seong.portfolio.quiz_quest.problems.info.testCases.vo.TestCasesVO;
 import com.seong.portfolio.quiz_quest.problems.vo.ProbExecutionVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 

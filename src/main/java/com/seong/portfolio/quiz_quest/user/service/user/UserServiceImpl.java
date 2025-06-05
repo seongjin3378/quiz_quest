@@ -1,13 +1,11 @@
 package com.seong.portfolio.quiz_quest.user.service.user;
 
-import com.seong.portfolio.quiz_quest.problems.problemHistory.service.ProblemHistoryService;
 import com.seong.portfolio.quiz_quest.user.repo.UserRepository;
 import com.seong.portfolio.quiz_quest.user.service.session.SessionService;
 import com.seong.portfolio.quiz_quest.user.service.user.xp.UserXp;
 import com.seong.portfolio.quiz_quest.user.vo.UserVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

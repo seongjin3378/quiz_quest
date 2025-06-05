@@ -1,7 +1,7 @@
 package com.seong.portfolio.quiz_quest.problems.service.probValidate;
 
 import com.seong.portfolio.quiz_quest.docker.vo.DockerValidationData;
-import com.seong.portfolio.quiz_quest.problems.problemVisual.vo.ProbVisualVO;
+import com.seong.portfolio.quiz_quest.problems.info.problemVisual.vo.ProbVisualVO;
 import com.seong.portfolio.quiz_quest.user.service.session.SessionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

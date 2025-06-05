@@ -2,7 +2,7 @@ package com.seong.portfolio.quiz_quest.problems.utils;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.seong.portfolio.quiz_quest.docker.vo.DockerEnumVO;
 import com.seong.portfolio.quiz_quest.problems.service.probDocker.ProbDockerService;
-import com.seong.portfolio.quiz_quest.problems.testCases.vo.TestCasesVO;
+import com.seong.portfolio.quiz_quest.problems.info.testCases.vo.TestCasesVO;
 import com.seong.portfolio.quiz_quest.problems.vo.ProbExecutionVO;
 import lombok.extern.slf4j.Slf4j;
 

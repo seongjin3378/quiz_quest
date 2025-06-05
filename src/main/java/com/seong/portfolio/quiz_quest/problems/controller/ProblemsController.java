@@ -4,8 +4,8 @@ package com.seong.portfolio.quiz_quest.problems.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.seong.portfolio.quiz_quest.comments.problem.vo.ProblemCommentsVO;
 import com.seong.portfolio.quiz_quest.problems.enums.ProblemType;
-import com.seong.portfolio.quiz_quest.problems.problemVisual.service.ProblemVisualService;
-import com.seong.portfolio.quiz_quest.problems.problemVisual.vo.ProbVisualVO;
+import com.seong.portfolio.quiz_quest.problems.info.problemVisual.service.ProblemVisualService;
+import com.seong.portfolio.quiz_quest.problems.info.problemVisual.vo.ProbVisualVO;
 import com.seong.portfolio.quiz_quest.problems.repo.ProblemRepository;
 import com.seong.portfolio.quiz_quest.problems.service.problem.ProblemService;
 import com.seong.portfolio.quiz_quest.problems.vo.ProblemVO;
@@ -139,8 +139,9 @@ public class  ProblemsController {
 
     @GetMapping("/p/{index}/s/{sortType}")
     public String problemsPageV(Model model, @PathVariable int index, @PathVariable int sortType, HttpServletResponse response) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, IOException {
-        PaginationUtil.handlePagination(problemRepository, response, model, paginationService, new PaginationVO.Builder<>()
+        PaginationUtil.handlePagination(response, model, paginationService, new PaginationVO.Builder<ProblemRepository, String>()
                 .index(index)
+                .repository(problemRepository)
                 .sortType(sortType)
                 .column("problem_type")
                 .value(ProblemType.getDisplayNameByIndex(sortType))

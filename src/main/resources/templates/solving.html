@@ -59,15 +59,13 @@
 
 
 
-
-
-
         <div class="input-output">
+            <div th:if="${pictures != null}">
             <div class="input-output-box" id="visual">
 
             <h3>표 및 그림</h3>
             <div class="divider"></div>
-            <div th:if="${pictures != null}">
+
                 <div th:each="picture : ${pictures}" >
                     <span th:text="${picture.visualCaptions != null ? picture.visualCaptions : 'No Caption'}" ></span><br>
                     <img

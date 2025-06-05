@@ -19,7 +19,7 @@ public interface ProblemRepository {
 
     int count(@Param("column") String column, @Param("value") Object value); //reflex
 
-    List<ProblemVO> findAll(int index); // reflex
+    List<ProblemVO> findAll(@Param("index")int index, @Param("valueOfOnePage") int valueOfOnePage); // reflex
 
-    List<ProblemVO> findAllByColumnAndValue(@Param("index") int index, @Param("column") String columnValue, @Param("value") String Value); //reflex
+    List<ProblemVO> findAllByColumnAndValue(@Param("index") int index, @Param("column") String columnValue, @Param("value") String Value, @Param("valueOfOnePage") int valueOfOnePage); //reflex
 }

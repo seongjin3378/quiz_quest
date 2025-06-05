@@ -13,33 +13,18 @@ import java.util.List;
 
 public class PaginationUtil {
 
-    public static void handlePagination(Object repository, HttpServletResponse response, Model model, PaginationService paginationService, PaginationVO<?, ?> vo) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, IOException {
-        int lastPageItem = paginationService.getLastPageItemBySortType(new PaginationVO.Builder<Object, String>()
-                .repository(repository).index(vo.getIndex())
-                .column(vo.getColumn())
-                .value(ProblemType.getDisplayNameByIndex(vo.getSortType()))
-                .valueOfOnePage(vo.getValueOfOnePage())
-                .build());
+    public static void handlePagination(HttpServletResponse response, Model model, PaginationService paginationService, PaginationVO<?, ?> vo) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, IOException {
+        int lastPageItem = paginationService.getLastPageItemBySortType(vo);
 
         List<?> valueOfList = List.of();
         if(vo.getIndex() <= lastPageItem) {
-            valueOfList = paginationService.getValueOfListBySortType(new PaginationVO.Builder<Object, String>()
-                    .column(vo.getColumn())
-                    .repository(repository)
-                    .value((String) vo.getValue())
-                    .sortType(vo.getSortType())
-                    .valueOfOnePage(vo.getValueOfOnePage())
-                    .index(vo.getIndex())
-                    .build());
+            valueOfList = paginationService.getValueOfListBySortType(vo);
         }
         redirectToPage(valueOfList, vo.getIndex(), vo.getUrl(), lastPageItem, vo.getSortType(), response);
 
-        paginationService.setModelItemValue(new PaginationVO.Builder<ProblemRepository, String>()
-                .pageItemCount(vo.getPageItemCount())
-                .index(vo.getIndex())
-                .lastPageItem(lastPageItem)
-                .valueOfList(valueOfList)
-                .build(), model);
+        vo.setLastPageItem(lastPageItem);
+        vo.setValueOfList(valueOfList);
+        paginationService.setModelItemValue(vo, model);
     }
     public static void redirectToPage(List<?> valueOfList, int index, String url,  int lastPageItem, int sortType, HttpServletResponse response) throws IOException {
         String[] parts = url.split("/");

@@ -1,6 +1,6 @@
 package com.seong.portfolio.quiz_quest.problems.service.probValidate;
 
-import com.seong.portfolio.quiz_quest.problems.problemVisual.vo.ProbVisualVO;
+import com.seong.portfolio.quiz_quest.problems.info.problemVisual.vo.ProbVisualVO;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface ProbValidate {

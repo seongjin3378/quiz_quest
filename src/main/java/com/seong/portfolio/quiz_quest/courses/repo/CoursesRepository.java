@@ -21,7 +21,7 @@ public interface CoursesRepository {
 
     int count(@Param("column") String column, @Param("value") Object value); //reflex
 
-    List<CourseVO> findAll(int index); // reflex
+    List<CourseVO> findAll(@Param("index")int index, @Param("valueOfOnePage") int valueOfOnePage); // reflex
 
-    List<CourseVO> findAllByColumnAndValue(@Param("index") int index, @Param("column") String columnValue, @Param("value") String Value); //reflex
+    List<CourseVO> findAllByColumnAndValue(@Param("index") int index, @Param("column") String columnValue, @Param("value") String Value, @Param("valueOfOnePage") int valueOfOnePage); //reflex
 }

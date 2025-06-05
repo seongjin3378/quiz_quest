@@ -19,20 +19,20 @@ public class OffsetPagRepoReflexImpl implements PaginationRepoReflex {
     @Override
     public List<?> findAll(PaginationVO<?, ?> vo) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Class<?> repositoryClass = vo.getRepository().getClass().getInterfaces()[0];
-        Method paramMethod = repositoryClass.getMethod("findAll", int.class);
+        Method paramMethod = repositoryClass.getMethod("findAll", int.class, int.class);
         int limit = 0;
         if(vo.getIndex() != 0) {
             limit = vo.getIndex() * vo.getValueOfOnePage();
             log.info("limit is {} {}", limit, vo.getValueOfOnePage());
         }
-        return (List<?>) paramMethod.invoke(vo.getRepository(), limit);
+        return (List<?>) paramMethod.invoke(vo.getRepository(), limit, vo.getValueOfOnePage());
     }
 
     @Override
     public List<?> findAllByColumnAndValue(PaginationVO<?, ?> vo) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Class<?> repositoryClass = vo.getRepository().getClass().getInterfaces()[0];
-        Method paramMethod = repositoryClass.getMethod("findAllByColumnAndValue", int.class, String.class, String.class);
-        return (List<?>) paramMethod.invoke(vo.getRepository(), vo.getIndex(), vo.getColumn(), vo.getValue());
+        Method paramMethod = repositoryClass.getMethod("findAllByColumnAndValue", int.class, String.class, String.class, int.class);
+        return (List<?>) paramMethod.invoke(vo.getRepository(), vo.getIndex(), vo.getColumn(), vo.getValue(), vo.getValueOfOnePage());
     }
 
     @Override
