@@ -22,7 +22,7 @@
     <resultMap id="ctlMap" type="com.seong.portfolio.quiz_quest.courses.vo.CourseTotalLikesInfoVO">
         <id column="course_id"   property="courseId"/>
         <result column="total_likes"  property="totalLikes"/>
-        <result column="total_dislikes" property="totalDislikes"/>
+        <result column="total_dislikes" property="totalDisLikes"/>
         <result column="current_state"    property="currentState"/>
     </resultMap>
 

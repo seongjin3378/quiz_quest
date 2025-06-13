@@ -110,3 +110,5 @@ body {
 .comment-form button:hover {
     background-color: #3a8ee0;
 }
+
+.active { color: red; }

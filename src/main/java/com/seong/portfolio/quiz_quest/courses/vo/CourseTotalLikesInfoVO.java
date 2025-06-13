@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 public class CourseTotalLikesInfoVO {
     private long courseId;
     private int totalLikes;
-    private int totalDislikes;
+    private int totalDisLikes;
     private int currentState;
 }

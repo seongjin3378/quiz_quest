@@ -28,7 +28,7 @@ public class ProblemServiceImpl implements ProblemService {
 
     @Override
     public List<ProblemCommentsVO> findAllProblemComments(long id) {
-        return problemCommentsRepository.findAllByProblemId(id, "DESC", "0");
+        return problemCommentsRepository.findAllByProblemIdAndSortTypeAndCursor(id, "DESC", "0");
     }
 
 

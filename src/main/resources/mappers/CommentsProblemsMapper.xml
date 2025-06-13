@@ -112,13 +112,13 @@
     </select>
 
 
-    <resultMap id="rcMap" type="com.seong.portfolio.quiz_quest.comments.problem.vo.ReplyProblemCommentsVO">
-        <id property="replyCommentId" column="reply_comment_id"/> <!-- 댓글 ID -->
-        <result property="replyCommentContent" column="reply_comment_content"/> <!-- 부모 댓글 ID -->
-        <result property="replyCreatedAt" column="reply_created_at"/> <!-- 생성 시간 -->
-        <result property="replyAuthor" column="reply_author"/> <!-- 문제 ID -->
+<!--    <resultMap id="rcMap" type="com.seong.portfolio.quiz_quest.comments.problem.vo.ReplyProblemCommentsVO">
+        <id property="replyCommentId" column="reply_comment_id"/> &lt;!&ndash; 댓글 ID &ndash;&gt;
+        <result property="replyCommentContent" column="reply_comment_content"/> &lt;!&ndash; 부모 댓글 ID &ndash;&gt;
+        <result property="replyCreatedAt" column="reply_created_at"/> &lt;!&ndash; 생성 시간 &ndash;&gt;
+        <result property="replyAuthor" column="reply_author"/> &lt;!&ndash; 문제 ID &ndash;&gt;
         <result property="replyLevel" column="reply_level"/>
-    </resultMap>
+    </resultMap>-->
 
     <resultMap id="pcMap" type="com.seong.portfolio.quiz_quest.comments.problem.vo.ProblemCommentsVO">
         <id property="commentId" column="comment_id"/> <!-- 댓글 ID -->

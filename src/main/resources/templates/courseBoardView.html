@@ -11,6 +11,9 @@
 </head>
 <body>
 
+<!-- currentState 변수용 html -->
+<span id="state-text" th:text="${currentState}" style="display:none"></span>
+
 
 <div class="post-container" th:object="${course}">
     <div class="post-header">
@@ -39,52 +42,18 @@
 
     <div class="comments-section">
         <h2>댓글</h2>
-        <div id="commentsList">
-            <!-- 개별 댓글 .comment 요소 추가 -->
+        <div id="commentsList" data-page="0" data-size="10" data-has-next="true">
+            <!-- 각 댓글 .comment 요소가 동적으로 추가됩니다 -->
         </div>
-        <form class="comment-form" id="commentForm">
-            <textarea id="commentInput" placeholder="댓글을 입력하세요..." required></textarea>
+
+        <form class="comment-form" id="commentForm" th:object="${course}">
+            <label for="commentInput"></label><textarea id="commentInput" placeholder="댓글을 입력하세요..." required></textarea>
             <button type="submit">댓글 등록</button>
         </form>
     </div>
 </div>
 
-<!--<script>
-    let likes = 0;
-    let dislikes = 0;
-    const likeBtn = document.getElementById('likeBtn');
-    const dislikeBtn = document.getElementById('dislikeBtn');
-    const likeCount = document.getElementById('likeCount');
-    const dislikeCount = document.getElementById('dislikeCount');
-
-    likeBtn.addEventListener('click', () => {
-        likes++;
-        likeCount.textContent = likes;
-    });
-    dislikeBtn.addEventListener('click', () => {
-        dislikes++;
-        dislikeCount.textContent = dislikes;
-    });
-
-    const commentForm = document.getElementById('commentForm');
-    const commentInput = document.getElementById('commentInput');
-    const commentsList = document.getElementById('commentsList');
-
-    commentForm.addEventListener('submit', e => {
-        e.preventDefault();
-        const text = commentInput.value.trim();
-        if (!text) return;
-        const commentEl = document.createElement('div');
-        commentEl.className = 'comment';
-        commentEl.innerHTML = `
-        <div class="comment-header">익명 | ${new Date().toLocaleString()}</div>
-        <div class="comment-body">${text}</div>
-      `;
-        commentsList.prepend(commentEl);
-        commentInput.value = '';
-    });
-</script>-->
-
+<script th:inline="javascript">const courseId = [[${course.courseId}]]</script>;
 <script th:src="@{/js/courseBoardView.js}"></script>
 </body>
 </html>

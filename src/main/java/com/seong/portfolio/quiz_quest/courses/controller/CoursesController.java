@@ -1,10 +1,12 @@
 package com.seong.portfolio.quiz_quest.courses.controller;
 
 
+import com.seong.portfolio.quiz_quest.courses.info.courseLikes.repo.CourseLikesRepository;
 import com.seong.portfolio.quiz_quest.courses.info.courseVisual.service.CourseVisualService;
 import com.seong.portfolio.quiz_quest.courses.enums.CourseTypeEnum;
 import com.seong.portfolio.quiz_quest.courses.repo.CoursesRepository;
 import com.seong.portfolio.quiz_quest.courses.vo.CourseVO;
+import com.seong.portfolio.quiz_quest.user.service.principalDetails.vo.PrincipalDetails;
 import com.seong.portfolio.quiz_quest.utils.pagination.service.PaginationService;
 import com.seong.portfolio.quiz_quest.utils.pagination.utils.PaginationUtil;
 import com.seong.portfolio.quiz_quest.utils.pagination.vo.PaginationVO;
@@ -16,6 +18,7 @@ import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.http.MediaTypeFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +37,7 @@ public class CoursesController {
     private final PaginationService paginationService;
     private final CoursesRepository coursesRepository;
     private final CourseVisualService courseVisualService;
+    private final CourseLikesRepository courseLikesRepository;
 
     
     @GetMapping("/c/{index}/s/{sortType}")
@@ -54,14 +58,22 @@ public class CoursesController {
 
 
     @GetMapping("/c/n/{index}")
-    public String courseBoardV(@PathVariable long index, Model model) {
+    public String courseBoardV(@PathVariable long index, Model model, @AuthenticationPrincipal PrincipalDetails principal) {
         CourseVO courseVO = coursesRepository.findByCourseId(index);
+        Integer currentState = courseLikesRepository.findCurrentStateByUserNumAndCourseId(principal.getUserNum(), index);
+
+        if(currentState == null) {
+            currentState = 0;
+        }
+
         log.info(courseVO.toString());
         model.addAttribute("course", courseVO);
+        model.addAttribute("currentState", currentState);
 
 
         return "courseBoardView";
     }
+
     @GetMapping("/c/write")
     public String courseBoardWriteV(Model model) {
 

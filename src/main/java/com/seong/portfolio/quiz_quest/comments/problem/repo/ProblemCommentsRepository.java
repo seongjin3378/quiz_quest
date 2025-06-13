@@ -11,9 +11,11 @@ import java.util.List;
 public interface ProblemCommentsRepository {
     long save(ProblemCommentsVO problemCommentsVO);
 
-    List<ProblemCommentsVO> findAllByProblemId(@Param("problemId") long problemId, @Param("sortType") String sortType, @Param("cursor") String cursor);
+    List<ProblemCommentsVO> findAllByProblemIdAndSortTypeAndCursor(@Param("problemId") long problemId, @Param("sortType") String sortType, @Param("cursor") String cursor);
 
     List<ProblemCommentsVO>  findAllByCommentIdAndProblemId(@Param("ProblemCommentsVO")ProblemCommentsVO problemCommentsVO, @Param("largestCommentId") long largestCommentId);
 
     List<ProblemCommentsVO> findAllByParentCommentId(@Param("parentCommentId") long parentCommentId, @Param("sortType") String sortType, @Param("cursor") String cursor);
 }
+
+

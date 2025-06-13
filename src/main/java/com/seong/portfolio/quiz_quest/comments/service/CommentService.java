@@ -1,6 +1,4 @@
-package com.seong.portfolio.quiz_quest.comments.problem.service;
-
-import com.seong.portfolio.quiz_quest.comments.problem.vo.ProblemCommentsVO;
+package com.seong.portfolio.quiz_quest.comments.service;
 
 import java.util.List;
 
@@ -22,6 +20,8 @@ import java.util.List;
 * */
 
 
-public interface ProblemCommentService {
-    List<ProblemCommentsVO> saveAndReturnProblemComments(ProblemCommentsVO problemCommentsVO, String sortType);
+public interface CommentService {
+    List<Object> saveAndReturnComments(Object vo, String sortType);
+    List<Object> findComments(long id, String sortType, String cursor);
+    List<Object> findAllReplyComments(long parentCommentId, String sortType, String cursor);
 }

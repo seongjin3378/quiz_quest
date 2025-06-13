@@ -2,7 +2,7 @@ package com.seong.portfolio.quiz_quest.problems.controller;
 
 
 import com.seong.portfolio.quiz_quest.comments.problem.repo.ProblemCommentsRepository;
-import com.seong.portfolio.quiz_quest.comments.problem.service.ProblemCommentService;
+import com.seong.portfolio.quiz_quest.comments.service.CommentService;
 import com.seong.portfolio.quiz_quest.comments.problem.vo.ProblemCommentsVO;
 import com.seong.portfolio.quiz_quest.problems.info.problemHistory.service.ProblemHistoryService;
 import com.seong.portfolio.quiz_quest.problems.service.probDockerExecution.ProbDockerExecutionService;
@@ -28,16 +28,17 @@ public class ProblemsRestController {
     @Qualifier("ProbDockerExecution")
     private final ProbDockerExecutionService probDockerExecutionService;
     private final ProblemCommentsRepository problemCommentsRepository;
-    private final ProblemCommentService problemCommentService;
+    @Qualifier("ProblemCommentService")
+    private final CommentService commentService;
     private final ProblemService problemService;
     private final ProblemHistoryService problemHistoryService;
     private final UserService userService;
     private final SessionService sessionService;
 
-    public ProblemsRestController(@Qualifier("ProbDockerExecution") ProbDockerExecutionService probDockerExecutionService, ProblemCommentsRepository problemCommentsRepository, ProblemCommentService problemCommentService, UserService userService, ProblemService problemService, ProblemHistoryService problemHistoryService, SessionService sessionService) {
+    public ProblemsRestController(@Qualifier("ProbDockerExecution") ProbDockerExecutionService probDockerExecutionService, ProblemCommentsRepository problemCommentsRepository, @Qualifier("ProblemCommentService") CommentService commentService, UserService userService, ProblemService problemService, ProblemHistoryService problemHistoryService, SessionService sessionService) {
         this.probDockerExecutionService = probDockerExecutionService;
         this.problemCommentsRepository = problemCommentsRepository;
-        this.problemCommentService = problemCommentService;
+        this.commentService = commentService;
         this.problemService = problemService;
         this.problemHistoryService = problemHistoryService;
         this.userService = userService;
@@ -87,27 +88,23 @@ public class ProblemsRestController {
     }
 
     @GetMapping("/{problemId}/{cursor}/{sortType}/comments")
-    public ResponseEntity<List<ProblemCommentsVO>> getProblemComments(@PathVariable long problemId, @PathVariable String cursor, @PathVariable String sortType) {
-        List<ProblemCommentsVO> problemCommentsVO = problemCommentsRepository.findAllByProblemId(problemId, sortType, cursor);
+    public ResponseEntity<List<Object>> getProblemComments(@PathVariable long problemId, @PathVariable String cursor, @PathVariable String sortType) {
+        List<Object> problemCommentsVO = commentService.findComments(problemId, sortType, cursor);
 
         return ResponseEntity.ok(problemCommentsVO);
     }
 
 
     @PostMapping("/{sortType}/comments")
-    public ResponseEntity<List<ProblemCommentsVO>> saveAndReturnProblemComments(@RequestBody ProblemCommentsVO problemCommentsVO, @PathVariable String sortType) {
+    public ResponseEntity<List<Object>> saveAndReturnProblemComments(@RequestBody ProblemCommentsVO problemCommentsVO, @PathVariable String sortType) {
 
-        List<ProblemCommentsVO> result = problemCommentService.saveAndReturnProblemComments(problemCommentsVO, sortType);
+        List<Object> result = commentService.saveAndReturnComments(problemCommentsVO, sortType);
         return ResponseEntity.ok(result);
     }
     @GetMapping("/{parentCommentId}/{cursor}/{sortType}/reply-comments")
-    public ResponseEntity<List<ProblemCommentsVO>> getReplyProblemComments(@PathVariable long parentCommentId, @PathVariable String cursor, @PathVariable String sortType) {
-        List<ProblemCommentsVO> replyCommentsVO;
-        if(cursor.equals("0")) {
-            replyCommentsVO = problemCommentsRepository.findAllByParentCommentId(parentCommentId, sortType, "0");
-        }else{
-            replyCommentsVO = problemCommentsRepository.findAllByParentCommentId(parentCommentId, sortType, cursor);
-        }
+    public ResponseEntity<List<Object>> getReplyProblemComments(@PathVariable long parentCommentId, @PathVariable String cursor, @PathVariable String sortType) {
+        List<Object> replyCommentsVO = commentService.findAllReplyComments(parentCommentId, sortType, cursor);
+
 
         return ResponseEntity.ok(replyCommentsVO);
     }

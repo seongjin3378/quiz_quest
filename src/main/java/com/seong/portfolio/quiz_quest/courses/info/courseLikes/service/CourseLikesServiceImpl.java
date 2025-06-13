@@ -33,7 +33,7 @@ public class CourseLikesServiceImpl implements CourseLikesService {
             return CourseTotalLikesInfoVO.builder()
                     .courseId(courseId)
                     .totalLikes(0)
-                    .totalDislikes(0)
+                    .totalDisLikes(0)
                     .currentState(0)
                     .build();
         }
