@@ -1,8 +1,7 @@
 package com.seong.portfolio.quiz_quest.courses.controller;
 
 
-import com.seong.portfolio.quiz_quest.courses.info.courseLikes.repo.CourseLikesRepository;
-import com.seong.portfolio.quiz_quest.courses.info.courseVisual.service.CourseVisualService;
+import com.seong.portfolio.quiz_quest.likes.repo.LikesRepository;
 import com.seong.portfolio.quiz_quest.courses.enums.CourseTypeEnum;
 import com.seong.portfolio.quiz_quest.courses.repo.CoursesRepository;
 import com.seong.portfolio.quiz_quest.courses.vo.CourseVO;
@@ -10,6 +9,7 @@ import com.seong.portfolio.quiz_quest.user.service.principalDetails.vo.Principal
 import com.seong.portfolio.quiz_quest.utils.pagination.service.PaginationService;
 import com.seong.portfolio.quiz_quest.utils.pagination.utils.PaginationUtil;
 import com.seong.portfolio.quiz_quest.utils.pagination.vo.PaginationVO;
+import com.seong.portfolio.quiz_quest.visual.service.VisualService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,8 +36,8 @@ import java.util.concurrent.TimeUnit;
 public class CoursesController {
     private final PaginationService paginationService;
     private final CoursesRepository coursesRepository;
-    private final CourseVisualService courseVisualService;
-    private final CourseLikesRepository courseLikesRepository;
+    private final VisualService visualService;
+    private final LikesRepository likesRepository;
 
     
     @GetMapping("/c/{index}/s/{sortType}")
@@ -59,8 +59,8 @@ public class CoursesController {
 
     @GetMapping("/c/n/{index}")
     public String courseBoardV(@PathVariable long index, Model model, @AuthenticationPrincipal PrincipalDetails principal) {
-        CourseVO courseVO = coursesRepository.findByCourseId(index);
-        Integer currentState = courseLikesRepository.findCurrentStateByUserNumAndCourseId(principal.getUserNum(), index);
+        CourseVO courseVO = coursesRepository.findByCourseIdAndBoardType(index, "course");
+        Integer currentState = likesRepository.findCurrentStateByUserNumAndBoardIdAndBoardType(principal.getUserNum(), index, "course");
 
         if(currentState == null) {
             currentState = 0;
@@ -86,10 +86,13 @@ public class CoursesController {
         return "courseBoardWrite";
     } 
 
-    @GetMapping(value = "/c/pic/{UUID}")
-    public ResponseEntity<Resource> coursesPictureV(@PathVariable String UUID, Model model) {
+
+
+
+    @GetMapping(value = "/c/pic/{boardId}")
+    public ResponseEntity<Resource> coursesPictureV(@PathVariable long boardId, Model model) {
         try{
-            Resource img = courseVisualService.loadAsResource(UUID);
+            Resource img = visualService.loadAsResource(boardId, "course");
             MediaType mediaType = MediaTypeFactory.getMediaType(img).orElse(MediaType.APPLICATION_OCTET_STREAM);
 
             return ResponseEntity.ok()

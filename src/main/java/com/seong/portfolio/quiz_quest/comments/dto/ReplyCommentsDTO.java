@@ -1,15 +1,13 @@
-package com.seong.portfolio.quiz_quest.comments.problem.vo;
+package com.seong.portfolio.quiz_quest.comments.dto;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @Builder
-public class ReplyProblemCommentsVO {
+public class ReplyCommentsDTO {
     private Long replyCommentId;        // 댓글 ID
     private String replyCommentContent; // 댓글 내용
     private String replyCreatedAt;      // 생성 시간 (String 타입으로 변경)

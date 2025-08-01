@@ -1,4 +1,4 @@
-package com.seong.portfolio.quiz_quest.courses.vo;
+package com.seong.portfolio.quiz_quest.likes.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,9 +11,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CourseLikesVO {
+public class LikesDTO {
     private long userNum;
-    private long courseId;
+    private long boardId;
+    private String boardType;
     private int likeCount;
     private LocalDateTime likedAt;
 }
+

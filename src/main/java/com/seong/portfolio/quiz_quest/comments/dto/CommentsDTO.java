@@ -1,4 +1,4 @@
-package com.seong.portfolio.quiz_quest.comments.problem.vo;
+package com.seong.portfolio.quiz_quest.comments.dto;
 
 import lombok.*;
 import java.util.List;
@@ -9,15 +9,16 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProblemCommentsVO {
+public class CommentsDTO {
     private Long commentId;          // 댓글 ID
-    private Long problemId;
+    private Long boardId;
+    private String boardType;
     private String commentContent;    // 댓글 내용
     private String createdAt;      // 생성 시간// 작성자
     private int level;
     private String author;
     private String cursor;
-    private List<ReplyProblemCommentsVO> replyCommentList;    // 부모 댓글 ID (null 가능)
+    private List<ReplyCommentsDTO> replyCommentList;    // 부모 댓글 ID (null 가능)
     private Long parentCommentId;
     private int replyCount;
 }

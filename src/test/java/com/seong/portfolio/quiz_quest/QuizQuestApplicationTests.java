@@ -72,13 +72,13 @@ class QuizQuestApplicationTests {
             logger.info(messageVO.getSender().getUserId());
         }*/
 
-        NotificationVO message = new NotificationVO();
+       /* NotificationVO message = new NotificationVO();
         message.setSenderId(1L);
         message.setReceiverId(2L);
         message.setMessageContent("안녕하세요. 테스트 메시지입니다.");
         message.setNotice(false);
 
-        notificationRepository.save(message);
+        notificationRepository.save(message);*/
 
     }
 

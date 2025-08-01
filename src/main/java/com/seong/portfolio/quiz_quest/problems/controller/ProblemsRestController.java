@@ -1,9 +1,8 @@
 package com.seong.portfolio.quiz_quest.problems.controller;
 
 
-import com.seong.portfolio.quiz_quest.comments.problem.repo.ProblemCommentsRepository;
 import com.seong.portfolio.quiz_quest.comments.service.CommentService;
-import com.seong.portfolio.quiz_quest.comments.problem.vo.ProblemCommentsVO;
+import com.seong.portfolio.quiz_quest.comments.dto.CommentsDTO;
 import com.seong.portfolio.quiz_quest.problems.info.problemHistory.service.ProblemHistoryService;
 import com.seong.portfolio.quiz_quest.problems.service.probDockerExecution.ProbDockerExecutionService;
 import com.seong.portfolio.quiz_quest.problems.service.problem.ProblemService;
@@ -27,17 +26,14 @@ import java.util.List;
 public class ProblemsRestController {
     @Qualifier("ProbDockerExecution")
     private final ProbDockerExecutionService probDockerExecutionService;
-    private final ProblemCommentsRepository problemCommentsRepository;
-    @Qualifier("ProblemCommentService")
     private final CommentService commentService;
     private final ProblemService problemService;
     private final ProblemHistoryService problemHistoryService;
     private final UserService userService;
     private final SessionService sessionService;
 
-    public ProblemsRestController(@Qualifier("ProbDockerExecution") ProbDockerExecutionService probDockerExecutionService, ProblemCommentsRepository problemCommentsRepository, @Qualifier("ProblemCommentService") CommentService commentService, UserService userService, ProblemService problemService, ProblemHistoryService problemHistoryService, SessionService sessionService) {
+    public ProblemsRestController(@Qualifier("ProbDockerExecution") ProbDockerExecutionService probDockerExecutionService, CommentService commentService, UserService userService, ProblemService problemService, ProblemHistoryService problemHistoryService, SessionService sessionService) {
         this.probDockerExecutionService = probDockerExecutionService;
-        this.problemCommentsRepository = problemCommentsRepository;
         this.commentService = commentService;
         this.problemService = problemService;
         this.problemHistoryService = problemHistoryService;
@@ -89,18 +85,19 @@ public class ProblemsRestController {
 
     @GetMapping("/{problemId}/{cursor}/{sortType}/comments")
     public ResponseEntity<List<Object>> getProblemComments(@PathVariable long problemId, @PathVariable String cursor, @PathVariable String sortType) {
-        List<Object> problemCommentsVO = commentService.findComments(problemId, sortType, cursor);
+        List<Object> problemCommentsVO = commentService.findComments(problemId, sortType, cursor, "Problem");
 
         return ResponseEntity.ok(problemCommentsVO);
     }
 
 
     @PostMapping("/{sortType}/comments")
-    public ResponseEntity<List<Object>> saveAndReturnProblemComments(@RequestBody ProblemCommentsVO problemCommentsVO, @PathVariable String sortType) {
+    public ResponseEntity<List<Object>> saveAndReturnProblemComments(@RequestBody CommentsDTO commentsDTO, @PathVariable String sortType) {
 
-        List<Object> result = commentService.saveAndReturnComments(problemCommentsVO, sortType);
+        List<Object> result = commentService.saveAndReturnComments(commentsDTO, sortType);
         return ResponseEntity.ok(result);
     }
+
     @GetMapping("/{parentCommentId}/{cursor}/{sortType}/reply-comments")
     public ResponseEntity<List<Object>> getReplyProblemComments(@PathVariable long parentCommentId, @PathVariable String cursor, @PathVariable String sortType) {
         List<Object> replyCommentsVO = commentService.findAllReplyComments(parentCommentId, sortType, cursor);

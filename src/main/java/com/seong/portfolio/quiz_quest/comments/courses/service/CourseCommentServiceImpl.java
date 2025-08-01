@@ -17,8 +17,8 @@ import java.util.Optional;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@Qualifier("CourseCommentService")
-public class CourseCommentServiceImpl implements CommentService {
+@Deprecated
+public class CourseCommentServiceImpl  {
 
     private final SessionService sessionService;
     private final CourseCommentsRepository courseCommentsRepository;
@@ -28,7 +28,7 @@ public class CourseCommentServiceImpl implements CommentService {
                 .orElse((long) -1));
     }
 
-    @Override
+
     public List<Object> saveAndReturnComments(Object vo, String sortType) {
         CourseCommentsVO courseCommentsVO = (CourseCommentsVO) vo;
         long largestCommentId = getCommentIdOrDefault(courseCommentsVO); // largestCommentId가 null일 경우 -1 반환
@@ -45,12 +45,11 @@ public class CourseCommentServiceImpl implements CommentService {
         return List.of();
     }
 
-    @Override
-    public List<Object> findComments(long id, String sortType, String cursor) {
+    public List<Object> findComments(long id, String sortType, String cursor, String boardType) {
         return Collections.singletonList(courseCommentsRepository.findAllByCourseIdAndAndSortTypeAndCursor(id, sortType, cursor));
     }
 
-    @Override
+
     public List<Object> findAllReplyComments(long parentCommentId, String sortType, String cursor) {
         if(cursor.equals("0")) {
             return Collections.singletonList(courseCommentsRepository.findAllByParentCommentId(parentCommentId, sortType, "0"));

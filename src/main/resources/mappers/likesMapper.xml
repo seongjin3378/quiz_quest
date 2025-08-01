@@ -2,33 +2,34 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.seong.portfolio.quiz_quest.courses.info.courseLikes.repo.CourseLikesRepository">
+<mapper namespace="com.seong.portfolio.quiz_quest.likes.repo.LikesRepository">
 
-    <select id="findTotalLikesInfoByCourseIdAndUserNum" parameterType="map" resultMap="ctlMap">
+    <select id="findTotalLikesInfoByBoardIdAndUserNumAndBoardType" parameterType="map" resultMap="ctlMap">
         SELECT
-            cl.course_id,
+            cl.board_id,
             SUM(CASE WHEN cl.like_count =  1 THEN 1 ELSE 0 END) AS total_likes,
             SUM(CASE WHEN cl.like_count = -1 THEN 1 ELSE 0 END) AS total_dislikes,
             COALESCE(
                     MAX(CASE WHEN cl.user_num = #{userNum} THEN cl.like_count END),
                     0
             ) AS current_state
-        FROM course_likes cl
-        WHERE cl.course_id = #{courseId}
-        GROUP BY cl.course_id;
+        FROM  likes cl
+        WHERE cl.board_id = #{boardId}
+        AND cl.board_type = #{boardType}
+        GROUP BY cl.board_id;
     </select>
 
 
-    <resultMap id="ctlMap" type="com.seong.portfolio.quiz_quest.courses.vo.CourseTotalLikesInfoVO">
-        <id column="course_id"   property="courseId"/>
+    <resultMap id="ctlMap" type="com.seong.portfolio.quiz_quest.likes.dto.totalLikesInfoDTO">
+        <id column="board_id"   property="boardId"/>
         <result column="total_likes"  property="totalLikes"/>
         <result column="total_dislikes" property="totalDisLikes"/>
         <result column="current_state"    property="currentState"/>
     </resultMap>
 
-    <resultMap id="clMap" type="com.seong.portfolio.quiz_quest.courses.vo.CourseLikesVO">
+    <resultMap id="clMap" type="com.seong.portfolio.quiz_quest.likes.dto.LikesDTO">
         <id column="user_num"   property="userNum"/>
-        <id column="course_id"  property="courseId"/>
+        <id column="board_id"  property="boardId"/>
         <result column="like_count" property="likeCount"/>
         <result column="liked_at"    property="likedAt"/>
     </resultMap>

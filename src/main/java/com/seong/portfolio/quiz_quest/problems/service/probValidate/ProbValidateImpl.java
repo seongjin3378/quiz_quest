@@ -1,7 +1,7 @@
 package com.seong.portfolio.quiz_quest.problems.service.probValidate;
 
 import com.seong.portfolio.quiz_quest.docker.vo.DockerValidationData;
-import com.seong.portfolio.quiz_quest.problems.info.problemVisual.vo.ProbVisualVO;
+import com.seong.portfolio.quiz_quest.visual.dto.VisualDTO;
 import com.seong.portfolio.quiz_quest.user.service.session.SessionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,27 +47,4 @@ public class ProbValidateImpl implements ProbValidate {
         }
     }
 
-    @Override
-    public void validateVisual(MultipartFile[] files, ProbVisualVO vo) {
-        if (isEmptyVisualTables(vo.getVisualTables())) { // 표를 추가 안했을 경우 null 처리
-            vo.setVisualTables(null);
-            log.info("표 추가 안함");
-        }
-        
-        if(files == null || files.length == 0)
-        {
-            return;
-        }
-
-
-        int captionCount = vo.getVisualCaptions().size();
-        if (captionCount != files.length) {
-            log.info("캡션 입력 누락: captions={}, files={}", captionCount, files.length);
-            throw new IllegalArgumentException("Please enter a caption for each image file.");
-        }
-    }
-    private boolean isEmptyVisualTables(String visualTablesJson) {
-        // "[]" 이외에도 공백(null/empty) 체크를 추가하면 더 안전
-        return "[]".equals(visualTablesJson) || StringUtils.isBlank(visualTablesJson);
-    }
 }

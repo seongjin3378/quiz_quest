@@ -54,6 +54,7 @@ public class SecurityConfig {
 
     }
 
+    
     @Bean
     public SecurityFilterChain loginFilterChain(HttpSecurity http, SqlSessionFactory sqlSessionFactory, SessionRegistry sessionRegistry, ClientRegistrationRepository clientRegistrationRepository) throws Exception {
 
@@ -68,7 +69,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/loginProc", "/join", "/joinProc", "/api/v1/users/**", "/api/v1/rankings/**", "/logoutProc", "/favicon.ico", "/api/v1/problems/**").permitAll()
-                        .requestMatchers("/", "/p/{index}/s/{sortType}", "/p/n/{index}", "/c/{index}/s/{sortType}", "/c/n/{index}", "/c/write", "/api/v1/courses/**", "/c/pic/{UUID}", "/p/pic/{problemVisualId}").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers("/", "/p/{index}/s/{sortType}", "/p/n/{index}", "/c/{index}/s/{sortType}", "/c/n/{index}", "/c/write", "/api/v1/courses/**", "/c/pic/{UUID}", "/p/pic/{problemVisualId}/{boardType}").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/login").anonymous()
                         .requestMatchers("/css/**", "/js/**", "/img/**", "/api/v1/notification/**", "/test", "/test/**").permitAll()
 
@@ -116,10 +117,6 @@ public class SecurityConfig {
                         .tokenValiditySeconds(3600 * 24 * 365)
                         .alwaysRemember(false) //로그인할때마다 자동로그인 할것인지 유무
                         .userDetailsService(customUserDetailsService));
-
-
-
-
 
 
         http

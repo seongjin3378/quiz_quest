@@ -1,12 +1,10 @@
 package com.seong.portfolio.quiz_quest.comments.courses.vo;
 
 
-import com.seong.portfolio.quiz_quest.comments.problem.vo.ReplyProblemCommentsVO;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
+@Deprecated
 public class CourseCommentsVO {
     private Long commentId;          // 댓글 ID
     private Long courseId;
@@ -19,3 +17,4 @@ public class CourseCommentsVO {
     private Long parentCommentId;
     private int replyCount;
 }
+

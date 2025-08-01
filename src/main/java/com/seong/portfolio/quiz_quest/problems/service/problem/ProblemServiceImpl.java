@@ -1,7 +1,8 @@
 package com.seong.portfolio.quiz_quest.problems.service.problem;
 
-import com.seong.portfolio.quiz_quest.comments.problem.repo.ProblemCommentsRepository;
-import com.seong.portfolio.quiz_quest.comments.problem.vo.ProblemCommentsVO;
+import com.seong.portfolio.quiz_quest.comments.dto.CommentsRepoDTO;
+import com.seong.portfolio.quiz_quest.comments.repo.CommentsRepository;
+import com.seong.portfolio.quiz_quest.comments.dto.CommentsDTO;
 import com.seong.portfolio.quiz_quest.problems.repo.ProblemRepository;
 import com.seong.portfolio.quiz_quest.problems.info.testCases.utils.TestCasesFormatterUtil;
 import com.seong.portfolio.quiz_quest.problems.info.testCases.vo.TestCasesVO;
@@ -15,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProblemServiceImpl implements ProblemService {
     private final ProblemRepository problemRepository;
-    private final ProblemCommentsRepository problemCommentsRepository;
+    private final CommentsRepository commentsRepository;
     @Override
     public ProblemVO findByProblemIdAndReplace(long id) {
         ProblemVO problemVO = problemRepository.findByProblemId(ProblemVO.builder().problemId(id).isVisible(1).build());
@@ -27,15 +28,25 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
-    public List<ProblemCommentsVO> findAllProblemComments(long id) {
-        return problemCommentsRepository.findAllByProblemIdAndSortTypeAndCursor(id, "DESC", "0");
+    public List<CommentsDTO> findAllProblemComments(long id) {
+        return commentsRepository.findAllByBoardIdAndBoardTypeSortTypeAndCursor(getCommentsRepoDTO(id));
+    }
+
+    private CommentsRepoDTO getCommentsRepoDTO(long id){
+
+        return CommentsRepoDTO.builder()
+                .boardId(id)
+                .sortType("DESC")
+                .cursor("0")
+                .boardType("problem")
+                .build();
     }
 
 
     @Override
-    public String findCursor(List<ProblemCommentsVO> problemCommentsVO) {
-        int lastIndex = !problemCommentsVO.isEmpty() ? problemCommentsVO.size() - 1 : 0;
-        return lastIndex != 0 ? problemCommentsVO.get(lastIndex).getCursor() : "0";
+    public String findCursor(List<CommentsDTO> commentsDTO) {
+        int lastIndex = !commentsDTO.isEmpty() ? commentsDTO.size() - 1 : 0;
+        return lastIndex != 0 ? commentsDTO.get(lastIndex).getCursor() : "0";
     }
 
     @Override

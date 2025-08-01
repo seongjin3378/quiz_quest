@@ -1,8 +1,9 @@
 package com.seong.portfolio.quiz_quest.problems.service.probWrite;
 
 
-import com.seong.portfolio.quiz_quest.problems.info.problemVisual.service.ProblemVisualService;
-import com.seong.portfolio.quiz_quest.problems.info.problemVisual.vo.ProbVisualVO;
+import com.seong.portfolio.quiz_quest.visual.dto.SaveProcessDTO;
+import com.seong.portfolio.quiz_quest.visual.service.VisualService;
+import com.seong.portfolio.quiz_quest.visual.dto.VisualDTO;
 import com.seong.portfolio.quiz_quest.problems.service.probDockerExecution.ProbDockerExecutionService;
 import com.seong.portfolio.quiz_quest.problems.service.probValidate.ProbValidate;
 import com.seong.portfolio.quiz_quest.problems.service.probWrite.probService.ProbWriteService;
@@ -29,27 +30,31 @@ public class ProbWriteExecutionService {
     @Qualifier("ProbWriteDockerExecution")
     private final ProbDockerExecutionService probDockerExecutionService;
     private final ProbWriteService probWriteService;
-    private final ProblemVisualService problemVisualService;
+    private final VisualService visualService;
     //기본 어드민 문제 작성
 
-    public ProbWriteExecutionService(@Qualifier("ProbWriteDockerExecution")ProbDockerExecutionService probDockerExecutionService, TestCasesValidate testCasesValidate, ProbValidate probValidate, ProbWriteService probWriteService, ProblemVisualService problemVisualService) {
+    public ProbWriteExecutionService(@Qualifier("ProbWriteDockerExecution")ProbDockerExecutionService probDockerExecutionService, TestCasesValidate testCasesValidate, ProbValidate probValidate, ProbWriteService probWriteService, VisualService visualService) {
         this.probDockerExecutionService = probDockerExecutionService;
         this.testCasesValidate = testCasesValidate;
         this.probValidate = probValidate;
         this.probWriteService = probWriteService;
-        this.problemVisualService = problemVisualService;
+        this.visualService = visualService;
     }
 
     @Transactional
-    public ResponseEntity<String> execute(ProbExecutionVO probExecutionVO, MultipartFile file, MultipartFile[] files, ProbVisualVO probVisualVO, String language) {
+    public ResponseEntity<String> execute(ProbExecutionVO probExecutionVO, MultipartFile file, MultipartFile[] files, VisualDTO visualDTO, String language) {
         try {
             initializeProbExecutionVO(probExecutionVO, file, language);
             validateProbExecution(probExecutionVO);
             probDockerExecutionService.execute(probExecutionVO);
-            long problemId = probWriteService.saveProblemAndTestCases(probExecutionVO);
-            probVisualVO.setProblemId(problemId);
-            problemVisualService.saveProblemVisualAids(files, probVisualVO, "problem" + problemId + "-");
 
+            long problemId = probWriteService.saveProblemAndTestCases(probExecutionVO);
+            visualDTO.setBoardId(problemId);
+            visualDTO.setBoardType("problem");
+            visualDTO.setOnlyCaption(true);
+
+            visualService.saveProcess(getSaveProcessDTO(files, visualDTO, "problem" + problemId + "-"));
+            
             return ResponseEntity.ok("Yes");
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -62,9 +67,18 @@ public class ProbWriteExecutionService {
         }
     }
 
+    private SaveProcessDTO getSaveProcessDTO(MultipartFile[] files, VisualDTO dto, String fileName)
+    {
+        return SaveProcessDTO.builder()
+                .files(files)
+                .fileName(fileName)
+                .visualDTO(dto)
+                .build();
+    }
+
 
     //사용자 문제 작성 - 미구현
-    public ResponseEntity<String> execute(ProbExecutionVO probExecutionVO, MultipartFile file, MultipartFile[] files, ProbVisualVO probVisualVO, String language, String fileName) {
+    public ResponseEntity<String> execute(ProbExecutionVO probExecutionVO, MultipartFile file, MultipartFile[] files, VisualDTO visualDTO, String language, String fileName) {
         return null;
     }
 
@@ -76,6 +90,7 @@ public class ProbWriteExecutionService {
         String problemContent = TestCasesFormatterUtil.deleteAngleBrackets(probExecutionVO.getProblemContent());
         probExecutionVO.setProblemContent(problemContent);
     }
+
 
     private void validateProbExecution(ProbExecutionVO probExecutionVO) {
         probValidate.validateTimeLimit(probExecutionVO.getTimeLimit(), true);

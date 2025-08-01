@@ -46,7 +46,7 @@
 </div>
 
 <footer th:include="fragments/commentModal :: commentModal"></footer>
-<script th:src="@{/js/commentModal.js}"></script>
+
 
 
 <div id="header">
@@ -69,7 +69,7 @@
                 <div th:each="picture : ${pictures}" >
                     <span th:text="${picture.visualCaptions != null ? picture.visualCaptions : 'No Caption'}" ></span><br>
                     <img
-                            th:src="@{|${request.scheme}://${request.serverName}:${request.serverPort}/p/pic/${picture.problemVisualId}|}"
+                            th:src="@{|${request.scheme}://${request.serverName}:${request.serverPort}/p/pic/${picture.visualId}/problem|}"
                             alt="이미지" style="width: auto;height: auto;object-fit: none;max-width: 1000px;max-height: 300px;"/>
                     <br>
                 </div>

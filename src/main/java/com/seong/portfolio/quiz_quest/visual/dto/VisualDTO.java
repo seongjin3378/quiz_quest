@@ -1,4 +1,4 @@
-package com.seong.portfolio.quiz_quest.problems.info.problemVisual.vo;
+package com.seong.portfolio.quiz_quest.visual.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,10 +12,12 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @Builder
-public class ProbVisualVO {
-    private long problemVisualId;
+public class VisualDTO {
+    private long visualId;
     private List<String> visualSrc;
     private List<String> visualCaptions; // 이미지 캡션
     private String visualTables; // ProbTableVO 리스트
-    private long problemId;
+    private long boardId;
+    private String boardType;
+    private boolean onlyCaption;
 }

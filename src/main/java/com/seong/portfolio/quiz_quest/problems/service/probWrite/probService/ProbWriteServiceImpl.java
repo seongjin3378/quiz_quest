@@ -1,7 +1,7 @@
 package com.seong.portfolio.quiz_quest.problems.service.probWrite.probService;
 
-import com.seong.portfolio.quiz_quest.problems.info.problemVisual.repo.ProblemVisualRepository;
-import com.seong.portfolio.quiz_quest.problems.info.problemVisual.vo.ProbVisualVO;
+import com.seong.portfolio.quiz_quest.visual.repo.VisualRepository;
+import com.seong.portfolio.quiz_quest.visual.dto.VisualDTO;
 import com.seong.portfolio.quiz_quest.problems.repo.ProblemRepository;
 import com.seong.portfolio.quiz_quest.problems.info.testCases.repo.TestCasesRepository;
 import com.seong.portfolio.quiz_quest.problems.info.testCases.vo.TestCasesVO;
@@ -24,20 +24,20 @@ import java.util.List;
 public class ProbWriteServiceImpl implements ProbWriteService {
     @Value("${problem.image.upload.path}")
     private String ImageFilesPath;
-    private final ProblemVisualRepository problemVisualRepository;
+    private final VisualRepository visualRepository;
     private final ProblemRepository problemRepository;
     private final TestCasesRepository testCasesRepository;
 
     @Override
-    public void saveProblemVisualAids(MultipartFile[] files, ProbVisualVO probVisualVO, String fileName) throws IOException {
+    public void saveProblemVisualAids(MultipartFile[] files, VisualDTO visualDTO, String fileName) throws IOException {
         if (files != null) {
             List<String> results = MultipartFileUtil.saveFiles(files, ImageFilesPath, fileName);
-            probVisualVO.setVisualSrc(results);
+            visualDTO.setVisualSrc(results);
         }
-        if (probVisualVO.getVisualTables().equals("[]")) { // 표를 추가 안했을 경우 null 처리
-            probVisualVO.setVisualTables(null);
+        if (visualDTO.getVisualTables().equals("[]")) { // 표를 추가 안했을 경우 null 처리
+            visualDTO.setVisualTables(null);
         }
-        problemVisualRepository.save(probVisualVO);
+        visualRepository.save(visualDTO);
         //db 작업
     }
 

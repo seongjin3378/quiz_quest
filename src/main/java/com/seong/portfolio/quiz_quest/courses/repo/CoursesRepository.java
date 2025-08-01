@@ -2,11 +2,8 @@ package com.seong.portfolio.quiz_quest.courses.repo;
 
 
 import com.seong.portfolio.quiz_quest.courses.vo.CourseVO;
-import com.seong.portfolio.quiz_quest.problems.vo.ProblemVO;
-import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -17,7 +14,7 @@ public interface CoursesRepository {
 
 
 
-    CourseVO findByCourseId(@Param("courseId") long courseId);
+    CourseVO findByCourseIdAndBoardType(@Param("courseId") long courseId, @Param("boardType") String boardType);
 
     int count(@Param("column") String column, @Param("value") Object value); //reflex
 

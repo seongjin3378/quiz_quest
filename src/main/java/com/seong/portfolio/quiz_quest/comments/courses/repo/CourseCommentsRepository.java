@@ -2,11 +2,8 @@ package com.seong.portfolio.quiz_quest.comments.courses.repo;
 
 
 import com.seong.portfolio.quiz_quest.comments.courses.vo.CourseCommentsVO;
-import com.seong.portfolio.quiz_quest.comments.problem.vo.ProblemCommentsVO;
-import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 

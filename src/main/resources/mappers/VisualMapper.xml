@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.seong.portfolio.quiz_quest.visual.repo.VisualRepository">
+
+    <resultMap id="pvMap" type="com.seong.portfolio.quiz_quest.visual.dto.VisualDTO">
+        <id property="visualId" column="visual_id"/>
+        <result property="visualSrc" column="visual_src" />
+        <result property="visualCaptions" column="visual_captions" />
+        <result property="visualTables" column="visual_tables" />
+        <result property="boardId" column="board_id" />
+        <result property="boardType" column="board_type"/>
+    </resultMap>
+
+
+    <select id="findAllVisualByBoardIdAndBoardType" parameterType="map" resultMap="pvMap">
+        SELECT * FROM visual WHERE board_id = #{boardId} AND board_type = #{boardType};
+    </select>
+    <insert id="save" parameterType="com.seong.portfolio.quiz_quest.visual.dto.VisualDTO">
+        INSERT INTO visual (visual_src, visual_captions, visual_tables, board_id, board_type)
+        VALUES
+        <if test="visualSrc != null">
+
+        <foreach collection="visualSrc" item="src" index="index" separator=",">
+            (#{src}, #{visualCaptions[${index}]}, null, #{boardId}, #{boardType})
+        </foreach>
+            <if test="visualTables != null">
+                ,
+            </if>
+        </if>
+
+        <if test="visualTables != null and visualTables != ''">
+            (null, null, #{visualTables, jdbcType=VARCHAR}, #{boardId}, #{boardType})
+        </if>
+        ;
+    </insert>
+
+</mapper>

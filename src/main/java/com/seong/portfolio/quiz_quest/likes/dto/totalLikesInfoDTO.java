@@ -1,4 +1,4 @@
-package com.seong.portfolio.quiz_quest.courses.vo;
+package com.seong.portfolio.quiz_quest.likes.dto;
 
 
 import lombok.AllArgsConstructor;
@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CourseTotalLikesInfoVO {
-    private long courseId;
+public class totalLikesInfoDTO {
+    private long boardId;
     private int totalLikes;
     private int totalDisLikes;
     private int currentState;

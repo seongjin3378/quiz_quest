@@ -1,4 +1,4 @@
-package com.seong.portfolio.quiz_quest.problems.info.problemVisual.vo;
+package com.seong.portfolio.quiz_quest.visual.dto;
 
 
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProbTableVO {
+public class ProbTableDTO {
     private String caption; // 캡션
     private List<String[]> rows; // 데이터 행 리스트
 

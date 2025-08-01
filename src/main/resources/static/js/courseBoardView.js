@@ -1,311 +1,181 @@
-const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
-// 초기 상태 변수 선언
-//  state =  1 → 좋아요 상태
-//  state = -1 → 싫어요 상태
-//  state =  0 → 아무것도 누른 상태가 아님(기본)
-let currentState =  parseInt(document.getElementById("state-text").textContent);
+const $$ = (sel, ctx = document) => ctx.querySelector(sel);
+const escapeHtml = str => str.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m]);
 
-
-let likes    = 0;
-let dislikes = 0;
-let cursor = 0;
-
-// 버튼, 카운트 엘리먼트
-const likeBtn      = document.getElementById('likeBtn');
-const dislikeBtn   = document.getElementById('dislikeBtn');
-const likeCount    = document.getElementById('likeCount');
-const dislikeCount = document.getElementById('dislikeCount');
+const csrfToken  = $$('meta[name="_csrf"]').content;
+const csrfHeader = $$('meta[name="_csrf_header"]').content;
+const axiosCfg   = { headers: { [csrfHeader]: csrfToken } };
 
 
-updateLikeDislikeState(currentState, likeCount, dislikeCount);
+/**
+ * Like / Dislike Manager
+ * ----------------------------------------------------------------------- */
+class Reactions {
+    constructor() {
+        this.state      = parseInt($$('#state-text').textContent, 10); // 1,0,-1
+        this.likes      = parseInt($$('#likeCount').textContent, 10)   || 0;
+        this.dislikes   = parseInt($$('#dislikeCount').textContent, 10)|| 0;
+        this.likeBtn    = $$('#likeBtn');
+        this.dislikeBtn = $$('#dislikeBtn');
+        this.likeCntEl  = $$('#likeCount');
+        this.dislikeCntEl = $$('#dislikeCount');
 
-// URL에서 courseId(=마지막 숫자) 가져오는 함수
-function getCourseId() {
-    const path = window.location.pathname; // 예: "/c/n/51"
-    return path.split('/').pop();
-}
-
-
-
-// 좋아요/싫어요 요청을 보낸 뒤, 버튼 색상·카운트 등을 업데이트하는 함수
-function updateUI(newState, responseData) {
-    // responseData에 서버에서 보내준 최종 카운트 정보가 있다고 가정하면
-    // 예) { likes: 10, dislikes: 3, state: 1 }
-    // 서버 로직에 맞춰 필드명을 조정하세요.
-    if (responseData) {
-        likes    = responseData.totalLikes;
-        dislikes = responseData.totalDisLikes;
-        currentState = responseData.currentState; // 서버에서 현재 상태(1/-1/0) 리턴받는 경우
-
-        console.log(responseData);
-    } else {
-        // 간단히 클라이언트에서 상태만 토글하고, 숫자를 +1/-1/-1/+1 하려면 아래처럼 할 수 있습니다.
-        // 다만, 실제 서비스라면 서버에서 최종 counts를 내려주는 게 정확합니다.
-        if (newState === 1) {
-            if (currentState === 0) {
-                likes++;
-            } else if (currentState === -1) {
-                dislikes--;
-                likes++;
-            }
-        } else if (newState === -1) {
-            if (currentState === 0) {
-                dislikes++;
-            } else if (currentState === 1) {
-                likes--;
-                dislikes++;
-            }
-        } else if (newState === 0) {
-            // 취소 요청: 이전 상태가 좋아요면 likes--, 싫어요면 dislikes--
-            if (currentState === 1) {
-                likes--;
-            } else if (currentState === -1) {
-                dislikes--;
-            }
-        }
-        currentState = newState;
+        this.bindEvents();
+        this.render();
     }
 
-    // 화면에 반영
+    bindEvents() {
+        this.likeBtn.addEventListener('click', ()  => this.handleClick( 1));
+        this.dislikeBtn.addEventListener('click', () => this.handleClick(-1));
+    }
 
-    likeCount.textContent    = likes;
-    dislikeCount.textContent = dislikes;
+    async handleClick(requested) {
+        const newState = this.state === requested ? 0 : requested;
+        try {
+            const { data } = await axios.post(`/api/v1/courses/like/${courseId}/${newState}`, {}, axiosCfg);
+            this.likes    = data.totalLikes;
+            this.dislikes = data.totalDisLikes;
+            this.state    = data.currentState;
+        } catch (err) {
+            console.error('Reaction update failed', err);
+        } finally {
+            this.render();
+        }
+    }
 
-    // 버튼 색상 토글 (예: 눌려 있을 땐 파란색, 아닐 땐 기본)
-    updateLikeDislikeState(currentState, likeCount, dislikeCount)
-}
+    render() {
+        this.likeCntEl.textContent    = this.likes;
+        this.dislikeCntEl.textContent = this.dislikes;
 
-function updateLikeDislikeState(currentState, likeCountElem, dislikeCountElem) {
-    if (currentState === 1) {
-        likeCountElem.classList.add('active');
-        dislikeCountElem.classList.remove('active');
-    } else if (currentState === -1) {
-        dislikeCountElem.classList.add('active');
-        likeCountElem.classList.remove('active');
-    } else { // currentState === 0 혹은 그 외
-        likeCountElem.classList.remove('active');
-        dislikeCountElem.classList.remove('active');
+        this.likeCntEl.classList.toggle('active',    this.state === 1);
+        this.dislikeCntEl.classList.toggle('active', this.state === -1);
     }
 }
 
-// 좋아요 버튼 클릭 핸들러
-likeBtn.addEventListener('click', () => {
-    const courseId = getCourseId();
+/**
+ * Comments Manager – handles fetch, render, CRUD, infinite scroll
+ * ----------------------------------------------------------------------- */
+class Comments {
+    constructor() {
+        this.container   = $$('#commentsList');
+        this.form        = $$('#commentForm');
+        this.input       = $$('#commentInput');
+        this.cursor      = 0;
+        this.isLoading   = false;
+        this.sort        = 'DESC';
 
-    // 현재가 '좋아요 상태(1)'이면 → 취소(0) 요청, 아니면 좋아요(1) 요청
-    const newState = (currentState === 1) ? 0 : 1;
+        this.bindForm();
+        this.bindScroll();
+        // prime initial comments
+        this.load();
+    }
 
-    axios.post(`/api/v1/courses/like/${courseId}/${newState}`, {}, {
-        headers: {
-            [csrfHeader]: csrfToken
-        }
-    })
-        .then(response => {
-            // 서버가 { likes, dislikes, state } 형태로 리턴한다고 가정
-            updateUI(newState, response.data);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            // 실패 시 로그만 찍고 UI 변경 안 함
+    bindForm() {
+        this.form.addEventListener('submit', async e => {
+            e.preventDefault();
+            const text = this.input.value.trim();
+            if (!text) return;
+
+            const largestId = this.container.querySelector('[data-id]')?.dataset.id;
+            const payload   = { courseId, commentContent: text, largestCommentId: largestId };
+
+            try {
+                const { data } = await axios.post(`/api/v1/courses/${this.sort}/comments`, payload, axiosCfg);
+                this.appendComments(data[0]);
+                this.input.value = '';
+            } catch (err) {
+                console.error('Comment submit failed', err);
+            }
         });
-});
+    }
 
-// 싫어요 버튼 클릭 핸들러
-dislikeBtn.addEventListener('click', () => {
-    const courseId = getCourseId();
+    bindScroll() {
+        window.addEventListener('scroll', () => {
+            if (this.isLoading) return;
+            const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 300;
+            if (nearBottom) this.load();
 
-    // 현재가 '싫어요 상태(-1)'이면 → 취소(0) 요청, 아니면 싫어요(-1) 요청
-    const newState = (currentState === -1) ? 0 : -1;
-
-    axios.post(`/api/v1/courses/like/${courseId}/${newState}`, {}, {
-        headers: {
-            [csrfHeader]: csrfToken
-        }
-    })
-        .then(response => {
-            updateUI(newState, response.data);
-        })
-        .catch(error => {
-            console.error('Error:', error);
         });
-});
+    }
 
+    async load() {
+        this.isLoading = true;
+        try {
+            const url        = `/api/v1/courses/${courseId}/${this.cursor}/${this.sort}/comments`;
+            const { data }   = await axios.post(url, {}, axiosCfg);
+            const comments   = data[0] ?? [];
+            this.appendComments(comments);
+            this.cursor = comments.length ? comments[comments.length - 1].cursor : this.cursor;
+        } catch (err) {
+            console.error('Comment load failed', err);
+        } finally {
+            this.isLoading = false;
+        }
+    }
 
+    appendComments(list) {
+        list.forEach(c => this.container.appendChild(this.renderComment(c)));
+    }
 
-// --- 댓글 작성 부분 (기존 코드와 동일) ---
-const commentForm   = document.getElementById('commentForm');
-const commentInput  = document.getElementById('commentInput');
-const commentsList  = document.getElementById('commentsList');
-
-commentForm.addEventListener('submit', e => {
-    e.preventDefault();
-    const text = commentInput.value.trim();
-    if (!text) return;
-
-    const commentEl = document.createElement('div');
-    commentEl.className = 'comment';
-    commentEl.innerHTML = `
-    <div class="comment-header">익명 | ${new Date().toLocaleString()}</div>
-    <div class="comment-body">${text}</div>
-  `;
-    commentsList.prepend(commentEl);
-    commentInput.value = '';
-});
-
-
-
-
-document.addEventListener('DOMContentLoaded', async () => {
-    const commentsList = document.getElementById('commentsList');
-    const commentForm = document.getElementById('commentForm');
-    const commentInput = document.getElementById('commentInput');
-    let isLoading = false;
-
-    // 1) 댓글 불러오기
-    function renderComment(comment) {
+    renderComment(c) {
         const div = document.createElement('div');
-        div.className = 'comment';
-        div.dataset.id = comment.id;
-        div.innerHTML = `
-    <p class="text">${escapeHtml(comment.commentContent)}</p>
-    <small>${comment.author} • ${new Date(comment.createdAt).toLocaleString()}</small>
-    <div class="actions">
-      <button class="editBtn">수정</button>
-      <button class="deleteBtn">삭제</button>
-    </div>
-  `;
-        div.querySelector('.editBtn')
-            .addEventListener('click', () => startEdit(div, comment));
-        div.querySelector('.deleteBtn')
-            .addEventListener('click', () => deleteComment(div.dataset.id));
+        div.className   = 'comment';
+        div.dataset.id  = c.commentId;
+        div.innerHTML   = `
+      <p class="text">${escapeHtml(c.commentContent)}</p>
+      <small>${escapeHtml(c.author)} • ${new Date(c.createdAt).toLocaleString()}</small>
+      <div class="actions">
+        <button class="editBtn">수정</button>
+        <button class="deleteBtn">삭제</button>
+      </div>`;
+
+        div.querySelector('.editBtn').addEventListener('click', () => this.startEdit(div, c));
+        div.querySelector('.deleteBtn').addEventListener('click', () => this.deleteComment(c.commentId, div));
         return div;
     }
 
-// --- 페이지네이션용 로드 (append) ---
-    async function loadComments(sortType, cursor) {
-        try {
-            // 1) POST 요청 보내기
-            const url = `/api/v1/courses/${courseId}/${cursor}/${sortType}/comments`;
-            console.log(url);
-
-            axios.post(url, {}, {
-                headers: {
-                    [csrfHeader]: csrfToken
-                }
-            })
-                .then(response => {
-                    const comments = response.data[0];
-                    console.log(comments);
-                    // 4) 각 댓글 렌더링 및 DOM 에 추가
-                    comments.forEach(c => {
-                        const el = renderComment(c);
-                        commentsList.appendChild(el);
-                    });
-
-                    // 5) 다음 cursor 처리
-                    //    예: 마지막 댓글 ID를 반환해서, 더 불러올 때 사용
-                    return comments.length > 0 ? comments[comments.length - 1].id : null;
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    // 실패 시 로그만 찍고 UI 변경 안 함
-                });
-
-
-
-
-
-        }
-
-        catch (error) {
-            console.error('댓글 로드 중 오류 발생:', error);
-            // 에러 UI 처리 (토스트, 얼러트 등)
-        }
-    }
-
-
-// --- 댓글 등록 핸들러: 이제 renderComment 사용 ---
-    commentForm.addEventListener('submit', async e => {
-        e.preventDefault();
-        const text = commentInput.value.trim();
-        if (!text) return;
-
-        try {
-            const res = await axios.post(`/courses/${courseId}/comments`, {text}, {
-                headers: {[csrfHeader]: csrfToken}
-            });
-            // 새로 생성된 댓글 element를 맨 위로 prepend
-            const newEl = renderComment(res.data);
-            commentsList.prepend(newEl);
-            commentInput.value = '';
-        } catch (err) {
-            console.error('댓글 등록 실패', err);
-        }
-    });
-
-    // 4) 댓글 삭제
-    async function deleteComment(commentId) {
+    async deleteComment(id, node) {
         if (!confirm('정말 삭제하시겠습니까?')) return;
         try {
-            await axios.delete(`/comments/${commentId}`);
-            const el = commentsList.querySelector(`.comment[data-id="${commentId}"]`);
-            if (el) el.remove();
+            await axios.delete(`/comments/${id}`, axiosCfg);
+            node.remove();
         } catch (err) {
-            console.error('댓글 삭제 실패', err);
+            console.error('Delete failed', err);
         }
     }
 
-    // 5) 댓글 수정 시작
-    function startEdit(container, comment) {
-        const p = container.querySelector('.text');
-        const original = p.textContent;
-        // textarea + 확인/취소 버튼으로 대체
-        container.innerHTML = `
-      <textarea class="editInput">${escapeHtml(original)}</textarea>
-      <div>
-        <button class="saveBtn">저장</button>
-        <button class="cancelBtn">취소</button>
-      </div>
-    `;
-        container.querySelector('.saveBtn').addEventListener('click', () => saveEdit(container, comment.id));
-        container.querySelector('.cancelBtn').addEventListener('click', () => {
-            container.innerHTML = '';
-            renderComment(comment);
+    startEdit(container, original) {
+        const textarea = document.createElement('textarea');
+        textarea.className = 'editInput';
+        textarea.value = original.commentContent;
+        container.replaceChildren(textarea);
+
+        const controls = document.createElement('div');
+        controls.innerHTML = '<button class="saveBtn">저장</button><button class="cancelBtn">취소</button>';
+        container.appendChild(controls);
+
+        controls.querySelector('.saveBtn').addEventListener('click', () => this.saveEdit(container, original.commentId));
+        controls.querySelector('.cancelBtn').addEventListener('click', () => {
+            container.replaceWith(this.renderComment(original));
         });
     }
 
-    // 6) 댓글 수정 저장
-    async function saveEdit(container, commentId) {
+    async saveEdit(container, id) {
         const newText = container.querySelector('.editInput').value.trim();
         if (!newText) return alert('댓글을 입력하세요');
         try {
-            const res = await axios.put(`/comments/${commentId}`, {text: newText});
-            // 수정된 댓글 다시 렌더링
-            container.innerHTML = '';
-            renderComment(res.data);
+            const { data } = await axios.put(`/comments/${id}`, { text: newText }, axiosCfg);
+            container.replaceWith(this.renderComment(data));
         } catch (err) {
-            console.error('댓글 수정 실패', err);
+            console.error('Edit failed', err);
         }
     }
+}
 
-    // 7) 스크롤 페이징
-    window.addEventListener('scroll', () => {
-        // 아래로 300px 정도 남았을 때 추가 로딩
-        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 300) {
-            cursor = loadComments("DESC", cursor);
-        }
-    });
-
-    // escapeHtml: XSS 방지
-    function escapeHtml(str) {
-        console.log(str)
-        return str.replace(/[&<>"']/g, tag => ({
-            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-        }[tag]));
-    }
-
-    // 초기 댓글 로드
-    cursor = await loadComments("DESC", cursor);
+/**
+ * Bootstrapping once DOM is ready
+ * ----------------------------------------------------------------------- */
+document.addEventListener('DOMContentLoaded', () => {
+    new Reactions();
+    new Comments();
 });

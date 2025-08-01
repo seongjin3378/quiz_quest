@@ -2,10 +2,10 @@ package com.seong.portfolio.quiz_quest.problems.controller;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.seong.portfolio.quiz_quest.comments.problem.vo.ProblemCommentsVO;
+import com.seong.portfolio.quiz_quest.comments.dto.CommentsDTO;
 import com.seong.portfolio.quiz_quest.problems.enums.ProblemType;
-import com.seong.portfolio.quiz_quest.problems.info.problemVisual.service.ProblemVisualService;
-import com.seong.portfolio.quiz_quest.problems.info.problemVisual.vo.ProbVisualVO;
+import com.seong.portfolio.quiz_quest.visual.service.VisualService;
+import com.seong.portfolio.quiz_quest.visual.dto.VisualDTO;
 import com.seong.portfolio.quiz_quest.problems.repo.ProblemRepository;
 import com.seong.portfolio.quiz_quest.problems.service.problem.ProblemService;
 import com.seong.portfolio.quiz_quest.problems.vo.ProblemVO;
@@ -48,7 +48,7 @@ public class  ProblemsController {
     private final SessionService sessionService;
     private final RedisRankingService redisRankingService;
     private final ProblemService problemService;
-    private final ProblemVisualService problemVisualService;
+    private final VisualService visualService;
 
     @GetMapping("/p/n/{index}")
     @Transactional
@@ -63,9 +63,9 @@ public class  ProblemsController {
 
         findProblemVOAndAddModelByIndex(index, model);
 
-        List<ProblemCommentsVO> problemCommentsVO = findProblemCommentsVOAndAddModelByIndex(index, model);
+        List<CommentsDTO> commentsDTO = findProblemCommentsVOAndAddModelByIndex(index, model);
 
-        findCursorAndAddModelByProblemCommentsVO(problemCommentsVO, model);
+        findCursorAndAddModelByProblemCommentsVO(commentsDTO, model);
 
         findProblemVisualsAndAddModelByIndex(index, model, req);
 
@@ -88,26 +88,26 @@ public class  ProblemsController {
         model.addAttribute("problem", problemVO);
     }
 
-    private List<ProblemCommentsVO> findProblemCommentsVOAndAddModelByIndex(long index, Model model) {
-        List<ProblemCommentsVO> problemCommentsVO = problemService.findAllProblemComments(index);
-        model.addAttribute("problemComments", problemCommentsVO);
-        return problemCommentsVO;
+    private List<CommentsDTO> findProblemCommentsVOAndAddModelByIndex(long index, Model model) {
+        List<CommentsDTO> commentsDTO = problemService.findAllProblemComments(index);
+        model.addAttribute("problemComments", commentsDTO);
+        return commentsDTO;
     }
 
-    private void findCursorAndAddModelByProblemCommentsVO(List<ProblemCommentsVO> problemCommentsVO, Model model) {
-        String cursor = problemService.findCursor(problemCommentsVO);
+    private void findCursorAndAddModelByProblemCommentsVO(List<CommentsDTO> commentsDTO, Model model) {
+        String cursor = problemService.findCursor(commentsDTO);
         log.info("cursor: {}", cursor);
         model.addAttribute("cursor", cursor);
     }
 
     private void findProblemVisualsAndAddModelByIndex(long index, Model model, HttpServletRequest request) {
-        List<ProbVisualVO> result = problemVisualService.findAllProblemVisual(index); //problemId
+        List<VisualDTO> result = visualService.findAllVisual(index, "problem"); //problemId
         log.info("result: {}", result);
-        List<ProbVisualVO> tableResult = result.stream()
+        List<VisualDTO> tableResult = result.stream()
                 .filter(vo -> !Objects.isNull(vo.getVisualTables()))
                 .collect(Collectors.toList());
 
-        List<ProbVisualVO> pictures = result.stream()
+        List<VisualDTO> pictures = result.stream()
                 .filter(vo -> Objects.isNull(vo.getVisualTables()))
                 .toList();
 
@@ -122,9 +122,9 @@ public class  ProblemsController {
 
     }
 
-    @GetMapping("/p/pic/{problemVisualId}")
-    public ResponseEntity<Resource> problemPictureV(@PathVariable long problemVisualId) throws IOException {
-        Resource img = problemVisualService.loadAsResource(problemVisualId);
+    @GetMapping("/p/pic/{visualId}/{boardType}")
+    public ResponseEntity<Resource> problemPictureV(@PathVariable long visualId, @PathVariable String boardType) throws IOException {
+        Resource img = visualService.loadAsResource(visualId, boardType);
 
         MediaType mediaType = MediaTypeFactory.getMediaType(img).orElse(MediaType.APPLICATION_OCTET_STREAM);
 

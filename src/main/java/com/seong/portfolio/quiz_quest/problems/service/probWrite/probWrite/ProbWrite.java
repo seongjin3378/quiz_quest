@@ -1,6 +1,6 @@
 package com.seong.portfolio.quiz_quest.problems.service.probWrite.probWrite;
 
-import com.seong.portfolio.quiz_quest.problems.info.problemVisual.vo.ProbVisualVO;
+import com.seong.portfolio.quiz_quest.visual.dto.VisualDTO;
 import com.seong.portfolio.quiz_quest.problems.vo.ProbExecutionVO;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -50,6 +50,6 @@ public interface ProbWrite {
     void initializeProbExecutionVO(ProbExecutionVO probExecutionVO, MultipartFile file, String language);
     void validateProbExecution(ProbExecutionVO probExecutionVO);
     long executeProblem(ProbExecutionVO probExecutionVO) throws IOException;
-    void saveProblemVisualAids(MultipartFile[] files, ProbVisualVO probVisualVO, long problemId, String fileName) throws IOException;
+    void saveProblemVisualAids(MultipartFile[] files, VisualDTO visualDTO, long problemId, String fileName) throws IOException;
 }
 

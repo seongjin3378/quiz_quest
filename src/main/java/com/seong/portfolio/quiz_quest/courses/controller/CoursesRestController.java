@@ -2,16 +2,19 @@ package com.seong.portfolio.quiz_quest.courses.controller;
 
 
 import com.seong.portfolio.quiz_quest.comments.courses.vo.CourseCommentsVO;
+import com.seong.portfolio.quiz_quest.comments.dto.CommentsDTO;
 import com.seong.portfolio.quiz_quest.comments.service.CommentService;
-import com.seong.portfolio.quiz_quest.courses.info.courseLikes.service.CourseLikesService;
+import com.seong.portfolio.quiz_quest.likes.service.LikesService;
 import com.seong.portfolio.quiz_quest.courses.info.courseVisual.service.CourseVisualService;
 import com.seong.portfolio.quiz_quest.courses.repo.CoursesRepository;
-import com.seong.portfolio.quiz_quest.courses.vo.CourseLikesVO;
-import com.seong.portfolio.quiz_quest.courses.vo.CourseTotalLikesInfoVO;
+import com.seong.portfolio.quiz_quest.likes.dto.LikesDTO;
+import com.seong.portfolio.quiz_quest.likes.dto.totalLikesInfoDTO;
 import com.seong.portfolio.quiz_quest.courses.vo.CourseVO;
 import com.seong.portfolio.quiz_quest.user.service.principalDetails.vo.PrincipalDetails;
+import com.seong.portfolio.quiz_quest.visual.dto.SaveProcessDTO;
+import com.seong.portfolio.quiz_quest.visual.dto.VisualDTO;
+import com.seong.portfolio.quiz_quest.visual.service.VisualService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,43 +29,65 @@ import java.util.List;
 @Slf4j
 public class CoursesRestController {
     private final CoursesRepository coursesRepository;
-    private final CourseVisualService courseVisualService;
-    private final CourseLikesService courseLikesService;
+    private final VisualService visualService;
+    private final LikesService likesService;
 
-    @Qualifier("CourseCommentService")
     private final CommentService commentService;
 
-    public CoursesRestController(CoursesRepository coursesRepository, CourseVisualService courseVisualService, CourseLikesService courseLikesService, @Qualifier("CourseCommentService") CommentService commentService) {
+    public CoursesRestController(CoursesRepository coursesRepository, VisualService visualService, LikesService likesService, CommentService commentService) {
         this.coursesRepository = coursesRepository;
-        this.courseVisualService = courseVisualService;
-        this.courseLikesService = courseLikesService;
+        this.visualService = visualService;
+        this.likesService = likesService;
         this.commentService = commentService;
     }
 
 
     @PostMapping(value = "/write")
     @Transactional
-    public ResponseEntity<String> writeCourses( @RequestPart(value="files",  required = false) MultipartFile[] files, @RequestPart("courseVO") CourseVO courseVO  ) throws IOException {
+    public ResponseEntity<String> writeCourses( @RequestPart(value="files",  required = false) MultipartFile[] files, @RequestPart("courseVO") CourseVO courseVO) throws IOException {
+
         coursesRepository.save(courseVO);
         long courseId = courseVO.getCourseId(); //courseId 생성 auto generated Key Value
-        courseVisualService.saveFiles(files, courseId, "courses" + courseId + "-");
+
+
+        visualService.saveProcess(getSaveProcessDTO(files, "problem" + courseId + "-", getVisualDTO(courseId)));
         String returnUrl = "/c/n/"+courseId;
         return ResponseEntity.ok(returnUrl);
     }
-    @PostMapping(value = "/like/{courseId}/{likeCount}")
-    @Transactional
-    public ResponseEntity<CourseTotalLikesInfoVO> increaseLikeOrCancel(@AuthenticationPrincipal PrincipalDetails principal, @PathVariable long courseId, @PathVariable int likeCount) throws IOException
+    private VisualDTO getVisualDTO(long boardId)
+    {
+        VisualDTO visualDTO = new VisualDTO();
+        visualDTO.setBoardId(boardId);
+        visualDTO.setBoardType("course");
+        visualDTO.setOnlyCaption(false);
+        return visualDTO;
+    }
+
+    private SaveProcessDTO getSaveProcessDTO(MultipartFile[] files, String fileName, VisualDTO dto) throws IOException
     {
 
-        return ResponseEntity.ok(courseLikesService.likeStatusProcess(createCourseLikesVO(principal.getUserNum(), courseId, likeCount)));
+        return SaveProcessDTO.builder()
+                .files(files)
+                .visualDTO(dto)
+                .fileName(fileName)
+                .build();
+    }
+
+    @PostMapping(value = "/like/{courseId}/{likeCount}")
+    @Transactional
+    public ResponseEntity<totalLikesInfoDTO> increaseLikeOrCancel(@AuthenticationPrincipal PrincipalDetails principal, @PathVariable long courseId, @PathVariable int likeCount) throws IOException
+    {
+
+        return ResponseEntity.ok(likesService.likeStatusProcess(createCourseLikesVO(principal.getUserNum(), courseId, likeCount)));
 
     }
 
-    private CourseLikesVO createCourseLikesVO(long userNum, long courseId, int likeCount)
+    private LikesDTO createCourseLikesVO(long userNum, long courseId, int likeCount)
     {
-        return CourseLikesVO.builder()
+        return LikesDTO.builder()
                 .userNum(userNum)
-                .courseId(courseId)
+                .boardId(courseId)
+                .boardType("course")
                 .likeCount(likeCount)
                 .build();
     }
@@ -71,14 +96,14 @@ public class CoursesRestController {
     @PostMapping(value = "/{courseId}/{cursor}/{sortType}/comments")
     public ResponseEntity<List<Object>> loadComments(@PathVariable long courseId, @PathVariable String cursor, @PathVariable String sortType) throws IOException {
         log.info("23232");
-        List<Object> result = commentService.findComments(courseId, sortType, cursor);
+        List<Object> result = commentService.findComments(courseId, sortType, cursor, "course");
         return ResponseEntity.ok( result);
     }
 
     @PostMapping("/{sortType}/comments")
-    public ResponseEntity<List<Object>> saveAndReturnProblemComments(@RequestBody CourseCommentsVO courseCommentsVO, @PathVariable String sortType) {
+    public ResponseEntity<List<Object>> saveAndReturnProblemComments(@RequestBody CommentsDTO commentsDTO, @PathVariable String sortType) {
 
-        List<Object> result = commentService.saveAndReturnComments(courseCommentsVO, sortType);
+        List<Object> result = commentService.saveAndReturnComments(commentsDTO, sortType);
         return ResponseEntity.ok(result);
     }
 }

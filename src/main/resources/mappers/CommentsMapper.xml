@@ -2,33 +2,33 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.seong.portfolio.quiz_quest.comments.problem.repo.ProblemCommentsRepository">
+<mapper namespace="com.seong.portfolio.quiz_quest.comments.repo.CommentsRepository">
 
-    <insert id="save" parameterType="com.seong.portfolio.quiz_quest.comments.problem.vo.ProblemCommentsVO" useGeneratedKeys="true" keyProperty="commentId">
+    <insert id="save" parameterType="com.seong.portfolio.quiz_quest.comments.dto.CommentsDTO" useGeneratedKeys="true" keyProperty="commentId">
       <if test="parentCommentId == null">
-      INSERT INTO problem_comments(problem_id, comment_content, author)
-      VALUES (#{problemId}, #{commentContent}, #{author});
+      INSERT INTO comments(board_id, comment_content, author, board_type)
+      VALUES (#{boardId}, #{commentContent}, #{author}, #{boardType});
       </if>
       <if test="parentCommentId != null">
-          INSERT INTO problem_comments(problem_id, parent_comment_id, comment_content, author)
-          VALUES (#{problemId}, #{parentCommentId}, #{commentContent}, #{author});
+          INSERT INTO comments(board_id, parent_comment_id, comment_content, author, board_type)
+          VALUES (#{boardId}, #{parentCommentId}, #{commentContent}, #{author}, #{boardType});
       </if>
     </insert>
 
-    <select id="findAllByCommentIdAndProblemId" parameterType="Map" resultMap="pcMap" >
+    <select id="findAllByCommentIdAndBoardIdAndBoardType" parameterType="Map" resultMap="pcMap" >
         SELECT
             pc.comment_id,
             pc.comment_content,
             pc.created_at,
             pc.author,
             u.level
-        FROM problem_comments pc
+        FROM comments pc
         INNER JOIN users u ON pc.author = u.user_id
-        WHERE comment_id > #{largestCommentId}  AND problem_id = #{ProblemCommentsVO.problemId} AND parent_comment_id IS NULL
+        WHERE comment_id > #{largestCommentId}  AND board_id = #{commentsVO.commentId} AND board_type = #{commentsVO.boardType} AND parent_comment_id IS NULL
         ;
     </select>
 
-    <select id="findAllByProblemId" parameterType="Map" resultMap="pcMap">
+    <select id="findAllByBoardIdAndBoardTypeSortTypeAndCursor" parameterType="com.seong.portfolio.quiz_quest.comments.dto.CommentsRepoDTO" resultMap="pcMap">
 
         SELECT
         pc.comment_id,
@@ -36,23 +36,24 @@
         pc.created_at,
         pc.author,
         u.level,
-        (SELECT COUNT(*) FROM problem_comments WHERE parent_comment_id = pc.comment_id) AS reply_count,
+        (SELECT COUNT(*) FROM comments WHERE parent_comment_id = pc.comment_id AND board_type = #{boardType}) AS reply_count,
         <!--커서 기반 페이지네이션을 이용할 경우 createdAt과 commentId를 문자열로  -->
         CONCAT(
                 LPAD(POW(10, 10) - UNIX_TIMESTAMP(pc.created_at), 10, '0'),
                 LPAD(POW(10, 10) - pc.comment_id, 10, '0')
                 ) AS `cursor`
 
-        FROM problem_comments pc
+        FROM comments pc
         INNER JOIN users u ON pc.author = u.user_id
 
         WHERE
             pc.comment_id IN (
             SELECT comment_id
-            FROM problem_comments
+            FROM comments
             WHERE parent_comment_id IS NULL
             )
-        AND pc.problem_id = #{problemId}
+        AND pc.board_id = #{boardId}
+        AND pc.board_type = #{boardType}
         <if test="cursor != 0">
             AND  CONCAT(LPAD(POW(10, 10) - UNIX_TIMESTAMP(pc.created_at), 10, '0'), LPAD(POW(10, 10) - pc.comment_id, 10, '0'))
             <if test="sortType == 'DESC'">
@@ -87,7 +88,7 @@
         LPAD(POW(10, 10) - pc.comment_id, 10, '0')
         ) AS `cursor`
 
-        FROM problem_comments pc
+        FROM comments pc
         INNER JOIN users u ON pc.author = u.user_id
         WHERE
         pc.parent_comment_id = #{parentCommentId}
@@ -112,15 +113,8 @@
     </select>
 
 
-<!--    <resultMap id="rcMap" type="com.seong.portfolio.quiz_quest.comments.problem.vo.ReplyProblemCommentsVO">
-        <id property="replyCommentId" column="reply_comment_id"/> &lt;!&ndash; 댓글 ID &ndash;&gt;
-        <result property="replyCommentContent" column="reply_comment_content"/> &lt;!&ndash; 부모 댓글 ID &ndash;&gt;
-        <result property="replyCreatedAt" column="reply_created_at"/> &lt;!&ndash; 생성 시간 &ndash;&gt;
-        <result property="replyAuthor" column="reply_author"/> &lt;!&ndash; 문제 ID &ndash;&gt;
-        <result property="replyLevel" column="reply_level"/>
-    </resultMap>-->
 
-    <resultMap id="pcMap" type="com.seong.portfolio.quiz_quest.comments.problem.vo.ProblemCommentsVO">
+    <resultMap id="pcMap" type="com.seong.portfolio.quiz_quest.comments.dto.CommentsDTO">
         <id property="commentId" column="comment_id"/> <!-- 댓글 ID -->
         <result property="commentContent" column="comment_content"/> <!-- 댓글 내용 -->
         <result property="createdAt" column="created_at"/> <!-- 생성 시간 -->

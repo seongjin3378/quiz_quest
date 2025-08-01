@@ -9,7 +9,7 @@
         VALUES( #{courseTitle}, #{courseType}, #{courseContent});
     </insert>
 
-    <select id="findByCourseId" parameterType="map" resultMap="courseMap">
+    <select id="findByCourseIdAndBoardType" parameterType="map" resultMap="courseMap">
         SELECT
             c.course_id,
             c.course_title,
@@ -18,21 +18,22 @@
             c.created_at,
             COALESCE((
                          SELECT SUM(view_count)
-                         FROM course_view v
-                         WHERE v.course_id = c.course_id
+                         FROM views v
+                         WHERE v.board_id = c.course_id AND v.board_type = #{boardType}
                      ), 0) AS total_views,
             COALESCE((
                          SELECT SUM(CASE WHEN like_count =  1 THEN 1 ELSE 0 END)
-                         FROM course_likes l
-                         WHERE l.course_id = c.course_id
+                         FROM likes l
+                         WHERE l.board_id = c.course_id AND l.board_type = #{boardType}
                      ), 0) AS total_likes,
             COALESCE((
                          SELECT SUM(CASE WHEN like_count = -1 THEN 1 ELSE 0 END)
-                         FROM course_likes dl
-                         WHERE dl.course_id = c.course_id
+                         FROM likes dl
+                         WHERE dl.board_id = c.course_id AND dl.board_type = #{boardType}
                      ), 0) AS total_dislikes
         FROM courses c
-        WHERE c.course_id = #{courseId};
+        WHERE c.course_id = #{courseId}
+        ;
     </select>
     <select id="count" parameterType="map" resultType="Integer">
 
@@ -57,12 +58,12 @@
         FROM courses c
                  LEFT JOIN (
             SELECT
-                course_id,
+                board_id,
                 SUM(view_count) AS total_views
-            FROM course_view
-            GROUP BY course_id
+            FROM views
+            GROUP BY board_id
         ) cv
-        ON cv.course_id = c.course_id
+        ON cv.board_id = c.course_id
         ORDER BY c.course_id
             LIMIT #{valueOfOnePage} OFFSET #{index};
 

@@ -121,6 +121,8 @@ function submitPost() {
         courseType:    document.getElementById('lectureCategory').value,
         courseContent: htmlString,
     };
+
+
     formData.append("courseVO", new Blob([JSON.stringify(courseVO)], { type: 'application/json' }));
 
     axios.post('/api/v1/courses/write', formData, {
