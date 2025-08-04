@@ -21,4 +21,6 @@ public class CommentsDTO {
     private List<ReplyCommentsDTO> replyCommentList;    // 부모 댓글 ID (null 가능)
     private Long parentCommentId;
     private int replyCount;
+    private long largestCommentId;
+
 }

@@ -15,6 +15,7 @@ import com.seong.portfolio.quiz_quest.visual.dto.SaveProcessDTO;
 import com.seong.portfolio.quiz_quest.visual.dto.VisualDTO;
 import com.seong.portfolio.quiz_quest.visual.service.VisualService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
@@ -102,8 +103,27 @@ public class CoursesRestController {
 
     @PostMapping("/{sortType}/comments")
     public ResponseEntity<List<Object>> saveAndReturnProblemComments(@RequestBody CommentsDTO commentsDTO, @PathVariable String sortType) {
+        commentsDTO.setBoardType("course");
 
         List<Object> result = commentService.saveAndReturnComments(commentsDTO, sortType);
         return ResponseEntity.ok(result);
     }
+
+
+
+
+    @DeleteMapping("/{boardId}/comments")
+    public ResponseEntity<String> deleteComments(@PathVariable long boardId) {
+        try {
+            commentService.deleteComments(boardId);
+            return ResponseEntity.ok("OK");
+        } catch (Exception e) {
+
+            log.error(e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("서버 오류가 발생했습니다.");
+        }
+    }
+
 }

@@ -25,4 +25,5 @@ public interface CommentService {
     List<Object> saveAndReturnComments(Object vo, String sortType);
     List<Object> findComments(long id, String sortType, String cursor, String boardType);
     List<Object> findAllReplyComments(long parentCommentId, String sortType, String cursor);
+    void deleteComments(long boardId);
 }

@@ -40,16 +40,20 @@
         </button>
     </div>
 
-    <div class="comments-section">
-        <h2>댓글</h2>
-        <div id="commentsList" data-page="0" data-size="10" data-has-next="true">
-            <!-- 각 댓글 .comment 요소가 동적으로 추가됩니다 -->
-        </div>
 
+    <div class="comments-section">
+
+        <h2>댓글</h2><br>
         <form class="comment-form" id="commentForm" th:object="${course}">
             <label for="commentInput"></label><textarea id="commentInput" placeholder="댓글을 입력하세요..." required></textarea>
             <button type="submit">댓글 등록</button>
         </form>
+        <br>
+        <div id="commentsList" data-page="0" data-size="10" data-has-next="true">
+            <!-- 각 댓글 .comment 요소가 동적으로 추가됩니다 -->
+        </div>
+
+
     </div>
 </div>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>

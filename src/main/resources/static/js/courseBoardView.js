@@ -77,11 +77,14 @@ class Comments {
             if (!text) return;
 
             const largestId = this.container.querySelector('[data-id]')?.dataset.id;
-            const payload   = { courseId, commentContent: text, largestCommentId: largestId };
+            console.log("largestId: " + largestId);
+            const payload   = {  boardId : courseId, commentContent: text, largestCommentId: largestId };
 
             try {
                 const { data } = await axios.post(`/api/v1/courses/${this.sort}/comments`, payload, axiosCfg);
-                this.appendComments(data[0]);
+                this.prependComments(data[0]);
+                console.log(data);
+
                 this.input.value = '';
             } catch (err) {
                 console.error('Comment submit failed', err);
@@ -117,6 +120,14 @@ class Comments {
         list.forEach(c => this.container.appendChild(this.renderComment(c)));
     }
 
+    prependComments(list) {
+        // 리스트를 역순으로 순회해야 원본 순서대로 맨 앞에 쌓입니다
+        [...list].reverse().forEach(c => {
+            const commentNode = this.renderComment(c);
+            this.container.prepend(commentNode);
+        });
+    }
+
     renderComment(c) {
         const div = document.createElement('div');
         div.className   = 'comment';
@@ -137,7 +148,7 @@ class Comments {
     async deleteComment(id, node) {
         if (!confirm('정말 삭제하시겠습니까?')) return;
         try {
-            await axios.delete(`/comments/${id}`, axiosCfg);
+            await axios.delete(`/api/v1/courses/${id}/comments`, axiosCfg);
             node.remove();
         } catch (err) {
             console.error('Delete failed', err);

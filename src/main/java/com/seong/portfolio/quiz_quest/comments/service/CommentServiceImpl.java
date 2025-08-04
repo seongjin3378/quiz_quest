@@ -6,7 +6,6 @@ import com.seong.portfolio.quiz_quest.comments.dto.CommentsDTO;
 import com.seong.portfolio.quiz_quest.user.service.session.SessionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,9 +20,9 @@ public class CommentServiceImpl implements CommentService {
     private final CommentsRepository commentsRepository;
     private final SessionService sessionService;
 
-    private int getCommentIdOrDefault(CommentsDTO commentsDTO) {
+    private int getLargestCommentIdOrDefault(CommentsDTO commentsDTO) {
         return Math.toIntExact(Optional.ofNullable(commentsDTO)
-                .map(CommentsDTO::getCommentId)
+                .map(CommentsDTO::getLargestCommentId)
                 .orElse((long) -1));
     }
 
@@ -32,9 +31,11 @@ public class CommentServiceImpl implements CommentService {
     public List<Object> saveAndReturnComments(Object vo, String sortType) {
         CommentsDTO commentsDTO = (CommentsDTO) vo;
         commentsDTO.setAuthor(sessionService.getSessionId());
-        long largestCommentId = getCommentIdOrDefault(commentsDTO); // largestCommentId가 null일 경우 -1 반환
+        long largestCommentId = getLargestCommentIdOrDefault(commentsDTO); // largestCommentId가 null일 경우 -1 반환
         log.info("getCommentId: {}", commentsDTO.getCommentId());
-        commentsRepository.save(commentsDTO); // save 하는 과정에서 생성된 commentId를 problemCommentsVO에 자동으로 할당됨
+        commentsRepository.save(commentsDTO);
+        setBoardId(commentsDTO);
+
         List<CommentsDTO> result;
         boolean isNotReplyCommentReq = commentsDTO.getParentCommentId() == null;
 
@@ -44,6 +45,13 @@ public class CommentServiceImpl implements CommentService {
         }
 
         return List.of();
+    }
+
+    private void setBoardId(CommentsDTO commentsDTO)
+    {
+        long boardId = commentsRepository.findBoardIdByCommentId(commentsDTO.getCommentId());
+        log.info("boardId: {}", boardId);
+        commentsDTO.setBoardId(boardId);
     }
 
     @Override
@@ -71,5 +79,11 @@ public class CommentServiceImpl implements CommentService {
             return Collections.singletonList(commentsRepository
                     .findAllByParentCommentId(parentCommentId, sortType, cursor));
         }
+    }
+
+    @Override
+    @Transactional
+    public void deleteComments(long boardId) {
+        commentsRepository.deleteByCommentId(boardId);
     }
 }

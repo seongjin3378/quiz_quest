@@ -24,7 +24,7 @@
             u.level
         FROM comments pc
         INNER JOIN users u ON pc.author = u.user_id
-        WHERE comment_id > #{largestCommentId}  AND board_id = #{commentsVO.commentId} AND board_type = #{commentsVO.boardType} AND parent_comment_id IS NULL
+        WHERE comment_id > #{largestCommentId}  AND board_id = #{commentsVO.boardId} AND board_type = #{commentsVO.boardType} AND parent_comment_id IS NULL
         ;
     </select>
 
