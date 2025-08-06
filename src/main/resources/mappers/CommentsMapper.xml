@@ -28,6 +28,18 @@
         ;
     </select>
 
+    <select id="findOneByCommentIdAndBoardType" parameterType="com.seong.portfolio.quiz_quest.comments.dto.CommentsRepoDTO" resultMap="pcMap">
+        SELECT
+            c.comment_id,
+            c.comment_content,
+            c.created_at,
+            c.author,
+            u.level
+        FROM comments c
+        INNER JOIN users u ON c.author = u.user_id
+        WHERE comment_id = #{commentId} AND board_type = #{boardType}
+    </select>
+
     <select id="findAllByBoardIdAndBoardTypeSortTypeAndCursor" parameterType="com.seong.portfolio.quiz_quest.comments.dto.CommentsRepoDTO" resultMap="pcMap">
 
         SELECT

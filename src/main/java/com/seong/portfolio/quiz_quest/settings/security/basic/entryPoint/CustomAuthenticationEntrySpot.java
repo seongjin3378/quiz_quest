@@ -43,7 +43,7 @@ public class CustomAuthenticationEntrySpot implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
 
 
-        logger.info("CustomAuthenticationEntrySpot commence {}, {}", request.getRequestURI(), authException.getMessage());
+        logger.info("CustomAuthenticationEntrySpot commence {}, {}, {}", request.getRequestURI(), authException.getMessage(), request.getMethod());
         if (request.getRequestURI().equals("/login")) {
             response.sendRedirect("/");
         } else if (request.getRequestURI().equals("/")) {

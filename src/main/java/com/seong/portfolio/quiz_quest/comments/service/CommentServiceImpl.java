@@ -86,4 +86,14 @@ public class CommentServiceImpl implements CommentService {
     public void deleteComments(long boardId) {
         commentsRepository.deleteByCommentId(boardId);
     }
+
+    @Override
+    @Transactional
+    public CommentsDTO updateCommentsAndReturn(CommentsDTO commentsDTO) { //Param: commentId, commentContent, boardType
+
+        commentsRepository.updateByCommentId(commentsDTO);
+        return commentsRepository.findOneByCommentIdAndBoardType(commentsDTO);
+    }
+
+
 }

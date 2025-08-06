@@ -1,11 +1,9 @@
 package com.seong.portfolio.quiz_quest.courses.controller;
 
 
-import com.seong.portfolio.quiz_quest.comments.courses.vo.CourseCommentsVO;
 import com.seong.portfolio.quiz_quest.comments.dto.CommentsDTO;
 import com.seong.portfolio.quiz_quest.comments.service.CommentService;
 import com.seong.portfolio.quiz_quest.likes.service.LikesService;
-import com.seong.portfolio.quiz_quest.courses.info.courseVisual.service.CourseVisualService;
 import com.seong.portfolio.quiz_quest.courses.repo.CoursesRepository;
 import com.seong.portfolio.quiz_quest.likes.dto.LikesDTO;
 import com.seong.portfolio.quiz_quest.likes.dto.totalLikesInfoDTO;
@@ -110,6 +108,24 @@ public class CoursesRestController {
     }
 
 
+    @PatchMapping("/{commentId}/comments")
+    public ResponseEntity<Object> updateComments(@PathVariable long commentId, @RequestBody CommentsDTO commentsDTO) {
+
+        try {
+            commentsDTO.setBoardType("course");
+            commentsDTO.setCommentId(commentId);
+            CommentsDTO result = commentService.updateCommentsAndReturn(commentsDTO);
+            log.info("result: {}", result.toString());
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+
+            log.error(e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("댓글 수정 요청이 실패하였습니다.");
+        }
+    }
+
 
 
     @DeleteMapping("/{boardId}/comments")
@@ -122,7 +138,7 @@ public class CoursesRestController {
             log.error(e.getMessage());
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("서버 오류가 발생했습니다.");
+                    .body("댓글 삭제 요청이 실패하였습니다.");
         }
     }
 

@@ -9,6 +9,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class CommentsDTO {
     private Long commentId;          // 댓글 ID
     private Long boardId;

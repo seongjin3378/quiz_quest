@@ -1,5 +1,7 @@
 package com.seong.portfolio.quiz_quest.comments.service;
 
+import com.seong.portfolio.quiz_quest.comments.dto.CommentsDTO;
+
 import java.util.List;
 
 
@@ -26,4 +28,5 @@ public interface CommentService {
     List<Object> findComments(long id, String sortType, String cursor, String boardType);
     List<Object> findAllReplyComments(long parentCommentId, String sortType, String cursor);
     void deleteComments(long boardId);
+    CommentsDTO updateCommentsAndReturn(CommentsDTO commentsDTO);
 }

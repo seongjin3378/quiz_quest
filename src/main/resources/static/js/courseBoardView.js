@@ -165,6 +165,7 @@ class Comments {
         controls.innerHTML = '<button class="saveBtn">저장</button><button class="cancelBtn">취소</button>';
         container.appendChild(controls);
 
+
         controls.querySelector('.saveBtn').addEventListener('click', () => this.saveEdit(container, original.commentId));
         controls.querySelector('.cancelBtn').addEventListener('click', () => {
             container.replaceWith(this.renderComment(original));
@@ -175,8 +176,16 @@ class Comments {
         const newText = container.querySelector('.editInput').value.trim();
         if (!newText) return alert('댓글을 입력하세요');
         try {
-            const { data } = await axios.put(`/comments/${id}`, { text: newText }, axiosCfg);
-            container.replaceWith(this.renderComment(data));
+            // axios.patch() 대신 axios() 함수로 PATCH 요청을 보내도록 수정
+            const response  = await axios({
+                ...axiosCfg,
+                method: 'patch',
+                url: `/api/v1/courses/${id}/comments`,
+                data: { commentContent: newText  }
+            });
+
+            console.log(response);
+            container.replaceWith(this.renderComment(response.data));
         } catch (err) {
             console.error('Edit failed', err);
         }
