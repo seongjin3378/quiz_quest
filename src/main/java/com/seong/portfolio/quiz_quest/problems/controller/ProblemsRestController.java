@@ -93,7 +93,7 @@ public class ProblemsRestController {
 
     @PostMapping("/{sortType}/comments")
     public ResponseEntity<List<Object>> saveAndReturnProblemComments(@RequestBody CommentsDTO commentsDTO, @PathVariable String sortType) {
-
+        commentsDTO.setBoardType("problem");
         List<Object> result = commentService.saveAndReturnComments(commentsDTO, sortType);
         return ResponseEntity.ok(result);
     }

@@ -135,7 +135,6 @@
         <result property="level" column="level"/>
         <result property="cursor" column="cursor"/>
         <result property="replyCount" column="reply_count"/>
-        <!--<collection property="replyCommentList" resultMap="rcMap"/>--> <!-- 부모 댓글 ID -->
     </resultMap>
 
 

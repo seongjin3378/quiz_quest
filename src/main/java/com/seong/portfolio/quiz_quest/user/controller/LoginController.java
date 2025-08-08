@@ -21,11 +21,7 @@ public class LoginController {
         model.addAttribute("redirectUri", redirectUri);
         return "login";
     }
-    @PostMapping("/oauth2/authorization/{registrationId}")
-     public void authorizationV(@PathVariable("registrationId") String registrationId, Model model)
-    {
 
-    }
 
 
 

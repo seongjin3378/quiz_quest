@@ -105,11 +105,13 @@
     /* ---------- 작성 ---------- */
     const writeComment = async () => {
         const textarea = els.commentSection.querySelector('div.comment:first-child textarea');
-        const largestCommentId = els.commentSection.querySelector('[data-comment-id]').dataset.commentId;
+        const largestCommentId = els.commentSection
+                .querySelector('[data-comment-id]')?.dataset.commentId
+            ?? '0';
         console.log(largestCommentId);
 
         if (!textarea.value.trim()) return;
-        const newComments = await api.post({ commentContent: textarea.value, problemId: problemIndexGlobal, commentId: largestCommentId });
+        const newComments = await api.post({ commentContent: textarea.value, boardId: problemIndexGlobal, largestCommentId: largestCommentId });
 
         console.log(newComments);
         renderComments(newComments, els.commentSection.children[1]);
@@ -123,21 +125,23 @@
         const payload = {
             commentContent: btn.dataset.receiver ? `@${btn.dataset.receiver} ${area.value}` : area.value,
             parentCommentId: btn.dataset.parent,
-            problemId: problemIndexGlobal,
+            boardId: problemIndexGlobal,
         };
 
         console.log(payload);
-        await api.post(payload);
+        const resultReply = await api.post(payload);
+        console.log(resultReply);
         area.value = '';
-        els.replyList.innerHTML = '';
-        state.replyCursors.set(btn.dataset.parent, '0');
+        //els.replyList.innerHTML = '';
+        //state.replyCursors.set(btn.dataset.parent, '0');
         await loadReplies(btn.dataset.parent);
     };
 
     /* ---------- 이벤트 ---------- */
     const onClick = async (e) => {
         const t = e.target;
-        if (t.matches('.comment-section .reply-list .comment:first-child button.btn-primary')) return writeComment();
+        if (t.matches('button.btn.btn-primary.btn-sm') && !t.matches('[data-write-reply]')) return writeComment();
+        console.log(t);
         if (t.dataset.replyOpen !== undefined) {
             const sec = document.getElementById('reply' + t.dataset.replyOpen);
             if (sec) sec.style.display = sec.style.display === 'none' ? 'block' : 'none';

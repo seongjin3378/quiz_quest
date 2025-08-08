@@ -53,6 +53,7 @@ public class CoursesRestController {
         String returnUrl = "/c/n/"+courseId;
         return ResponseEntity.ok(returnUrl);
     }
+
     private VisualDTO getVisualDTO(long boardId)
     {
         VisualDTO visualDTO = new VisualDTO();
@@ -93,8 +94,7 @@ public class CoursesRestController {
 
 
     @PostMapping(value = "/{courseId}/{cursor}/{sortType}/comments")
-    public ResponseEntity<List<Object>> loadComments(@PathVariable long courseId, @PathVariable String cursor, @PathVariable String sortType) throws IOException {
-        log.info("23232");
+    public ResponseEntity<List<Object>> loadComments(@PathVariable long courseId, @PathVariable String cursor, @PathVariable String sortType) throws  IOException {
         List<Object> result = commentService.findComments(courseId, sortType, cursor, "course");
         return ResponseEntity.ok( result);
     }

@@ -18,7 +18,7 @@ public interface CommentsRepository {
 
     List<CommentsDTO> findAllByCommentIdAndBoardIdAndBoardType(@Param("commentsVO") CommentsDTO commentsDTO, @Param("largestCommentId") long largestCommentId);
 
-    List<CommentsDTO> findAllByParentCommentId(@Param("commentId") long parentCommentId, @Param("sortType") String sortType, @Param("cursor") String cursor);
+    List<CommentsDTO> findAllByParentCommentId(@Param("parentCommentId") long parentCommentId, @Param("sortType") String sortType, @Param("cursor") String cursor);
 
     @Delete("DELETE  FROM comments WHERE comment_id = #{commentId}")
     void deleteByCommentId(@Param("commentId") long commentId);

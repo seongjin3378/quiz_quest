@@ -58,6 +58,7 @@ public class CommentServiceImpl implements CommentService {
     public List<Object> findComments(long id, String sortType, String cursor, String boardType) {
         return Collections.singletonList(commentsRepository.findAllByBoardIdAndBoardTypeSortTypeAndCursor(getCommentRepoDTO(id, sortType, cursor, boardType)));
     }
+
     private CommentsRepoDTO getCommentRepoDTO(long id, String sortType, String cursor, String boardType)
     {
         return CommentsRepoDTO.builder()
