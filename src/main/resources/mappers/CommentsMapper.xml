@@ -93,6 +93,7 @@
         pc.created_at,
         pc.author,
         u.level,
+        pc.parent_comment_id,
 
         <!--커서 기반 페이지네이션을 이용할 경우 createdAt과 commentId를 문자열로  -->
         CONCAT(
@@ -131,6 +132,7 @@
         <result property="commentContent" column="comment_content"/> <!-- 댓글 내용 -->
         <result property="createdAt" column="created_at"/> <!-- 생성 시간 -->
         <result property="problemId" column="problem_id"/> <!-- 문제 ID -->
+        <result property="parentCommentId" column="parent_comment_id"/>
         <result property="author" column="author"/>
         <result property="level" column="level"/>
         <result property="cursor" column="cursor"/>

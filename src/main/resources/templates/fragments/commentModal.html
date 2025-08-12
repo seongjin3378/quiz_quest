@@ -29,7 +29,7 @@
             </div>
 
             <!-- Server‑rendered comments -->
-            <div th:each="c,stat:${problemComments}" class="comment p-2 border-bottom" th:data-comment-id="${c.commentId}">
+         <!--   <div th:each="c,stat:${problemComments}" class="comment p-2 border-bottom" th:data-comment-id="${c.commentId}">
               <div class="comment-header small text-muted mb-1">
                 <span th:text="${c.author}"></span> • <span th:text="${c.createdAt}"></span> • <span th:text="'LV '+${c.level}"></span>
               </div>
@@ -43,7 +43,7 @@
                 <textarea class="form-control mb-2" placeholder="답글을 입력하세요..."></textarea>
                 <button class="btn btn-sm btn-primary" data-write-reply  th:attr="data-parent=${c.commentId}">답글 작성</button>
               </div>
-            </div>
+            </div>-->
           </div>
 
           <!-- Cursor for infinite scroll -->

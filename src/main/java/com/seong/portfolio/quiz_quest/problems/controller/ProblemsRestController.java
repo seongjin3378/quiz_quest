@@ -85,6 +85,7 @@ public class ProblemsRestController {
 
     @GetMapping("/{problemId}/{cursor}/{sortType}/comments")
     public ResponseEntity<List<Object>> getProblemComments(@PathVariable long problemId, @PathVariable String cursor, @PathVariable String sortType) {
+        log.info("실행");
         List<Object> problemCommentsVO = commentService.findComments(problemId, sortType, cursor, "Problem");
 
         return ResponseEntity.ok(problemCommentsVO);
@@ -93,6 +94,7 @@ public class ProblemsRestController {
 
     @PostMapping("/{sortType}/comments")
     public ResponseEntity<List<Object>> saveAndReturnProblemComments(@RequestBody CommentsDTO commentsDTO, @PathVariable String sortType) {
+        log.info("실행");
         commentsDTO.setBoardType("problem");
         List<Object> result = commentService.saveAndReturnComments(commentsDTO, sortType);
         return ResponseEntity.ok(result);

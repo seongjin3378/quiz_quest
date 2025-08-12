@@ -12,6 +12,7 @@
         sort: 'DESC',
         cursor: '0',
         activeParent: null,
+        activeToggleBtn: null,
         replyCursors: new Map(),
         commentIndex: 0, // init 에서 계산
         replyCommentIndex: 0
@@ -77,9 +78,10 @@
       </div>
         <div class="reply-section mt-2" id="replyReply${idx}" style="display:none;">
         <textarea class="form-control mb-2" placeholder="답글을 입력하세요..."></textarea>
-        <button class="btn btn-sm btn-primary" data-write-reply data-parent="${r.commentId}">답글 작성</button>
+        <button class="btn btn-sm btn-primary" data-write-reply data-parent="${r.parentCommentId}">답글 작성</button>
       </div>
-    </div>`};
+    </div>`
+    };
 
     /* ---------- 렌더 ---------- */
     const renderComments = (arr, before) => {
@@ -99,7 +101,11 @@
 
 
     /* ---------- 데이터 로드 ---------- */
-    const loadComments = async () => renderComments(await api.comments(state.cursor));
+    const loadComments = async () => {
+        if (state.cursor === null) return; // cursor가 null이면 실행 안 함
+        renderComments(await api.comments(state.cursor));
+    };
+
     const loadReplies = async (parent) => renderReplies(await api.replies(parent, state.replyCursors.get(parent) || '0'), parent);
 
     /* ---------- 작성 ---------- */
@@ -121,9 +127,25 @@
 
     const writeReply = async (btn) => {
         const area = btn.previousElementSibling;
+        const targetReceiverEl = btn.closest('[data-receiver]');
+
+        let replyBtn = btn.parentElement.previousElementSibling;
+
+        console.log(replyBtn)
+        replyBtn = replyBtn.querySelector('[data-reply-toggle]')
+
+
+        if (replyBtn) {
+            replyBtn.textContent = replyBtn.textContent.replace(/\((\d+)\)/, (_, num) => {
+                return `(${parseInt(num, 10) + 1})`;
+            });
+        }
+
+
         if (!area.value.trim()) return;
+
         const payload = {
-            commentContent: btn.dataset.receiver ? `@${btn.dataset.receiver} ${area.value}` : area.value,
+            commentContent: btn.dataset.receiver ? `@${targetReceiverEl.dataset.receiver} ${area.value}` : area.value,
             parentCommentId: btn.dataset.parent,
             boardId: problemIndexGlobal,
         };
@@ -147,15 +169,24 @@
             if (sec) sec.style.display = sec.style.display === 'none' ? 'block' : 'none';
             return;
         }
+
+
         if (t.dataset.replyReplyOpen !== undefined) {
             const sec = document.getElementById('replyReply' + t.dataset.replyReplyOpen);
             if (sec) sec.style.display = sec.style.display === 'none' ? 'block' : 'none';
             return;
         }
-        if (t.dataset.replyToggle !== undefined) {
-            const parent = t.dataset.parent;
-                els.replyList.style.display = 'block';
 
+
+        if (t.dataset.replyToggle !== undefined) { // 답글 보기 열었을 경우
+            const parent = t.dataset.parent;
+
+
+            if (t.textContent.trim() === '답글 보기(0)') {
+                return;
+            }
+            els.replyList.style.display =
+                els.replyList.style.display === 'block' ? 'none' : 'block';
 
             if (state.activeParent !== parent) {
                 els.replyList.innerHTML = '';
@@ -177,6 +208,8 @@
         state.sort = s;
         els.sortBtn.textContent = s === 'DESC' ? '최신순' : '오래된 순';
         state.cursor = '0';
+        state.activeParent = null;
+        state.activeToggleBtn = null;
         const writer = els.commentSection.children[0].outerHTML;
         els.commentSection.innerHTML = writer;
         state.commentIndex = 1;
@@ -204,6 +237,8 @@
         els.sortLatest.addEventListener('click', () => switchSort('DESC'));
         els.sortOldest.addEventListener('click', () => switchSort('ASC'));
 
+
+        console.log(1);
         loadComments();
     };
 

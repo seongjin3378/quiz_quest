@@ -63,9 +63,9 @@ public class  ProblemsController {
 
         findProblemVOAndAddModelByIndex(index, model);
 
-        List<CommentsDTO> commentsDTO = findProblemCommentsVOAndAddModelByIndex(index, model);
+/*        List<CommentsDTO> commentsDTO = findProblemCommentsVOAndAddModelByIndex(index, model);*/
 
-        findCursorAndAddModelByProblemCommentsVO(commentsDTO, model);
+/*        findCursorAndAddModelByProblemCommentsVO(commentsDTO, model);*/
 
         findProblemVisualsAndAddModelByIndex(index, model, req);
 
@@ -88,11 +88,11 @@ public class  ProblemsController {
         model.addAttribute("problem", problemVO);
     }
 
-    private List<CommentsDTO> findProblemCommentsVOAndAddModelByIndex(long index, Model model) {
+/*    private List<CommentsDTO> findProblemCommentsVOAndAddModelByIndex(long index, Model model) {
         List<CommentsDTO> commentsDTO = problemService.findAllProblemComments(index);
         model.addAttribute("problemComments", commentsDTO);
         return commentsDTO;
-    }
+    }*/
 
     private void findCursorAndAddModelByProblemCommentsVO(List<CommentsDTO> commentsDTO, Model model) {
         String cursor = problemService.findCursor(commentsDTO);
